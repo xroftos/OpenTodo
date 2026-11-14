@@ -1,0 +1,42 @@
+# OpenTodo for a family — self-contained compose file on port 4002.
+#
+#   git clone https://github.com/OpenTodoApp/OpenTodo.git
+#   cd OpenTodo/deploy/family
+#   docker compose up -d --build
+#
+# → http://localhost:4002  (read deploy/family/README.md, Russian, for the full guide)
+#
+# Builds the image from this repository (repo root is the build context), keeps all
+# data in the named volume opentodo-data mounted at /data, the same data path as the
+# root compose file and the plain `docker run` example in docs/self-hosting/docker.md.
+# OPENTODO_PORT inside the container stays 8080; the host port 4002 is the mapping
+# below — change only the left side of `ports` to move the family server on the host.
+
+services:
+  opentodo:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # The exact address people open (passkeys and cookies are bound to its host).
+      # Empty is fine on localhost and plain LAN addresses (an IP, or a name without
+      # a dot); set it when serving the family server under a domain name.
+      - OPENTODO_BASE_URL=${OPENTODO_BASE_URL:-}
+      # Presets "Allow AI assistants" (the MCP endpoint) on the first start, so the
+      # family agent of docs/agents-ru/AGENTS.md can connect right away. The owner's
+      # Settings win afterwards, and the two write switches still gate every change.
+      - OPENTODO_MCP=${OPENTODO_MCP:-true}
+    volumes:
+      - opentodo-data:/data
+    ports:
+      - "4002:8080"
+    healthcheck:
+      test: ["CMD", "/opentodo", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  opentodo-data:
