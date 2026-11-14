@@ -1,10 +1,9 @@
-# TODO translate
-{{.Inviter}} invited you to a workspace
+{{.Inviter}} приглашает тебя в рабочее пространство
 
-This is an invitation to a shared workspace in OpenTodo.
+Это приглашение в общее рабочее пространство в OpenTodo.
 
-{{.Inviter}} invited {{.Email}} to join a workspace as {{.Role}} on the OpenTodo server at {{.Origin}}. Members of a workspace can share projects with each other. To join, open this link:
+{{.Inviter}} приглашает {{.Email}} присоединиться к рабочему пространству как {{.Role}} на сервере OpenTodo {{.Origin}}. Участники рабочего пространства могут делиться проектами друг с другом. Чтобы присоединиться, открой эту ссылку:
 
 {{.Link}}
 
-The link expires in {{.Expiry}}. If you do not know {{.Inviter}}, you can ignore this message.
+Ссылка действует {{.Expiry}}. Если ты не знаешь {{.Inviter}}, можно проигнорировать это сообщение.

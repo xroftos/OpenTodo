@@ -151,6 +151,18 @@ var texts = map[string]map[string]string{
 		txtPageDoneBy: "{name} heeft de taak op de pagina voltooid", txtPageReopenedBy: "{name} heeft de taak op de pagina opnieuw geopend",
 		txtTestTitle: "Test van OpenTodo", txtTestBody: "Dit kanaal werkt.", txtGuest: "Een gast",
 	},
+	"ru": {
+		txtTurn: "Твоя очередь по задаче", txtTurnWith: "Твоя очередь",
+		txtRoutine:       "Рутина прислала тебе уведомление",
+		txtRoutineFailed: "Рутина завершилась с ошибкой", txtRoutineFailedWith: "Она не завершилась. Открой запуск, чтобы увидеть причину.",
+		txtReminder: "Пришло время напоминания", txtAssigned: "Тебе назначена задача", txtMentioned: "Тебя упомянули",
+		txtUnblocked: "Назначенная тебе задача готова к началу", txtPageReplied: "Гость ответил на странице задачи",
+		txtPageDone: "Гость завершил страницу задачи", txtPageReopened: "Гость заново открыл страницу задачи",
+		txtReminderWith: "Напоминание", txtAssignedBy: "{name} назначает тебе эту задачу", txtMentionedBy: "{name} упоминает тебя",
+		txtUnblockedWith: "Готова к началу", txtPageRepliedBy: "{name} отвечает на странице задачи",
+		txtPageDoneBy: "{name} завершает задачу на её странице", txtPageReopenedBy: "{name} заново открывает задачу на её странице",
+		txtTestTitle: "Тест от OpenTodo", txtTestBody: "Этот канал работает.", txtGuest: "Гость",
+	},
 }
 
 func text(lang, key, name string) string {

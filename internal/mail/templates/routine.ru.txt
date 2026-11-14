@@ -1,13 +1,12 @@
-# TODO translate
 {{.Subject}}
 
 {{.Text}}
 
 --
-This message was sent by your routine "{{.Routine}}" on OpenTodo at {{.Origin}}.
+Это сообщение отправила твоя рутина «{{.Routine}}» в OpenTodo на {{.Origin}}.
 
-See this run:
+Посмотреть этот запуск:
 
 {{.Link}}
 
-You get this message because your routine has an Email me step and sends it to {{.Email}}. To stop it, turn the routine off or remove the step on the Routines page.
+Ты получаешь это сообщение, потому что у твоей рутины есть шаг «Отправить мне письмом», и она отправляет его на {{.Email}}. Чтобы остановить её, выключи рутину или удали этот шаг на странице «Рутины».

@@ -3155,7 +3155,6 @@
   "Nothing else scheduled today.": "Nada mais agendado para hoje.",
   "Nothing estimated against a {minutes} day": "Nada estimado para um dia de {minutes}",
   "Nothing fetched yet.": "Nada obtido ainda.",
-  "Nothing is assigned to you.": "Nada está atribuído a si.",
   "Nothing is due in the next seven days.": "Nada vence nos próximos sete dias.",
   "Nothing is due today. Pick your focus from Next.": "Nada vence hoje. Escolha seu foco em Próximas.",
   "Nothing is open from earlier.": "Nada ficou aberto de antes.",
@@ -7762,5 +7761,6 @@
   "{kept} of {of} this month": "{kept} de {of} este mês",
   "{kept} of {of} this week": "{kept} de {of} esta semana",
   "{n, plural, one {Once a month} other {# times a month}}": "{n, plural, one {Uma vez por mês} other {# vezes por mês}}",
-  "{n, plural, one {Once a week} other {# times a week}}": "{n, plural, one {Uma vez por semana} other {# vezes por semana}}"
+  "{n, plural, one {Once a week} other {# times a week}}": "{n, plural, one {Uma vez por semana} other {# vezes por semana}}",
+  "Nothing open of your own here, and nothing assigned to you.": "Aqui nada está aberto do seu, e nada lhe está atribuído."
 }

@@ -1,10 +1,9 @@
-# TODO translate
-{{.Inviter}} invited you to OpenTodo
+{{.Inviter}} приглашает тебя в OpenTodo
 
-This is an invitation to OpenTodo.
+Это приглашение в OpenTodo.
 
-{{.Inviter}} invited {{.Email}} to the OpenTodo server at {{.Origin}}. To create your account, open this link:
+{{.Inviter}} приглашает {{.Email}} на сервер OpenTodo {{.Origin}}. Чтобы создать свой аккаунт, открой эту ссылку:
 
 {{.Link}}
 
-The link expires in {{.Expiry}}. If you do not know {{.Inviter}}, you can ignore this message.
+Ссылка действует {{.Expiry}}. Если ты не знаешь {{.Inviter}}, можно проигнорировать это сообщение.

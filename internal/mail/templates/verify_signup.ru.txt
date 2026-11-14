@@ -1,10 +1,9 @@
-# TODO translate
-Confirm your OpenTodo account
+Подтверди свой аккаунт OpenTodo
 
-This is a sign-up confirmation from OpenTodo.
+Это подтверждение регистрации от OpenTodo.
 
-Someone signed up at {{.Origin}} with {{.Email}}. To create the account, open this link and press the button on the page:
+Кто-то зарегистрировался на {{.Origin}} с адресом {{.Email}}. Чтобы создать аккаунт, открой эту ссылку и нажми кнопку на странице:
 
 {{.Link}}
 
-The link expires in {{.Expiry}}. If you did not sign up, you can ignore this message: no account is created.
+Ссылка действует {{.Expiry}}. Если это был не ты, можно проигнорировать это сообщение: аккаунт не будет создан.

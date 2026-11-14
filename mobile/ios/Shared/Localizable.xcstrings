@@ -45,6 +45,12 @@
             "state": "translated",
             "value": "%lld vandaag"
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld сегодня"
+          }
         }
       }
     },
@@ -91,6 +97,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld vandaag · %lld verouderd"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld сегодня · %lld просрочено"
           }
         }
       }
@@ -139,6 +151,12 @@
             "state": "translated",
             "value": "Annuleren"
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмена"
+          }
         }
       }
     },
@@ -185,6 +203,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Server wijzigen?"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сменить сервер?"
           }
         }
       }
@@ -233,6 +257,12 @@
             "state": "translated",
             "value": "Wijzigingen die de server nog niet hebben bereikt, gaan verloren. Je taken blijven op de server."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Несинхронизированные изменения будут потеряны. Сами задачи останутся на сервере."
+          }
         }
       }
     },
@@ -279,6 +309,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verbinden"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подключиться"
           }
         }
       }
@@ -327,6 +363,12 @@
             "state": "translated",
             "value": "Sluiten"
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрыть"
+          }
         }
       }
     },
@@ -373,6 +415,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Voltooid"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готово"
           }
         }
       }
@@ -421,6 +469,12 @@
             "state": "translated",
             "value": "Vergrendeld. Open OpenTodo om je taken te zien."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заблокировано. Откройте OpenTodo, чтобы увидеть задачи."
+          }
         }
       }
     },
@@ -467,6 +521,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Geen antwoord van dat adres. Controleer het adres en je verbinding."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Адрес не отвечает. Проверьте адрес и соединение."
           }
         }
       }
@@ -515,6 +575,12 @@
             "state": "translated",
             "value": "Geen verbinding met je server."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет связи с вашим сервером."
+          }
         }
       }
     },
@@ -561,6 +627,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Voor vandaag is er niets meer open."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На сегодня всё."
           }
         }
       }
@@ -609,6 +681,12 @@
             "state": "translated",
             "value": "Open OpenTodo om deze widget te vullen."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Откройте OpenTodo, чтобы виджет заполнился."
+          }
         }
       }
     },
@@ -655,6 +733,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "OpenTodo-melding"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напоминание OpenTodo"
           }
         }
       }
@@ -703,6 +787,12 @@
             "state": "translated",
             "value": "OpenTodo draait op je eigen server. Voer het adres in dat je in de browser gebruikt."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenTodo работает на вашем сервере. Введите адрес, которым вы пользуетесь в браузере."
+          }
         }
       }
     },
@@ -749,6 +839,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Server en gegevens verwijderen"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить сервер и его данные"
           }
         }
       }
@@ -797,6 +893,12 @@
             "state": "translated",
             "value": "Serveradres"
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Адрес сервера"
+          }
         }
       }
     },
@@ -843,6 +945,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "10 min. later"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отложить на 10 мин"
           }
         }
       }
@@ -891,6 +999,12 @@
             "state": "translated",
             "value": "Taak"
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Задача"
+          }
         }
       }
     },
@@ -937,6 +1051,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dat adres antwoordt niet zoals een OpenTodo-server."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Этот адрес не отвечает как сервер OpenTodo."
           }
         }
       }
@@ -985,6 +1105,12 @@
             "state": "translated",
             "value": "Dat is geen bruikbaar adres."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это не рабочий адрес."
+          }
         }
       }
     },
@@ -1031,6 +1157,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Het certificaat van die server wordt niet vertrouwd."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сертификат этого сервера не доверенный."
           }
         }
       }
@@ -1079,6 +1211,12 @@
             "state": "translated",
             "value": "De app kon niet worden geladen."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось загрузить приложение."
+          }
         }
       }
     },
@@ -1125,6 +1263,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Het certificaat van die server wordt op dit apparaat niet vertrouwd."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сертификат этого сервера не доверенный для этого устройства."
           }
         }
       }
@@ -1173,6 +1317,12 @@
             "state": "translated",
             "value": "Deze verbinding is niet versleuteld."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Соединение не зашифровано."
+          }
         }
       }
     },
@@ -1219,6 +1369,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zo ziet een melding eruit."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Так выглядит напоминание."
           }
         }
       }
@@ -1267,6 +1423,12 @@
             "state": "translated",
             "value": "Deze server is alleen via https bereikbaar."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Этот сервер доступен только по https."
+          }
         }
       }
     },
@@ -1313,6 +1475,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vandaag"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сегодня"
           }
         }
       }
@@ -1361,6 +1529,12 @@
             "state": "translated",
             "value": "Taken van vandaag en verouderd, van je eigen server."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Задачи на сегодня и просроченные с вашего сервера."
+          }
         }
       }
     },
@@ -1407,6 +1581,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Opnieuw proberen"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повторить"
           }
         }
       }
@@ -1455,6 +1635,12 @@
             "state": "translated",
             "value": "Bijgewerkt %@"
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обновлено %@"
+          }
         }
       }
     },
@@ -1501,6 +1687,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ gebruiken"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Использовать %@"
           }
         }
       }

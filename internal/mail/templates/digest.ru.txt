@@ -1,27 +1,26 @@
-# TODO translate
-Your week in OpenTodo: {{.Completed}} completed
+Твоя неделя в OpenTodo: выполнено {{.Completed}}
 
-This is your weekly digest from OpenTodo at {{.Origin}}.
+Это твоя недельная сводка от OpenTodo на {{.Origin}}.
 
-Last week ({{.Week}})
-  Completed: {{.Completed}}
-  Created: {{.Created}}
-  Completed late: {{.Late}}
-  Slipped: {{.Slipped}}
+Прошлая неделя ({{.Week}})
+  Выполнено: {{.Completed}}
+  Создано: {{.Created}}
+  Выполнено с опозданием: {{.Late}}
+  Перенесено: {{.Slipped}}
 
-Still open from earlier
+Осталось открытым с прошлых недель
 {{.Overdue}}
 
-Due in the next seven days
+Срок в ближайшие семь дней
 {{.Ahead}}
 
-Projects without a next action
+Проекты без следующего действия
 {{.Idle}}
 
-Last review: {{.LastReview}}
+Последний обзор: {{.LastReview}}
 
-Start your weekly review:
+Начни недельный обзор:
 
 {{.Link}}
 
-You get this message because you turned on the weekly digest for {{.Email}} in Settings, Notifications. You can turn it off there at any time.
+Ты получаешь это сообщение, потому что недельная сводка для {{.Email}} включена в «Настройки», «Уведомления». Там её можно отключить в любой момент.

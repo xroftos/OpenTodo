@@ -1,6 +1,5 @@
-# TODO translate
-OpenTodo test message
+Тестовое сообщение OpenTodo
 
-This is a test message from the OpenTodo server at {{.Origin}}.
+Это тестовое сообщение от сервера OpenTodo {{.Origin}}.
 
-Outgoing email works: password resets, sign-up confirmations and invitations can now be sent by email. No action is needed.
+Отправка почты работает: сбросы пароля, подтверждения регистрации и приглашения теперь можно отправлять по электронной почте. Тебе ничего не нужно делать.

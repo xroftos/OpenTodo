@@ -3207,7 +3207,6 @@
   "Nothing estimated against a {minutes} day": "Niets geschat ten opzichte van een dag van {minutes}",
   "Nothing fetched yet.": "Nog niets opgehaald.",
   "Nothing from this share was kept: the browser did not say where it came from. Update the browser, then share again.": "Van deze deling is niets overgenomen: de browser gaf niet aan waar deze vandaan kwam. Werk de browser bij en deel daarna opnieuw.",
-  "Nothing is assigned to you.": "Er is niets aan jou toegewezen.",
   "Nothing is due in the next seven days.": "In de komende zeven dagen is niets ingepland.",
   "Nothing is due today. Pick your focus from Next.": "Vandaag is niets ingepland. Kies je focus uit Volgende.",
   "Nothing is open from earlier.": "Niets van eerder staat open.",
@@ -7762,5 +7761,6 @@
   "{kept} of {of} this month": "{kept} van {of} deze maand",
   "{kept} of {of} this week": "{kept} van {of} deze week",
   "{n, plural, one {Once a month} other {# times a month}}": "{n, plural, one {Eén keer per maand} other {# keer per maand}}",
-  "{n, plural, one {Once a week} other {# times a week}}": "{n, plural, one {Eén keer per week} other {# keer per week}}"
+  "{n, plural, one {Once a week} other {# times a week}}": "{n, plural, one {Eén keer per week} other {# keer per week}}",
+  "Nothing open of your own here, and nothing assigned to you.": "Hier is niets van jou open, en er is niets aan jou toegewezen."
 }

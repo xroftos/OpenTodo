@@ -1,8 +1,7 @@
-# TODO translate
-Your OpenTodo sign-up
+Твоя регистрация в OpenTodo
 
-This is a sign-up message from OpenTodo.
+Это сообщение о регистрации от OpenTodo.
 
-Someone tried to sign up at {{.Origin}} with {{.Email}}, but this address already has an account. To sign in, go to the server's address above. If you forgot your password, use "Forgot password?" on the sign-in screen.
+Кто-то попытался зарегистрироваться на {{.Origin}} с адресом {{.Email}}, но у этого адреса уже есть аккаунт. Чтобы войти, открой адрес сервера, указанный выше. Если пароль забыт, используй «Забыли пароль?» на экране входа.
 
-If this was not you, you can ignore this message: nothing has changed.
+Если это был не ты, можно проигнорировать это сообщение: ничего не изменилось.

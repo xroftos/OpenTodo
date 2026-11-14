@@ -1,8 +1,7 @@
-# TODO translate
-Your OpenTodo email is being changed
+Твой адрес почты OpenTodo меняется
 
-This is a security notice from OpenTodo.
+Это уведомление о безопасности от OpenTodo.
 
-Someone signed in to the account {{.Email}} at {{.Origin}} asked to change its sign-in email. The change happens only when the link sent to the new address is opened.
+Кто-то вошёл в аккаунт {{.Email}} на {{.Origin}} и запросил смену его адреса для входа. Смена произойдёт только когда будет открыта ссылка, отправленная на новый адрес.
 
-If this was you, there is nothing to do. If it was not, sign in, change your password and sign out everywhere, or ask the owner of the server for help.
+Если это был ты, ничего делать не нужно. Если нет — войди в аккаунт, смени пароль и выйди из него на всех устройствах или попроси помощи у владельца сервера.

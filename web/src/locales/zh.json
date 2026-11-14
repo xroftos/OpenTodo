@@ -3187,7 +3187,6 @@
   "Nothing else scheduled today.": "今天没有其他安排。",
   "Nothing estimated against a {minutes} day": "针对 {minutes} 的每日时长尚无预估项",
   "Nothing fetched yet.": "尚未获取任何内容。",
-  "Nothing is assigned to you.": "没有指派给你的任务。",
   "Nothing is due in the next seven days.": "未来七天内没有到期任务。",
   "Nothing is due today. Pick your focus from Next.": "今天没有到期任务。从“下一步”中挑选你的专注事项吧。",
   "Nothing is open from earlier.": "没有来自较早的未完成任务。",
@@ -7762,5 +7761,6 @@
   "{kept} of {of} this month": "本月 {kept}/{of}",
   "{kept} of {of} this week": "本周 {kept}/{of}",
   "{n, plural, one {Once a month} other {# times a month}}": "{n, plural, other {每月 # 次}}",
-  "{n, plural, one {Once a week} other {# times a week}}": "{n, plural, other {每周 # 次}}"
+  "{n, plural, one {Once a week} other {# times a week}}": "{n, plural, other {每周 # 次}}",
+  "Nothing open of your own here, and nothing assigned to you.": "这里没有你的未完成任务，也没有分配给你的任务。"
 }

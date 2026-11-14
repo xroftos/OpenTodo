@@ -1,10 +1,9 @@
-# TODO translate
-{{.Inviter}} wants to share a project or workspace with you
+{{.Inviter}} хочет поделиться с тобой проектом или рабочим пространством
 
-{{.Inviter}} asked to add your account {{.Email}} as {{.Role}} on the OpenTodo server at {{.Origin}}. Nothing is shared with you until you answer.
+{{.Inviter}} просит добавить твой аккаунт {{.Email}} как {{.Role}} на сервер OpenTodo {{.Origin}}. Ничего не станет доступно, пока ты не ответишь.
 
-To accept or decline, sign in and open:
+Чтобы принять или отклонить приглашение, войди в аккаунт и открой:
 
 {{.Link}}
 
-The invitation expires in {{.Expiry}}. If you do not know {{.Inviter}}, decline it or let it expire.
+Приглашение действует {{.Expiry}}. Если ты не знаешь {{.Inviter}}, отклони его или дождись, когда оно истечёт.

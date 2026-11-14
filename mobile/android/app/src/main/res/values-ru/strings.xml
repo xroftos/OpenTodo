@@ -1,4 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Русский: translate each string of values/strings.xml here (scripts/i18n/new-language.mjs). -->
 <resources>
+    <string name="app_name">OpenTodo</string>
+    <string name="setup_title">Подключение к твоему серверу</string>
+    <string name="setup_intro">Укажи адрес своего сервера OpenTodo — тот, который ты открываешь в браузере.</string>
+    <string name="setup_hint">todo.example.com</string>
+    <string name="setup_connect">Подключиться</string>
+    <string name="setup_connect_anyway">Всё равно подключиться</string>
+    <string name="setup_try">Попробовать %1$s</string>
+    <string name="setup_refused">Этот адрес использовать нельзя. Укажи адрес вида todo.example.com.</string>
+    <string name="setup_needs_https">Этому адресу нужно защищённое соединение (https).</string>
+    <string name="setup_insecure">Этот адрес находится в твоей локальной сети и не шифруется: другие устройства той же сети могут прочитать то, что ты отправляешь. Нажми ещё раз, чтобы подключиться несмотря на это.</string>
+    <string name="setup_no_network">Нет соединения. Для первого запуска нужен интернет; этот экран попробует снова, как только сеть появится.</string>
+    <string name="setup_not_opentodo">Этот адрес отвечает не как сервер OpenTodo. Проверь адрес.</string>
+    <string name="setup_untrusted">Этот телефон не доверяет сертификату сервера. Спроси того, кто обслуживает сервер, или установи его центр сертификации в настройках Android.</string>
+    <string name="retry">Попробовать снова</string>
+    <string name="change_server">Сменить сервер</string>
+    <string name="change_server_confirm">Это удалит с телефона данные текущего сервера: офлайн-копию, запланированные напоминания, данные виджета и вход по отпечатку пальца. Ещё не синхронизированные изменения будут потеряны.</string>
+    <string name="error_offline">Сервер недоступен, а OpenTodo на этом телефоне ещё ни разу не открывался.</string>
+    <string name="error_untrusted">Этот телефон не доверяет сертификату сервера.</string>
+    <string name="channel_reminders">Напоминания</string>
+    <string name="reminder_generic">Напоминание</string>
+    <string name="reminder_text">Напоминание о задаче</string>
+    <string name="action_snooze">Отложить на 10 мин</string>
+    <string name="action_dismiss">Отклонить</string>
+    <string name="action_done">Готово</string>
+    <string name="location_arrived">Ты на месте этого напоминания</string>
+    <string name="location_left">Ты больше не на месте этого напоминания</string>
+    <string name="test_title">Уведомления работают</string>
+    <string name="test_text">Напоминания будут появляться вот так.</string>
+    <string name="biometric_enable_title">Разблокировка по отпечатку пальца или лицу</string>
+    <string name="biometric_unlock_title">Разблокировать OpenTodo</string>
+    <string name="biometric_use_passphrase">Использовать парольную фразу</string>
+    <string name="widget_today">Сегодня</string>
+    <string name="widget_today_description">Твои задачи на сегодня</string>
+    <string name="widget_quick_add">Быстрое добавление</string>
+    <string name="widget_quick_add_label">Добавить задачу</string>
+    <string name="widget_quick_add_description">Открывает OpenTodo, чтобы добавить задачу</string>
+    <string name="widget_updated">Обновлено %1$s</string>
+    <string name="widget_open_app">Открой OpenTodo один раз, чтобы виджет заполнился.</string>
+    <string name="widget_locked">Заблокировано. Задач: %1$d, просрочено: %2$d</string>
+    <string name="widget_empty">На сегодня больше ничего не осталось.</string>
+    <string name="widget_untitled">Задача</string>
+    <string name="widget_more">+ ещё %1$d</string>
+    <string name="setup_old_webview">Android System WebView на этом телефоне устарел (версия %1$s). Обнови его в магазине приложений, чтобы OpenTodo работал в полную силу.</string>
+    <string name="site_bar_host">Вход на %1$s</string>
+    <string name="site_bar_close">Вернуться в OpenTodo</string>
+    <string name="setup_login_wall">Этот сервер находится за страницей входа. Пройди её здесь; приложение подключится, как только ты войдёшь.</string>
+    <string name="setup_web_page">Этот адрес отвечает веб-страницей, а не как сервер OpenTodo. Если твой сервер находится за страницей входа, пройди её здесь; иначе проверь адрес.</string>
+    <string name="setup_sign_in">Войти здесь</string>
+    <string name="error_sign_in">Твой сервер находится за страницей входа, и вход не продолжился в приложении. Войди здесь ещё раз.</string>
+    <string name="save_failed">Не удалось сохранить файл.</string>
 </resources>

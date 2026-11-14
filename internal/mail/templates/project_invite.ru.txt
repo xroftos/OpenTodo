@@ -1,10 +1,9 @@
-# TODO translate
-{{.Inviter}} invited you to a shared project
+{{.Inviter}} приглашает тебя в общий проект
 
-This is an invitation to a shared project in OpenTodo.
+Это приглашение в общий проект в OpenTodo.
 
-{{.Inviter}} invited {{.Email}} to join a project as {{.Role}} on the OpenTodo server at {{.Origin}}. To join, open this link:
+{{.Inviter}} приглашает {{.Email}} присоединиться к проекту как {{.Role}} на сервере OpenTodo {{.Origin}}. Чтобы присоединиться, открой эту ссылку:
 
 {{.Link}}
 
-The link expires in {{.Expiry}}. If you do not know {{.Inviter}}, you can ignore this message.
+Ссылка действует {{.Expiry}}. Если ты не знаешь {{.Inviter}}, можно проигнорировать это сообщение.

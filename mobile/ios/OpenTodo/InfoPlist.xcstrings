@@ -51,6 +51,12 @@
             "state": "translated",
             "value": "OpenTodo gebruikt Face ID om je versleutelde taken op deze iPhone te ontgrendelen."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenTodo защищает доступ к задачам с помощью Face ID."
+          }
         }
       }
     }

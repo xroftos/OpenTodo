@@ -1,15 +1,14 @@
-# TODO translate
 {{.Subject}}
 
 {{.Text}}
 
 --
-This message was sent by the routine "{{.Routine}}" of a project you are a member of on OpenTodo at {{.Origin}}.
+Это сообщение отправила рутина «{{.Routine}}» проекта, участником которого ты являешься, в OpenTodo на {{.Origin}}.
 
-See this run:
+Посмотреть этот запуск:
 
 {{.Link}}
 
-You get this message because the routine has an Email project members step and you are a member with the verified address {{.Email}}. To get no more emails from this routine, open:
+Ты получаешь это сообщение, потому что у рутины есть шаг «Отправить участникам проекта письмом», а ты участник с подтверждённым адресом {{.Email}}. Чтобы больше не получать письма от этой рутины, открой:
 
 {{.Stop}}
