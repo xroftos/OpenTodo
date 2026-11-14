@@ -1,0 +1,18 @@
+{
+  "_comment_0": "Пример конфигурации opencode для ИИ-агента семейного OpenTodo (см. docs/agents-ru/AGENTS.md).",
+  "_comment_1": "Замените http://localhost:4002/mcp на адрес MCP-эндпоинта вашего сервера (для набора deploy/family — http://<адрес-сервера>:4002/mcp).",
+  "_comment_2": "Замените ot_… на agent-токен (scope agent), созданный в Настройки → Интеграции → AI-ассистенты; токен показывается один раз.",
+  "_comment_3": "Поле model — пример: бесплатная модель вида провайдер/модель; подставьте любую модель, доступную вашему opencode (учтите, что модель видит текст задач семьи).",
+  "$schema": "https://opencode.ai/config.json",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "mcp": {
+    "opentodo": {
+      "type": "remote",
+      "url": "http://localhost:4002/mcp",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer ot_…"
+      }
+    }
+  }
+}
