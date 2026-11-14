@@ -356,5 +356,28 @@ export const CATALOGUE: readonly CatalogueTheme[] = [
         "#ffb86c"
       ]
     }
+  },
+  {
+    "id": "sunny-family",
+    "kind": "light",
+    "name": "Sunny Family",
+    "family": "sunny-family",
+    "author": "Family Pack contributors",
+    "licence": "MIT",
+    "copyright": "Copyright (c) 2026 Family Pack contributors",
+    "source": "https://github.com/OpenTodoApp/OpenTodo",
+    "adapted": true,
+    "swatches": {
+      "canvas": "#fff6e5",
+      "surface": "#fffbf0",
+      "text": "#3d2e17",
+      "accent": "#8f6300",
+      "hues": [
+        "#2e9e44",
+        "#3b67d6",
+        "#9a4fd0",
+        "#e36d15"
+      ]
+    }
   }
 ]

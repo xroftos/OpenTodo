@@ -44,7 +44,7 @@ describe('the built-in catalogue in Settings', () => {
   it('lists each palette on the side of its kind only, OpenTodo first and then by name', async () => {
     const r = await render(<AppearanceProvider><AppearanceSection /></AppearanceProvider>)
     await waitFor(loaded, 'the catalogue')
-    expect(cards('light')).toEqual(['opentodo-light', 'catppuccin-latte', 'gruvbox-light', 'one-light', 'rose-pine-dawn', 'solarized-light', 'tokyo-night-light'])
+    expect(cards('light')).toEqual(['opentodo-light', 'catppuccin-latte', 'gruvbox-light', 'one-light', 'rose-pine-dawn', 'solarized-light', 'sunny-family', 'tokyo-night-light'])
     expect(cards('dark')).toEqual(['opentodo-dark', 'catppuccin-mocha', 'dracula', 'gruvbox-dark', 'nord', 'one-dark', 'rose-pine', 'solarized-dark', 'tokyo-night'])
     expect(card('dark', 'nord').textContent).toContain('by Sven Greb')
     await r.unmount()

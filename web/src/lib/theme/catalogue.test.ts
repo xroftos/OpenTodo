@@ -140,7 +140,7 @@ describe('the built-in catalogue', () => {
     const light = CATALOGUE.filter((c) => c.kind === 'light').map((c) => c.id)
     expect(light).not.toContain('nord')
     expect(light).not.toContain('dracula')
-    expect(CATALOGUE.filter((c) => c.kind === 'light')).toHaveLength(6)
+    expect(CATALOGUE.filter((c) => c.kind === 'light')).toHaveLength(7)
     expect(CATALOGUE.filter((c) => c.kind === 'dark')).toHaveLength(8)
   })
 

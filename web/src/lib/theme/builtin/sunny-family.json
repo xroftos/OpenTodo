@@ -1,0 +1,53 @@
+{
+  "opentodoTheme": 1,
+  "id": "sunny-family",
+  "name": "Sunny Family",
+  "author": "Family Pack contributors",
+  "licence": "MIT",
+  "source": "https://github.com/OpenTodoApp/OpenTodo",
+  "kind": "light",
+  "seeds": {
+    "canvas": "#FFF6E5",
+    "surface": "#FFFBF0",
+    "text": "#3D2E17",
+    "accent": "oklch(0.5313 0.1107 78.31)",
+    "success": "oklch(0.5119 0.1541 146.54)",
+    "warning": "oklch(0.5358 0.1279 58.32)",
+    "danger": "oklch(0.5485 0.1925 30.06)",
+    "info": "oklch(0.5155 0.0887 191.35)"
+  },
+  "tokens": {
+    "muted": "oklch(0.5111 0.0575 77.67)",
+    "faint": "oklch(0.5272 0.059 86.5)",
+    "raised": "#FFF1D6",
+    "selected": "#F5E3B8",
+    "hue-red": "#D9402F",
+    "hue-orange": "oklch(0.6644 0.1699 49.63)",
+    "hue-yellow": "oklch(0.6538 0.1361 78.31)",
+    "hue-lime": "oklch(0.6388 0.1495 125.89)",
+    "hue-green": "#2E9E44",
+    "hue-teal": "#12938F",
+    "hue-cyan": "#0C93C4",
+    "hue-blue": "#3B67D6",
+    "hue-indigo": "#6C55D6",
+    "hue-violet": "#9A4FD0",
+    "hue-pink": "#E0619E",
+    "hue-slate": "#64748B"
+  },
+  "bar": "#FFF6E5",
+  "notes": {
+    "adapted": {
+      "accent": "#E3A008",
+      "success": "#2E9E44",
+      "warning": "#D97706",
+      "danger": "#D9402F",
+      "info": "#12938F",
+      "muted": "#8A7350",
+      "faint": "#A9976F",
+      "hue-orange": "#E8721E",
+      "hue-yellow": "#E3A008",
+      "hue-lime": "#7CA22B"
+    },
+    "text": "Sunny Family by Family Pack contributors, mapped onto OpenTodo's tokens by web/src/lib/theme/builtin/MAPPING.md. Some colours were adapted for contrast: their published values are under adapted."
+  }
+}

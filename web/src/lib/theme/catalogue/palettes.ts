@@ -48,6 +48,7 @@ export const PROJECTS = {
   oneDark: { author: 'GitHub Inc.', copyright: 'Copyright (c) 2016 GitHub Inc.', source: 'https://github.com/atom/one-dark-syntax', licenceFile: 'LICENSE.md', checked: CHECKED },
   nord: { author: 'Sven Greb', copyright: 'Copyright (c) 2016-present Sven Greb <development@svengreb.de> (https://www.svengreb.de)', source: 'https://github.com/nordtheme/nord', licenceFile: 'license', checked: CHECKED },
   dracula: { author: 'Dracula Theme', copyright: 'Copyright (c) 2023 Dracula Theme', source: 'https://github.com/dracula/dracula-theme', licenceFile: 'LICENSE', checked: CHECKED },
+  familyPack: { author: 'Family Pack contributors', copyright: 'Copyright (c) 2026 Family Pack contributors', source: 'https://github.com/OpenTodoApp/OpenTodo', licenceFile: 'LICENSE of this repository (branch family-pack)', checked: CHECKED },
 } satisfies Record<string, Project>
 
 // Solarized: base03..base3 and the eight accents of the project's README.
@@ -80,6 +81,11 @@ const NORD = ['#2e3440', '#3b4252', '#434c5e', '#4c566a', '#d8dee9', '#e5e9f0', 
 
 // Dracula: the colour palette of the specification.
 const DRAC = { background: '#282a36', currentLine: '#44475a', foreground: '#f8f8f2', comment: '#6272a4', cyan: '#8be9fd', green: '#50fa7b', orange: '#ffb86c', pink: '#ff79c6', purple: '#bd93f9', red: '#ff5555', yellow: '#f1fa8c' }
+
+// Sunny Family: the Family Pack's own palette (branch family-pack), drawn for children
+// of 7-10: bright, cheerful and high-contrast, a soft cream canvas, warm dark text, a
+// sunny warm yellow accent, a coral/orange secondary and teal info.
+const SUNNY = { canvas: '#FFF6E5', surface: '#FFFBF0', text: '#3D2E17', accent: '#E3A008', success: '#2E9E44', warning: '#D97706', danger: '#D9402F', info: '#12938F', muted: '#8A7350', faint: '#A9976F', raised: '#FFF1D6', selected: '#F5E3B8', red: '#D9402F', orange: '#E8721E', yellow: '#E3A008', lime: '#7CA22B', green: '#2E9E44', teal: '#12938F', cyan: '#0C93C4', blue: '#3B67D6', indigo: '#6C55D6', violet: '#9A4FD0', pink: '#E0619E', slate: '#64748B' }
 
 export const PALETTES: readonly Palette[] = [
   {
@@ -165,5 +171,11 @@ export const PALETTES: readonly Palette[] = [
     seeds: { canvas: DRAC.background, surface: DRAC.background, text: DRAC.foreground, accent: DRAC.purple, success: DRAC.green, warning: DRAC.orange, danger: DRAC.red, info: DRAC.cyan },
     tokens: { faint: DRAC.comment, selected: DRAC.currentLine },
     hues: { red: DRAC.red, orange: DRAC.orange, yellow: DRAC.yellow, green: DRAC.green, cyan: DRAC.cyan, violet: DRAC.purple, pink: DRAC.pink, slate: DRAC.comment },
+  },
+  {
+    id: 'sunny-family', name: 'Sunny Family', kind: 'light', family: 'sunny-family', project: PROJECTS.familyPack,
+    seeds: { canvas: SUNNY.canvas, surface: SUNNY.surface, text: SUNNY.text, accent: SUNNY.accent, success: SUNNY.success, warning: SUNNY.warning, danger: SUNNY.danger, info: SUNNY.info },
+    tokens: { muted: SUNNY.muted, faint: SUNNY.faint, raised: SUNNY.raised, selected: SUNNY.selected },
+    hues: { red: SUNNY.red, orange: SUNNY.orange, yellow: SUNNY.yellow, lime: SUNNY.lime, green: SUNNY.green, teal: SUNNY.teal, cyan: SUNNY.cyan, blue: SUNNY.blue, indigo: SUNNY.indigo, violet: SUNNY.violet, pink: SUNNY.pink, slate: SUNNY.slate },
   },
 ]
