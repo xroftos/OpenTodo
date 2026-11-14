@@ -109,7 +109,7 @@ describe('list semantics', () => {
 describe('row text for screen readers', () => {
   const task = (over: Partial<Task>): Task => ({
     id: 't', title: 'Task', description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 0,
-    created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, _clock: {}, ...over,
+    created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], _clock: {}, ...over,
   } as Task)
 
   it('the open button reads the title, its marks and its line; an undecryptable title is read as the warning', async () => {

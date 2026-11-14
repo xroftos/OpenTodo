@@ -83,7 +83,7 @@ describe('project header', () => {
 
   it('shows the project\'s progress beside its title, live, and none for an area (task-progress D4)', async () => {
     const tk = (id: string, extra: Partial<Task> = {}): Task => ({ id, title: id, description: '', project_id: 'home', parent_id: null, priority: 4, due: null, labels: [], position: 0,
-      created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, _clock: {}, ...extra } as Task)
+      created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], _clock: {}, ...extra } as Task)
     await db.tasks.bulkPut([tk('a', { completed_at: 1 }), tk('b'), tk('c'), tk('d', { parent_id: 'b', completed_at: 1 }), tk('gone', { deleted_at: 1, completed_at: 1 })])
     const r = await render(<ProjectHeader project={p('home', 'Home')} />)
     const progress = () => r.container.querySelector('[data-page-lead] [data-project-progress]')

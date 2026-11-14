@@ -6,6 +6,7 @@ import { blockedMap } from './dependencies'
 import { placedPart } from './dayParts'
 import { compareDueThenPriority } from './ordering'
 import type { Project, Task } from './types'
+import { assigneeIdsOf } from './types'
 import { inToday, inUpcoming, overdueInToday, upcomingDate } from './views'
 
 /**
@@ -46,10 +47,11 @@ export function sharedWithSomeoneElse(memberships: readonly { members: readonly 
   return memberships.some((m) => (m.members ?? []).some((member) => member.userId !== '' && member.userId !== me))
 }
 
-/** A task Today drops: a known shared project, assigned, and the assignee is not the viewer. Unassigned stays. */
-export function assignedToSomeoneElse(task: Pick<Task, 'project_id' | 'assignee_id'>, filter: TodayAssigneeFilter | null | undefined): boolean {
+/** A task Today drops: a known shared project, assigned, and none of the assignees is the viewer. Unassigned stays. */
+export function assignedToSomeoneElse(task: Pick<Task, 'project_id' | 'assignee_ids'>, filter: TodayAssigneeFilter | null | undefined): boolean {
   if (!filter?.me || !task.project_id || !filter.shared.has(task.project_id)) return false
-  return !!task.assignee_id && task.assignee_id !== filter.me
+  const who = assigneeIdsOf(task)
+  return who.length > 0 && !who.includes(filter.me)
 }
 
 /** Today: open tasks due today or earlier (or deadline / start reached), by due then priority. `hide` drops other people's shared tasks. */

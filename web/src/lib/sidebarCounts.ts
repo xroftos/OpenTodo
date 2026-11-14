@@ -5,7 +5,9 @@
 import { assignedToSomeoneElse, type TodayAssigneeFilter } from './dayLists'
 import { isInboxTask, isPlaced, type InboxParentOf } from './inbox'
 import type { TaskChange } from './taskDelta'
-import type { Task } from './types'
+import type { Membership, Task } from './types'
+import { isAssignedTo } from './types'
+import { isSoloScope } from './sharing'
 import { inToday, openCount } from './views'
 
 export interface SidebarCounts {
@@ -23,8 +25,14 @@ export interface CountLookups {
   hasChildren: (id: string) => boolean
 }
 
+/** Whether a task counts for «Мои задачи» (multi-assignee): the unified view's predicate minus completed (listGroups assignedToMeView); without the membership cache, only the tasks assigned to the viewer. */
+function countsAsAssigned(task: Task, userId: string, memberships?: Map<string, Membership>): boolean {
+  if (memberships) return isSoloScope(task.project_id, memberships, userId) || isAssignedTo(task, userId)
+  return isAssignedTo(task, userId)
+}
+
 /** The counts over the open tasks of `live` (every visible task: the Inbox walks parents that are done too). */
-export function sidebarCounts(live: readonly Task[], today: string, hide: TodayAssigneeFilter | null, userId: string, look: CountLookups): SidebarCounts {
+export function sidebarCounts(live: readonly Task[], today: string, hide: TodayAssigneeFilter | null, userId: string, look: CountLookups, memberships?: Map<string, Membership>): SidebarCounts {
   const inbox = new Set<string>()
   let todayN = 0
   let assigned = 0
@@ -34,7 +42,7 @@ export function sidebarCounts(live: readonly Task[], today: string, hide: TodayA
     if (isInboxTask(task, look.parentOf)) inbox.add(task.id)
     if (inToday(task, today) && !assignedToSomeoneElse(task, hide)) todayN++
     if (!openCount(task, today)) continue
-    if (task.assignee_id === userId) assigned++
+    if (countsAsAssigned(task, userId, memberships)) assigned++
     if (task.project_id) own.set(task.project_id, (own.get(task.project_id) ?? 0) + 1)
   }
   return { inbox, today: todayN, assigned, own }
@@ -45,7 +53,7 @@ export function sidebarCounts(live: readonly Task[], today: string, hide: TodayA
  * Null (worked out in full) when a task with subtasks, open or done, changed its placement
  * or parent, or came or went: its subtasks may enter or leave the Inbox.
  */
-export function patchSidebarCounts(prev: SidebarCounts, changes: readonly TaskChange[], _live: readonly Task[], today: string, hide: TodayAssigneeFilter | null, userId: string, look: CountLookups): SidebarCounts | null {
+export function patchSidebarCounts(prev: SidebarCounts, changes: readonly TaskChange[], _live: readonly Task[], today: string, hide: TodayAssigneeFilter | null, userId: string, look: CountLookups, memberships?: Map<string, Membership>): SidebarCounts | null {
   const inbox = new Set(prev.inbox)
   let todayN = prev.today
   let assigned = prev.assigned
@@ -54,7 +62,7 @@ export function patchSidebarCounts(prev: SidebarCounts, changes: readonly TaskCh
     if (!task || task.completed_at) return
     if (inToday(task, today) && !assignedToSomeoneElse(task, hide)) todayN += n
     if (!openCount(task, today)) return
-    if (task.assignee_id === userId) assigned += n
+    if (countsAsAssigned(task, userId, memberships)) assigned += n
     if (task.project_id) {
       const v = (own.get(task.project_id) ?? 0) + n
       if (v > 0) own.set(task.project_id, v)

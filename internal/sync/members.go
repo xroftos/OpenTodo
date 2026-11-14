@@ -686,10 +686,11 @@ func (s *Service) RemoveMember(ctx context.Context, actorID, projectID, targetID
 }
 
 // unassignDeparted writes, inside the membership transaction, an
-// `assignee_id = null` op with device "server" for every task of the project
-// currently assigned to the departed user (task-assignment design D3). A
-// rotating recurring task they held is handed to the next person of its
-// rotation instead, and the departed user is removed from every rotation in
+// `assignee_ids = []` op (or a one-element hand-on, see departureRepairs) with
+// device "server" for every task of the project the departed user is assigned
+// to (task-assignment design D3). A rotating recurring task they held is
+// handed to the next person of its rotation instead, and the departed user is
+// removed from every rotation in
 // the project (chore-rotation D4). The ops are ordinary log entries authored
 // by the actor, so every member's devices receive them on their next pull and
 // converge without client logic. Each op is stamped with server time, or just

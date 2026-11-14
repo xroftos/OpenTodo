@@ -193,11 +193,11 @@ func TestAgentRestAllowList(t *testing.T) {
 		{"PATCH", "/api/v1/projects/" + userProject, map[string]any{"workspace_id": nil}},
 		{"PATCH", "/api/v1/projects/" + userProject, map[string]any{"deleted_at": 1}},
 		{"PATCH", "/api/v1/projects/" + userProject, map[string]any{"flow_mode": "sequential"}},
-		{"PATCH", "/api/v1/tasks/" + userTask, map[string]any{"assignee_id": nil}},
+		{"PATCH", "/api/v1/tasks/" + userTask, map[string]any{"assignee_ids": []string{}}},
 		{"PATCH", "/api/v1/tasks/" + userTask, map[string]any{"position": 3}},
 		{"PATCH", "/api/v1/tasks/" + userTask, map[string]any{"deleted_at": nil}},
 		{"POST", "/api/v1/tasks", map[string]any{"title": "x", "created_at": 1}},
-		{"POST", "/api/v1/tasks", map[string]any{"title": "x", "assignee_id": "someone"}},
+		{"POST", "/api/v1/tasks", map[string]any{"title": "x", "assignee_ids": []string{"someone"}}},
 		{"POST", "/api/v1/projects", map[string]any{"name": "x", "archived": true}},
 		{"POST", "/api/v1/labels", map[string]any{"name": "x", "position": 1}},
 	} {

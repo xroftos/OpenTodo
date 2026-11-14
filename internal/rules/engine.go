@@ -369,7 +369,7 @@ func (w *world) open(id string) bool {
 func (w *world) matchTask(t opsync.Entity) ruleval.Task {
 	mt := ruleval.Task{ID: str(t, "id"), ProjectID: str(t, "project_id"), SectionID: str(t, "section_id"), Labels: listOf(t["labels"]),
 		Deadline: str(t, "deadline"), Start: str(t, "start"), Evening: boolOf(t, "evening"), BlockedBy: listOf(t["blocked_by"]),
-		AssigneeID: str(t, "assignee_id"), OriginKind: ruleval.OriginKindOf(t["origin"]), Habit: boolOf(t, "habit")}
+		Assignees: listOf(t["assignee_ids"]), OriginKind: ruleval.OriginKindOf(t["origin"]), Habit: boolOf(t, "habit")}
 	_ = json.Unmarshal(t["priority"], &mt.Priority)
 	if d := dueOf(t["due"]); d != nil {
 		mt.DueDate = d.Date

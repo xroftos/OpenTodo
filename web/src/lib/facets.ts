@@ -58,7 +58,8 @@ export interface FacetContext {
   reminders: number
   blockerTitles: string[]
   blocks: number
-  assigneeName?: string | null
+  /** The task's assignees by display name (multi-assignee); empty when nobody is assigned. */
+  assignees?: readonly string[]
   /** Optional properties the Add menu revealed without a value yet. */
   revealed?: ReadonlySet<string>
   today?: string
@@ -146,7 +147,7 @@ export function facetsOf(task: Task, ctx: FacetContext): Facets {
 
   // Who: assignee, blocked by, blocks; the line is shown only when it has a part.
   const who: FacetPart[] = []
-  if (ctx.assigneeName) who.push({ id: 'assignee', text: ctx.assigneeName })
+  if (ctx.assignees?.length) who.push({ id: 'assignee', text: ctx.assignees.join(', ') })
   else if (revealed.has('assignee')) who.push({ id: 'assignee', text: t('Unassigned'), empty: true })
   if (ctx.blockerTitles.length) {
     const first = ctx.blockerTitles[0] || t('Untitled')

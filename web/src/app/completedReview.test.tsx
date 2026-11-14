@@ -21,7 +21,7 @@ const at = (iso: string, hour = 12) => {
 function task(id: string, completed_at: number | null, extra: Partial<Task> = {}): Task {
   return {
     id, title: id, description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 0, created_at: 0,
-    completed_at, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, section_id: null, ical_extra: null, _clock: {}, ...extra,
+    completed_at, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], section_id: null, ical_extra: null, _clock: {}, ...extra,
   }
 }
 

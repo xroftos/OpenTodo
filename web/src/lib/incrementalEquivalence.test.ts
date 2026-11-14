@@ -76,7 +76,7 @@ function newTask(r: R, ids: readonly string[]): Task {
     start: r.chance(0.15) ? r.pick(['someday', '2026-11-20', '2026-11-01']) : null, labels: LABELS.filter(() => r.chance(0.3)),
     completed_at: r.chance(0.25) ? Date.parse(`${r.pick(DAYS)}T10:00:00Z`) + r.int(3) * 1000 : null, deleted_at: null,
     created_at: serial, updated_at: serial, estimate_minutes: null, recurrence: null, series_id: null,
-    assignee_id: r.pick(USERS), blocked_by: ids.length && r.chance(0.1) ? [r.pick(ids)] : [],
+    assignee_ids: [r.pick(USERS)], blocked_by: ids.length && r.chance(0.1) ? [r.pick(ids)] : [],
   } as unknown as Task
 }
 
@@ -84,7 +84,7 @@ function newTask(r: R, ids: readonly string[]): Task {
 function habit(id: string, records: number): Task[] {
   const series = { id, title: 'Stretch', description: '', project_id: null, section_id: null, parent_id: null, priority: 4, position: 1, due: { date: TODAY },
     deadline: null, start: null, labels: [], completed_at: null, deleted_at: null, created_at: 1, updated_at: 1, estimate_minutes: null,
-    recurrence: 'every day', series_id: null, habit: true, assignee_id: null, blocked_by: [] } as unknown as Task
+    recurrence: 'every day', series_id: null, habit: true, assignee_ids: [], blocked_by: [] } as unknown as Task
   const recs = Array.from({ length: records }, (_, i) => ({ ...series, id: `${id}-r${i}`, recurrence: null, habit: undefined, series_id: id,
     due: { date: `2026-11-0${i + 1}` }, completed_at: Date.parse(`2026-11-0${i + 1}T09:00:00Z`) }) as unknown as Task)
   return [series, ...recs]
@@ -110,7 +110,7 @@ function write(r: R, rows: readonly Task[]): Task[] {
     case 9: return edit({ deleted_at: 1 })
     case 10: return edit({ blocked_by: r.chance(0.4) ? [] : [r.pick(ids)] })
     case 11: return edit({ labels: LABELS.filter(() => r.chance(0.4)) })
-    case 12: return edit({ assignee_id: r.pick(USERS), priority: r.pick([1, 2, 3, 4]) })
+    case 12: { const a = r.pick(USERS); return edit({ assignee_ids: a ? [a] : [], priority: r.pick([1, 2, 3, 4]) }) }
     default: return edit({ position: r.int(50) })
   }
 }

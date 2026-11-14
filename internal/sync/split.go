@@ -32,7 +32,7 @@ type SplitPlan struct {
 
 // carriedFields are the fields an edit carries to untouched open records
 // (series-exceptions D6; web CARRIED_FIELDS).
-var carriedFields = []string{"title", "priority", "labels", "project_id", "section_id", "estimate_minutes", "assignee_id", "location"}
+var carriedFields = []string{"title", "priority", "labels", "project_id", "section_id", "estimate_minutes", "assignee_ids", "location"}
 
 // PlanSplit plans splitting the series id (stored row row) from date with the
 // task fields of patch applied from there on. ErrNotRecurring, ErrNotAnOccurrence

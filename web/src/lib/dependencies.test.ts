@@ -16,7 +16,7 @@ beforeEach(() => {
 
 const task = (id: string, over: Partial<Task> = {}): Task => ({
   id, title: id, description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 0, created_at: 0,
-  completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, blocked_by: [], _clock: {}, ...over,
+  completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], blocked_by: [], _clock: {}, ...over,
 } as Task)
 const map = (...ts: Task[]) => new Map(ts.map((t) => [t.id, t]))
 

@@ -113,7 +113,7 @@ func TestPublicListRead(t *testing.T) {
 	for _, x := range out["tasks"].([]any) {
 		task := x.(map[string]any)
 		titles = append(titles, task["title"].(string))
-		for _, hidden := range []string{"description", "notes_doc", "labels", "assignee_id"} {
+		for _, hidden := range []string{"description", "notes_doc", "labels", "assignee_ids"} {
 			if _, ok := task[hidden]; ok {
 				t.Fatalf("task carries %s: %v", hidden, task)
 			}

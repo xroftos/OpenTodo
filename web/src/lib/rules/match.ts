@@ -18,7 +18,8 @@ export interface MatchTask {
   start: string | null
   evening: boolean
   blocked_by: readonly string[]
-  assignee_id: string | null
+  /** The stored assignees (multi-assignee); [] when nobody is assigned. */
+  assignee_ids: readonly string[]
   /** The stored origin: null, an object with a kind, or a ciphertext string. */
   origin: unknown
   habit: boolean
@@ -147,8 +148,8 @@ export function matchesCondition(c: RuleCondition | null | undefined, t: MatchTa
   if (c.evening !== undefined && c.evening !== t.evening) return false
   if (c.blocked !== undefined && c.blocked !== t.blocked_by.some((id) => ctx.open(id))) return false
   if (c.assignee !== undefined) {
-    const a = t.assignee_id
-    const ok = c.assignee === 'me' ? !!a && a === ctx.userId : c.assignee === 'none' ? !a : !!a
+    const who = t.assignee_ids
+    const ok = c.assignee === 'me' ? who.includes(ctx.userId) : c.assignee === 'none' ? who.length === 0 : who.length > 0
     if (!ok) return false
   }
   if (c.origin !== undefined) {

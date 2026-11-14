@@ -196,7 +196,7 @@
       "title"
     ],
     "task": [
-      "assignee_id",
+      "assignee_ids",
       "blocked_by",
       "completed_at",
       "completed_by",

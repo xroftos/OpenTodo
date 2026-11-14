@@ -483,7 +483,7 @@ func TestMcpIsReadOnlyAndIsolated(t *testing.T) {
 	e.mustStatus(resp, 201, out)
 	sharedTask := out["id"].(string)
 	addByEmail(e, m, "/api/v1/projects/"+shared+"/members", "member@example.com", "editor")
-	resp, out = e.do("PATCH", "/api/v1/tasks/"+sharedTask, map[string]any{"assignee_id": member})
+	resp, out = e.do("PATCH", "/api/v1/tasks/"+sharedTask, map[string]any{"assignee_ids": []string{member}})
 	e.mustStatus(resp, 200, out)
 	// Member: a personal task; a deleted one.
 	resp, out = m.do("POST", "/api/v1/tasks", map[string]any{"title": "Member own errand"})

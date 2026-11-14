@@ -63,7 +63,7 @@ export function toVersions(sets: readonly ChangeSet[], opts: { windowMs?: number
   return out.reverse()
 }
 
-const VERB_ORDER = ['title', 'due', 'project_id', 'priority', 'assignee_id', 'completed_at', 'deleted_at']
+const VERB_ORDER = ['title', 'due', 'project_id', 'priority', 'assignee_ids', 'completed_at', 'deleted_at']
 
 function verbOf(c: VersionChange): string {
   switch (c.field) {
@@ -71,7 +71,8 @@ function verbOf(c: VersionChange): string {
     case 'due': return t('rescheduled', { context: 'version' })
     case 'project_id': return t('moved', { context: 'version' })
     case 'priority': return t('reprioritised', { context: 'version' })
-    case 'assignee_id': return c.to == null ? t('unassigned', { context: 'version' }) : t('reassigned', { context: 'version' })
+    // multi-assignee: an empty list reads as "unassigned", any list as "reassigned".
+    case 'assignee_ids': return Array.isArray(c.to) && c.to.length ? t('reassigned', { context: 'version' }) : t('unassigned', { context: 'version' })
     case 'completed_at': return c.to == null ? t('reopened', { context: 'version' }) : t('completed', { context: 'version' })
     case 'deleted_at': return c.to == null ? t('restored', { context: 'version' }) : t('deleted', { context: 'version' })
     case 'description': case 'notes_doc': return t('edited the notes')

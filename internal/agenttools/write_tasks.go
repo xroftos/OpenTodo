@@ -41,7 +41,7 @@ func (r *Registry) planCreateTasks(ctx context.Context, c Caller, a args, overla
 		p := fmt.Sprintf("items[%d].", i)
 		if err := it.only(p, "title", "description", "project_id", "section_id", "parent_id", "priority", "due", "labels", "estimate_minutes", "recurrence", "fields", "origin_url", "origin", "id",
 			"deadline", "start", "evening", "span", "day_part", "energy", "flow_mode", "sector", "blocked_by", "location", "workspace_id", "new",
-			"habit", "habit_tiny", "habit_anchor", "habit_target", "habit_period", "habit_amount", "habit_unit", "habit_step"); err != nil {
+			"habit", "habit_tiny", "habit_anchor", "habit_target", "habit_period", "habit_amount", "habit_unit", "habit_step", "assignees"); err != nil {
 			return Plan{}, err
 		}
 		title, _, err := it.contentText(c, "title", true, 500)
@@ -113,6 +113,14 @@ func (r *Registry) planCreateTasks(ctx context.Context, c Caller, a args, overla
 		}
 		if err := snap.copyPlainFields(it, pid, patch); err != nil {
 			return Plan{}, argErr(p + err.Error())
+		}
+		// The assignees (task-assignment D2), checked against the task's
+		// project: the project the item names, or the parent's when the
+		// subtask inherits it.
+		if v, has := it["assignees"]; has {
+			if err := snap.assigneePatch(p, v, pid, c.UserID, patch); err != nil {
+				return Plan{}, err
+			}
 		}
 		if it.present("labels") {
 			lids, err := snap.labelIDsFor(p, it["labels"], snap.newTaskWorkspace(pid, patch))
@@ -189,7 +197,7 @@ func (r *Registry) planUpdateTasks(ctx context.Context, c Caller, a args, overla
 		p := fmt.Sprintf("updates[%d].", i)
 		if err := it.only(p, "id", "title", "description", "priority", "labels", "estimate_minutes", "recurrence", "fields", "origin_url", "origin",
 			"deadline", "start", "evening", "span", "day_part", "energy", "flow_mode", "sector", "blocked_by", "location", "rotation",
-			"habit", "habit_tiny", "habit_anchor", "habit_target", "habit_period", "habit_amount", "habit_unit", "habit_step"); err != nil {
+			"habit", "habit_tiny", "habit_anchor", "habit_target", "habit_period", "habit_amount", "habit_unit", "habit_step", "assignees"); err != nil {
 			return Plan{}, err
 		}
 		id, err := it.str("id")
@@ -243,7 +251,8 @@ func (r *Registry) planUpdateTasks(ctx context.Context, c Caller, a args, overla
 		rotation, hasRotation := it["rotation"]
 		hasHabit := it.present("habit") || it.present("habit_tiny") || it.present("habit_anchor") || it.present("habit_target") || it.present("habit_period") ||
 			it.present("habit_amount") || it.present("habit_unit") || it.present("habit_step")
-		if len(patch) == 0 && !it.present("fields") && !hasRotation && !hasHabit {
+		_, hasAssignees := it["assignees"]
+		if len(patch) == 0 && !it.present("fields") && !hasRotation && !hasHabit && !hasAssignees {
 			return Plan{}, argErr(p + "nothing to change: give at least one field besides id")
 		}
 		if err := checkPatch(p, "task", id, patch); err != nil {
@@ -262,6 +271,12 @@ func (r *Registry) planUpdateTasks(ctx context.Context, c Caller, a args, overla
 		// The people who take turns (chore-rotation D6), checked against the task.
 		if hasRotation {
 			if err := snap.rotationPatch(p, rotation, t, patch); err != nil {
+				return Plan{}, err
+			}
+		}
+		// The assignees (task-assignment D2), checked against the task's project.
+		if hasAssignees {
+			if err := snap.assigneePatch(p, it["assignees"], rawStr(t, "project_id"), c.UserID, patch); err != nil {
 				return Plan{}, err
 			}
 		}

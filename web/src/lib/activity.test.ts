@@ -40,7 +40,7 @@ describe('activity rule', () => {
       ({ id: 'e', kind, actor: 'a', entity: 'task', entityId: 't', ts: 1, opIds: ['e'], changes })
     expect(describeEvent(ev('completed'), name, project)).toBe('completed')
     expect(describeEvent(ev('rescheduled', [{ field: 'due', from: null, to: { date: '2026-10-12' } }]), name, project)).toBe('moved the due date to 2026-10-12')
-    expect(describeEvent(ev('assigned', [{ field: 'assignee_id', from: null, to: 'bob' }]), name, project)).toBe('assigned to Bob')
+    expect(describeEvent(ev('assigned', [{ field: 'assignee_ids', from: [], to: ['bob'] }]), name, project)).toBe('assigned to Bob')
     expect(describeEvent(ev('moved', [{ field: 'project_id', from: null, to: 'p' }]), name, project)).toBe('moved to Home')
     expect(describeEvent(ev('commented'), name, project)).toBe('commented')
     expect(describeEvent(ev('edited', [{ field: 'title', from: 'a', to: 'b' }, { field: 'position', from: 1, to: 1 }]), name, project)).toBe('changed the title')

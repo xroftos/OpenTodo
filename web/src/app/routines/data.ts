@@ -11,7 +11,7 @@ import { Partition, type WorkspaceState } from '../../lib/workspaces'
 import { matchesCondition, type MatchTask } from '../../lib/rules/match'
 import type { PreviewData } from '../../lib/rules/preview'
 import { inFindScope, projectScope } from '../../lib/rules/stepData'
-import type { Label, Note, Project, RoutineStep, RuleCondition, Section, Task, View, Webhook } from '../../lib/types'
+import {Label, Note, Project, RoutineStep, RuleCondition, Section, Task, View, Webhook, assigneeIdsOf} from '../../lib/types'
 import { useNoteRows } from '../../lib/noteRows'
 import { matchNote, parseQuery } from '../../lib/noteSearch'
 import { addDays } from '../../lib/rules/match'
@@ -21,7 +21,7 @@ export function matchTaskOf(task: Task): MatchTask {
   return {
     id: task.id, project_id: task.project_id, section_id: task.section_id ?? null, labels: task.labels, priority: task.priority,
     dueDate: task.due?.date ?? null, deadline: task.deadline ?? null, start: task.start ?? null, evening: !!task.evening,
-    blocked_by: task.blocked_by ?? [], assignee_id: task.assignee_id ?? null, origin: task.origin ?? null, habit: !!task.habit,
+    blocked_by: task.blocked_by ?? [], assignee_ids: [...assigneeIdsOf(task)], origin: task.origin ?? null, habit: !!task.habit,
     estimate_minutes: task.estimate_minutes ?? null,
   }
 }
@@ -157,7 +157,7 @@ export function useNotesMatchCount(step: RoutineStep): number {
     return notes.filter((n) => {
       if (n.deleted_at) return false
       const mt = { id: n.id, project_id: n.project_id ?? null, section_id: null, labels: n.labels ?? [], priority: 4, dueDate: null, deadline: null, start: null,
-        evening: false, blocked_by: [], assignee_id: null, origin: null, habit: false, estimate_minutes: null } satisfies MatchTask
+        evening: false, blocked_by: [], assignee_ids: [], origin: null, habit: false, estimate_minutes: null } satisfies MatchTask
       if (!matchesCondition(cond, mt, ctx)) return false
       if (typeof within === 'number') { const d = lastChangedDay(n); if (!d || d <= addDays(today, -within)) return false }
       return !words.trim() || matchNote({ title: n.title ?? '', text: n.description ?? '' }, terms).matched

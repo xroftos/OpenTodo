@@ -130,7 +130,7 @@ describe('empty views', () => {
       [{ view: 'upcoming' }, 'Nothing scheduled yet.', null],
       [{ view: 'anytime' }, 'Nothing waiting for a free moment.', null],
       [{ view: 'someday' }, 'Nothing parked for later.', null],
-      [{ view: 'assigned' }, 'Nothing is assigned to you.', 'Open Inbox'],
+      [{ view: 'assigned' }, 'Nothing open of your own here, and nothing assigned to you.', 'Open Inbox'],
       [{ view: 'project', id: pid }, 'This project has no open tasks.', null],
     ] as const
     for (const [route, title, action] of cases) {

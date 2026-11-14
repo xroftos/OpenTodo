@@ -41,7 +41,7 @@ describe('shared vectors (internal/digest/testdata/next_action_fixture.json)', (
 
 describe('method-views scenarios', () => {
   const base = (tasks: Partial<Task>[]): MethodInput => ({
-    tasks: tasks.map((t, i) => ({ id: `t${i}`, title: `t${i}`, labels: [], project_id: 'p', parent_id: null, position: i, created_at: 0, completed_at: null, start: null, blocked_by: [], assignee_id: null, section_id: null, deleted_at: null, ...t }) as Task),
+    tasks: tasks.map((t, i) => ({ id: `t${i}`, title: `t${i}`, labels: [], project_id: 'p', parent_id: null, position: i, created_at: 0, completed_at: null, start: null, blocked_by: [], assignee_ids: [], section_id: null, deleted_at: null, ...t }) as Task),
     projects: [{ id: 'p', name: 'Garage', position: 1, archived: false, deleted_at: null } as unknown as Project],
     sections: [], memberships: new Map(), me: 'me', today: '2026-10-18',
   })
@@ -54,7 +54,7 @@ describe('method-views scenarios', () => {
   })
 
   it('Assigned to someone else: no next action, but waiting', () => {
-    const input = base([{ id: 'tap', assignee_id: 'ana' }])
+    const input = base([{ id: 'tap', assignee_ids: ['ana'] }])
     expect(new MethodRules(input).nextActionOf('p')).toBeNull()
     expect(waitingTasks(input).map((t) => t.id)).toEqual(['tap'])
     expect(withoutNextAction(input)).toEqual([])
@@ -70,7 +70,7 @@ describe('method-views scenarios', () => {
       const input = base(tasks)
       return { ...input, projects: [{ ...input.projects[0], flow_mode: flow }] }
     }
-    const tasks: Partial<Task>[] = [{ id: 'van' }, { id: 'pack', assignee_id: 'ana' }, { id: 'keys', blocked_by: ['van'] }]
+    const tasks: Partial<Task>[] = [{ id: 'van' }, { id: 'pack', assignee_ids: ['ana'] }, { id: 'keys', blocked_by: ['van'] }]
     expect(nextActions(seq(tasks)).map((n) => n.task.id)).toEqual(['van'])
     expect(waitingTasks(seq(tasks))).toEqual([])
     tasks[0] = { id: 'van', completed_at: 5 }

@@ -9,7 +9,7 @@ const at = (daysAgo: number, hour = 10) => new Date(2026, 9, 19 - daysAgo, hour)
 
 let n = 0
 function task(p: Partial<Task> & { created_at: number }): Task {
-  return { id: `t${++n}`, title: 't', project_id: null, parent_id: null, completed_at: null, deleted_at: null, due: null, series_id: null, assignee_id: null, labels: [], priority: 4, position: n, ...p } as unknown as Task
+  return { id: `t${++n}`, title: 't', project_id: null, parent_id: null, completed_at: null, deleted_at: null, due: null, series_id: null, assignee_ids: [], labels: [], priority: 4, position: n, ...p } as unknown as Task
 }
 
 beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date(2026, 9, 19, 12)) })

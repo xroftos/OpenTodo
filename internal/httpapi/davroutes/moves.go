@@ -63,10 +63,30 @@ func (v *davView) subtreeMove(id, cal string, ts int64, op opFunc) []opsync.Op {
 	return ops
 }
 
+// assigneeOfSelf filters an assignee_ids value down to self (task-assignment
+// D2): the filtered array, and whether anything remains — a list without the
+// user is dropped, so the copy is simply unassigned.
+func assigneeOfSelf(val json.RawMessage, self string) (json.RawMessage, bool) {
+	var list []string
+	if json.Unmarshal(val, &list) != nil {
+		return nil, false
+	}
+	kept := make([]string, 0, len(list))
+	for _, id := range list {
+		if id == self {
+			kept = append(kept, id)
+		}
+	}
+	if len(kept) == 0 {
+		return nil, false
+	}
+	return mustJSON(kept), true
+}
+
 // subtreeCopy is the ops that copy the subtasks of a task moving into calendar
 // cal of another sharing scope under the task's copy newRoot, and tombstone
 // the originals, as the task itself is (copyMove). It returns each original's
-// copy. Assignees other than the user are cleared, as when a calendar is
+// copy. Assignees other than the user are dropped, as when a calendar is
 // deleted, since the destination may not have them as members.
 func (v *davView) subtreeCopy(root, newRoot, cal, self string, ts, now int64, op opFunc) (map[string]string, []opsync.Op) {
 	subtree := v.descendants(root)
@@ -88,9 +108,11 @@ func (v *davView) subtreeCopy(root, newRoot, cal, self string, ts, now int64, op
 				val = json.RawMessage("null")
 			case "parent_id":
 				val = mustJSON(copies[idOf(val)])
-			case "assignee_id":
-				if idOf(val) != self {
-					val = json.RawMessage("null")
+			case "assignee_ids":
+				if kept, ok := assigneeOfSelf(val, self); ok {
+					val = kept
+				} else {
+					continue
 				}
 			case "workspace_id":
 				if isInboxID(cal) {

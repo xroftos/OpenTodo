@@ -142,7 +142,7 @@ export function copyReminders(seriesId: string, recordId: string, due: Due, remi
 // ---- carry (D6) ----
 
 /** Fields an All-occurrences edit carries to untouched open records (D6). */
-export const CARRIED_FIELDS = ['title', 'priority', 'labels', 'project_id', 'section_id', 'estimate_minutes', 'assignee_id', 'location'] as const
+export const CARRIED_FIELDS = ['title', 'priority', 'labels', 'project_id', 'section_id', 'estimate_minutes', 'assignee_ids', 'location'] as const
 
 const same = (a: unknown, b: unknown): boolean => JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
 

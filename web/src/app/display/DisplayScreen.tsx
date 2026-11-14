@@ -18,7 +18,7 @@ import { breadcrumbOf, buildTaskTree } from '../../lib/subtasks'
 import { useSyncStatus } from '../../lib/sync'
 import { NO_TASKS, useLiveTasks } from '../../lib/liveTasks'
 import { flattenTree, type TreeNode } from '../../lib/tree'
-import type { Task } from '../../lib/types'
+import { assigneeIdsOf, type Task } from '../../lib/types'
 import { isDashboard, runView, setStartView } from '../../lib/views'
 import { splitLater } from '../../lib/listGroups'
 import { useOnline } from '../../lib/online'
@@ -114,7 +114,7 @@ export function DisplayScreen({ route }: { route: DisplayRoute }) {
     }
     const toRow = (task: Task, group: string, o: { day?: string; depth?: number } = {}): DisplayRowData => {
       const shared = !!task.project_id && memberMap.has(task.project_id)
-      const assignee = shared && task.assignee_id ? memberName(task.assignee_id, memberMap) : null
+      const assignee = shared ? assigneeIdsOf(task).map((id) => memberName(id, memberMap) ?? t('Former member')).join(', ') || null : null
       const parent = !o.depth && task.parent_id ? breadcrumbOf(task, taskMap) : null
       const due = dueLabel(task, o.day)
       return {

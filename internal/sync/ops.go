@@ -273,9 +273,9 @@ var Schema = map[string]map[string]Field{
 		// rule, with a series in another sharing scope, and as a change once set.
 		// Not content; additive (an older client sees an ordinary series).
 		"split_from": {Kind: kSplit, Default: `null`},
-		// Account id of the assignee or null (OpenSpec change task-assignment);
-		// additive. Apply checks it against the task scope's membership at receipt.
-		"assignee_id": {Kind: kNullableString, Default: `null`},
+		// Account ids of the assignees, in no meaningful order, or empty for
+		// none (task-assignment). Apply checks each against task membership.
+		"assignee_ids": {Kind: kIDList, Default: `[]`},
 		// Section of the task's project or null (OpenSpec change board-view);
 		// additive. A reference to a deleted, foreign or unknown section is a
 		// display rule on clients ("No section"), never rejected on the sync path.

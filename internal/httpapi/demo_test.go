@@ -357,7 +357,7 @@ func TestSandboxIsolation(t *testing.T) {
 	if m, _ := out["mentions"].([]any); len(m) != 0 {
 		t.Fatalf("mention of another sandbox kept: %v", out["mentions"])
 	}
-	resp, out = a.do("PATCH", "/api/v1/tasks/"+sharedTask, map[string]any{"assignee_id": bID})
+	resp, out = a.do("PATCH", "/api/v1/tasks/"+sharedTask, map[string]any{"assignee_ids": []string{bID}})
 	if resp.StatusCode != http.StatusBadRequest || errCode(out) != "not_a_member" {
 		t.Fatalf("assign to another sandbox: %d %v", resp.StatusCode, out)
 	}
@@ -365,9 +365,9 @@ func TestSandboxIsolation(t *testing.T) {
 	if resp.StatusCode != http.StatusForbidden || errCode(out) != "demo_restricted" {
 		t.Fatalf("add member: %d %v", resp.StatusCode, out)
 	}
-	// Sync can neither: an op that assigns to B is refused.
+	// Sync can neither: an op that assigns to B is refused per op.
 	resp, out = a.do("POST", "/api/v1/sync", map[string]any{"device": "a1", "cursor": 0, "ops": []any{map[string]any{
-		"id": "op-assign", "entity": "task", "entityId": sharedTask, "field": "assignee_id", "value": bID, "ts": time.Now().UnixMilli(), "device": "a1"}}})
+		"id": "op-assign", "entity": "task", "entityId": sharedTask, "field": "assignee_ids", "value": []any{bID}, "ts": time.Now().UnixMilli(), "device": "a1"}}})
 	a.mustStatus(resp, http.StatusOK, out)
 	if rej, _ := out["rejected"].([]any); len(rej) != 1 {
 		t.Fatalf("assignment via sync not refused: %v", out["rejected"])

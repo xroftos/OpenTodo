@@ -2,6 +2,7 @@ package filter
 
 import (
 	"encoding/json"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -751,7 +752,7 @@ func (k *compiler) assignedTo(name string) Pred {
 		if me == "" {
 			return never
 		}
-		return func(t Row) bool { return str(t, "assignee_id") == me }
+		return func(t Row) bool { return slices.Contains(listOf(t["assignee_ids"]), me) }
 	}
 	set := map[string]bool{}
 	for _, m := range k.c.Members {
@@ -763,7 +764,14 @@ func (k *compiler) assignedTo(name string) Pred {
 		k.warn(`No member named "` + name + `"`)
 		return never
 	}
-	return func(t Row) bool { return set[str(t, "assignee_id")] }
+	return func(t Row) bool {
+		for _, id := range listOf(t["assignee_ids"]) {
+			if set[id] {
+				return true
+			}
+		}
+		return false
+	}
 }
 
 func (k *compiler) keyword(w string) Pred {
@@ -820,9 +828,9 @@ func (k *compiler) keyword(w string) Pred {
 	case "no energy":
 		return func(t Row) bool { return energyOf(t) == "" }
 	case "assigned":
-		return func(t Row) bool { return str(t, "assignee_id") != "" }
+		return func(t Row) bool { return len(listOf(t["assignee_ids"])) > 0 }
 	case "unassigned":
-		return func(t Row) bool { return str(t, "assignee_id") == "" }
+		return func(t Row) bool { return len(listOf(t["assignee_ids"])) == 0 }
 	case "notes":
 		return func(t Row) bool { return desc(t) != "" }
 	case "no notes":

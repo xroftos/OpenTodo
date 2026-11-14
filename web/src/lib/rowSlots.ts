@@ -8,11 +8,11 @@
 // towards keeping a slot: a hole is better than a value cut away.
 import { useMemo } from 'react'
 import { useAnyTracked } from './timeEntries'
-import type { RowProperty, Task } from './types'
+import { assigneeIdsOf, type RowProperty, type Task } from './types'
 
 export type RowSlot = 'project' | 'labels' | 'estimate' | 'date' | 'assignee'
 
-type SlotFields = Pick<Task, 'id' | 'project_id' | 'labels' | 'estimate_minutes' | 'due' | 'sector' | 'start' | 'evening' | 'day_part' | 'assignee_id'>
+type SlotFields = Pick<Task, 'id' | 'project_id' | 'labels' | 'estimate_minutes' | 'due' | 'sector' | 'start' | 'evening' | 'day_part' | 'assignee_ids'>
 
 export interface SlotOptions {
   /** The label whose view is open: its chip is left out of every row. */
@@ -30,7 +30,7 @@ function filled(task: SlotFields, omitLabel: string | undefined, dateShown?: (ta
   if (task.labels?.some((l) => l !== omitLabel)) out.push('labels')
   if (task.estimate_minutes) out.push('estimate')
   if ((task.due || task.sector || task.start || task.evening || task.day_part) && (!dateShown || dateShown(task))) out.push('date')
-  if (task.assignee_id) out.push('assignee')
+  if (assigneeIdsOf(task).length) out.push('assignee')
   return out
 }
 

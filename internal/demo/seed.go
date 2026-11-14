@@ -315,8 +315,8 @@ func (b *seeder) run(me, sam string) error {
 		// History: a few edits on one task, by both accounts, and an assignment each way.
 		{me, "task", r["paint"], map[string]any{"title": "Pick paint colours for the hallway"}},
 		{me, "task", r["paint"], map[string]any{"priority": 2, "description": "Warm white or sage? Samples are in the drawer."}},
-		{sam, "task", r["paint"], map[string]any{"assignee_id": me, "title": "Pick paint colours"}},
-		{me, "task", r["taps"], map[string]any{"assignee_id": sam}},
+		{sam, "task", r["paint"], map[string]any{"assignee_ids": []string{me}, "title": "Pick paint colours"}},
+		{me, "task", r["taps"], map[string]any{"assignee_ids": []string{sam}}},
 		{sam, "task", r["taps"], map[string]any{"description": "Brushed steel, single lever."}},
 		{me, "task", r["launchMail"], map[string]any{"title": "Launch email sequence", "due": b.due("1")}},
 		{me, "task", r["launchMail"], map[string]any{"description": "Three emails: announcement, migration tips, one-week check-in.", "estimate_minutes": 90}},

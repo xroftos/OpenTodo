@@ -634,23 +634,26 @@ describe('task origin (task-origin 1.4)', () => {
 describe('task assignment', () => {
   const member = (userId: string) => ({ userId, name: userId, email: `${userId}@example.com`, role: 'editor' as const })
 
-  it('new task defaults assignee_id to null', async () => {
+  it('new task defaults assignee_ids to []', async () => {
     const id = await createTask({ title: 'Plain' })
-    expect((await db.tasks.get(id))?.assignee_id).toBeNull()
+    expect((await db.tasks.get(id))?.assignee_ids).toEqual([])
     // A plain task sends no assignee op; an assigned one sends exactly one.
-    expect((await db.outbox.toArray()).some((o) => o.field === 'assignee_id')).toBe(false)
-    const assigned = await createTask({ title: 'Mine', assignee_id: 'me' })
-    expect((await db.tasks.get(assigned))?.assignee_id).toBe('me')
-    expect((await db.outbox.toArray()).filter((o) => o.field === 'assignee_id').map((o) => o.value)).toEqual(['me'])
+    expect((await db.outbox.toArray()).some((o) => o.field === 'assignee_ids')).toBe(false)
+    // An assignment survives creation only when the scope may have it: in the
+    // Inbox that is the signed-in account alone (the server refuses the rest).
+    await setCurrentUserId('me')
+    const assigned = await createTask({ title: 'Mine', assignee_ids: ['me'] })
+    expect((await db.tasks.get(assigned))?.assignee_ids).toEqual(['me'])
+    expect((await db.outbox.toArray()).filter((o) => o.field === 'assignee_ids').map((o) => o.value)).toEqual([['me']])
     // A row created from ops without the field (older peer) also reads null.
     await applyOps([op({ entityId: 'remote', field: 'title', value: 'x', ts: 1, device: 'Z' })])
-    expect((await db.tasks.get('remote'))?.assignee_id).toBeNull()
+    expect((await db.tasks.get('remote'))?.assignee_ids).toEqual([])
     // Assignment is an ordinary LWW field.
     await applyOps([
-      op({ entityId: 'remote', field: 'assignee_id', value: 'bob', ts: 5, device: 'A' }),
-      op({ entityId: 'remote', field: 'assignee_id', value: 'dan', ts: 6, device: 'C' }),
+      op({ entityId: 'remote', field: 'assignee_ids', value: ['bob'], ts: 5, device: 'A' }),
+      op({ entityId: 'remote', field: 'assignee_ids', value: ['dan'], ts: 6, device: 'C' }),
     ])
-    expect((await db.tasks.get('remote'))?.assignee_id).toBe('dan')
+    expect((await db.tasks.get('remote'))?.assignee_ids).toEqual(['dan'])
   })
 
   it('copy across scopes drops non-member assignee', async () => {
@@ -661,24 +664,24 @@ describe('task assignment', () => {
       { projectId: shared, role: 'editor', ownerId: 'alice', members: [member('alice'), member('me'), member('bob')] },
       { projectId: other, role: 'editor', ownerId: 'alice', members: [member('alice'), member('me')] },
     ])
-    const bobs = await createTask({ title: 'Bob does it', project_id: shared, assignee_id: 'bob' })
-    const alices = await createTask({ title: 'Alice does it', project_id: shared, assignee_id: 'alice' })
-    const mine = await createTask({ title: 'I do it', project_id: shared, assignee_id: 'me' })
+    const bobs = await createTask({ title: 'Bob does it', project_id: shared, assignee_ids: ['bob'] })
+    const alices = await createTask({ title: 'Alice does it', project_id: shared, assignee_ids: ['alice'] })
+    const mine = await createTask({ title: 'I do it', project_id: shared, assignee_ids: ['me'] })
     const nobody = await createTask({ title: 'Nobody', project_id: shared })
     await db.outbox.clear()
     // Into the Inbox: only my own assignment survives.
     const bobCopy = await updateTask(bobs, { project_id: null })
     const myCopy = await updateTask(mine, { project_id: null })
-    expect((await db.tasks.get(bobCopy))?.assignee_id).toBeNull()
-    expect((await db.tasks.get(myCopy))?.assignee_id).toBe('me')
+    expect((await db.tasks.get(bobCopy))?.assignee_ids).toEqual([])
+    expect((await db.tasks.get(myCopy))?.assignee_ids).toEqual(['me'])
     // Into another shared project: kept when the assignee is a member there.
     const aliceCopy = await updateTask(alices, { project_id: other })
-    expect((await db.tasks.get(aliceCopy))?.assignee_id).toBe('alice')
+    expect((await db.tasks.get(aliceCopy))?.assignee_ids).toEqual(['alice'])
     // An unassigned copy sends no assignee op at all.
     const nobodyCopy = await updateTask(nobody, { project_id: null })
     const ops = await db.outbox.toArray()
-    expect(ops.some((o) => o.entityId === nobodyCopy && o.field === 'assignee_id')).toBe(false)
-    expect(ops.some((o) => o.field === 'assignee_id' && o.value === undefined)).toBe(false)
+    expect(ops.some((o) => o.entityId === nobodyCopy && o.field === 'assignee_ids')).toBe(false)
+    expect(ops.some((o) => o.field === 'assignee_ids' && o.value === undefined)).toBe(false)
   })
 })
 

@@ -12,7 +12,7 @@ import { countedTasks, monthStartOf, type Period, type StatsInput } from './stat
 import type { Task } from './types'
 import { t } from './i18n'
 
-type DashTask = Pick<Task, 'id' | 'title' | 'project_id' | 'created_at' | 'completed_at' | 'deleted_at' | 'due' | 'series_id' | 'assignee_id' | 'estimate_minutes' | 'labels'>
+type DashTask = Pick<Task, 'id' | 'title' | 'project_id' | 'created_at' | 'completed_at' | 'deleted_at' | 'due' | 'series_id' | 'assignee_ids' | 'estimate_minutes' | 'labels'>
   & Partial<Pick<Task, 'skipped' | 'completed_by'>>
 
 export interface DashboardInput<T extends DashTask = Task> extends StatsInput<T> {

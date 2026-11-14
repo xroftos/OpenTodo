@@ -23,15 +23,15 @@ describe('assignee in personal scopes', () => {
 
     await v.add('Show in Assigned to me')
     await waitFor(() => !!v.row('assignee'))
-    expect((await db.tasks.get(id))!.assignee_id).toBe(ME)
+    expect((await db.tasks.get(id))!.assignee_ids).toEqual([ME])
     expect(v.row('assignee').textContent).toContain('You')
     // Assigned to me lists explicitly assigned tasks.
-    expect((await db.tasks.where('assignee_id').equals(ME).toArray()).map((t) => t.id)).toEqual([id])
+    expect((await db.tasks.filter((t) => (t.assignee_ids ?? []).includes(ME)).toArray()).map((t) => t.id)).toEqual([id])
     await click(v.valueButton('assignee'))
     await waitFor(() => !!v.editor()?.querySelector('[data-facet-clear]'), 'the assignee editor')
     await click(v.editor()!.querySelector('[data-facet-clear]')!)
-    await waitFor(async () => (await db.tasks.get(id))!.assignee_id === null, 'the assignee cleared')
-    expect((await db.tasks.get(id))!.assignee_id).toBeNull()
+    await waitFor(async () => (await db.tasks.get(id))!.assignee_ids?.length === 0, 'the assignee cleared')
+    expect((await db.tasks.get(id))!.assignee_ids).toEqual([])
     await waitFor(() => !v.row('assignee'))
 
     await act(async () => { await membership(p, ME, 'u-bob') })
@@ -51,7 +51,7 @@ describe('assignee in personal scopes', () => {
     await click(v.valueButton('assignee'))
     await waitFor(() => v.options('assignee').length > 0, 'the assignee picker')
     await v.pick('assignee', 'u-bob')
-    await waitFor(async () => (await db.tasks.get(id))!.assignee_id === 'u-bob', 'the assignee written')
+    await waitFor(async () => (await db.tasks.get(id))!.assignee_ids?.[0] === 'u-bob', 'the assignee written')
     await waitFor(() => v.row('assignee').textContent!.includes('u-bob'))
     await v.unmount()
   })

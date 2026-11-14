@@ -25,7 +25,7 @@ export function matchNoteCond(st: RunState, c: RuleCondition | null | undefined,
   const ctx = { ...st.matchContext(), open: () => true, changed: (id: string) => st.w.noteChanged?.[id] ?? '' }
   return matchesCondition(c, {
     id: str(n, 'id'), project_id: str(n, 'project_id') || null, section_id: null, labels: listOf(n, 'labels'), priority: 4, dueDate: null, deadline: null,
-    start: null, evening: false, blocked_by: [], assignee_id: null, origin: null, habit: false, estimate_minutes: null,
+    start: null, evening: false, blocked_by: [], assignee_ids: [], origin: null, habit: false, estimate_minutes: null,
   }, ctx)
 }
 

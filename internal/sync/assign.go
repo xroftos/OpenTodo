@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"slices"
 	"strings"
 
 	"github.com/OpenTodoApp/opentodo/internal/e2ee"
@@ -34,9 +35,10 @@ func (s *Service) EmitMemberInvited(ctx context.Context, e notify.MemberInvited)
 	s.sinks.MemberInvited(ctx, e)
 }
 
-// emitAssignments hands one notify.Assigned event per task whose assignee_id
-// changed in a committed batch to someone other than its author. It runs after
-// commit, so the sinks see the stored state and cannot affect the batch.
+// emitAssignments hands one notify.Assigned event per newly-added assignee of
+// every task whose assignee_ids changed in a committed batch, unless they are
+// the batch's author. It runs after commit, so the sinks see the stored state
+// and cannot affect the batch.
 func (s *Service) emitAssignments(ctx context.Context, author string, at int64, changes []Change) {
 	if len(s.sinks) == 0 {
 		return
@@ -66,40 +68,43 @@ func (s *Service) EmitHandOffs(ctx context.Context, changes []Change) {
 	s.emitAssigned(ctx, s.now().UnixMilli(), changes, func(c Change) (string, bool) { return c.UserID, true })
 }
 
-// emitAssigned emits one event per task change that sets an assignee other
-// than its author; who gives a change's author and whether it passes a turn.
+// emitAssigned emits one event per member a task change adds to its assignees
+// (a member already on the list is never told again); who gives a change's
+// author and whether it passes a turn.
 func (s *Service) emitAssigned(ctx context.Context, at int64, changes []Change, who func(Change) (string, bool)) {
 	names := map[string]string{}
 	for _, c := range changes {
 		if c.Entity != "task" {
 			continue
 		}
-		fc, ok := c.Fields["assignee_id"]
+		fc, ok := c.Fields["assignee_ids"]
 		if !ok {
 			continue
 		}
 		author, turn := who(c)
-		assignee := idValue(fc.To)
-		if assignee == "" || assignee == author {
-			continue
-		}
-		actorName, loaded := names[author]
-		if !loaded {
-			actorName = s.userName(ctx, author)
-			names[author] = actorName
-		}
-		e := notify.Assigned{AssigneeID: assignee, ActorID: author, ActorName: actorName, TaskID: c.EntityID, At: at, Turn: turn}
-		e.TaskTitle = s.stringField(ctx, c.ScopeID, "task", c.EntityID, "title")
-		e.ProjectID = idValue(json.RawMessage(s.rawField(ctx, c.ScopeID, "task", c.EntityID, "project_id")))
-		if e.ProjectID == "" {
-			if pid, ok := strings.CutPrefix(c.ScopeID, "project:"); ok {
-				e.ProjectID = pid
+		before, after := idList(fc.From), idList(fc.To)
+		for _, assignee := range after {
+			if slices.Contains(before, assignee) || assignee == "" || assignee == author {
+				continue
 			}
+			actorName, loaded := names[author]
+			if !loaded {
+				actorName = s.userName(ctx, author)
+				names[author] = actorName
+			}
+			e := notify.Assigned{AssigneeID: assignee, ActorID: author, ActorName: actorName, TaskID: c.EntityID, At: at, Turn: turn}
+			e.TaskTitle = s.stringField(ctx, c.ScopeID, "task", c.EntityID, "title")
+			e.ProjectID = idValue(json.RawMessage(s.rawField(ctx, c.ScopeID, "task", c.EntityID, "project_id")))
+			if e.ProjectID == "" {
+				if pid, ok := strings.CutPrefix(c.ScopeID, "project:"); ok {
+					e.ProjectID = pid
+				}
+			}
+			if e.ProjectID != "" {
+				e.ProjectName = s.stringField(ctx, c.ScopeID, "project", e.ProjectID, "name")
+			}
+			s.sinks.Assigned(ctx, e)
 		}
-		if e.ProjectID != "" {
-			e.ProjectName = s.stringField(ctx, c.ScopeID, "project", e.ProjectID, "name")
-		}
-		s.sinks.Assigned(ctx, e)
 	}
 }
 

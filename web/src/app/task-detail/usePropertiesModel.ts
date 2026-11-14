@@ -12,7 +12,7 @@ import { setTaskParent } from '../../lib/ops'
 import { INBOX_KEY, parentSource, projectSource } from '../../lib/pickerSources'
 import { effectiveSection } from '../../lib/sections'
 import { isSoloScope, memberName } from '../../lib/sharing'
-import type { Task } from '../../lib/types'
+import {Task, assigneeIdsOf, isAssignedTo, isUnassigned} from '../../lib/types'
 import { moveWithUndo } from '../undoable'
 import { isInboxTask } from '../../lib/inbox'
 import { useViewerZone } from '../useViews'
@@ -80,7 +80,7 @@ export function usePropertiesModel({ task, userId, projects, labelMap, parent, o
   const sectionId = effectiveSection(task, sectionMap)
   const followsParent = !!parent && !parent.deleted_at
   const shownSection = followsParent ? effectiveSection(parent, sectionMap) : sectionId
-  const solo = !!userId && isSoloScope(projectId, memberships, userId) && (!task.assignee_id || task.assignee_id === userId)
+  const solo = !!userId && isSoloScope(projectId, memberships, userId) && (isUnassigned(task) || isAssignedTo(task, userId))
   const labels = resolveLabels(task.labels, labelMap)
 
   // Visible: set properties, plus the ones the Add menu revealed.
@@ -92,7 +92,7 @@ export function usePropertiesModel({ task, userId, projects, labelMap, parent, o
     estimate: task.estimate_minutes !== null,
     repeat: !!task.recurrence,
     labels: labels.length > 0,
-    assignee: !!task.assignee_id || (!!userId && !solo),
+    assignee: assigneeIdsOf(task).length > 0 || (!!userId && !solo),
     'blocked-by': blockers.length > 0,
     parent: !!task.parent_id,
     section: !!shownSection,
@@ -111,7 +111,7 @@ export function usePropertiesModel({ task, userId, projects, labelMap, parent, o
     solo, labels, reminders,
     local: localDueOf(task.due, zone),
     hint: zoneHint(task.due, zone),
-    assigneeName: task.assignee_id ? (task.assignee_id === userId ? t('You') : memberName(task.assignee_id, memberships) ?? t('Former member')) : null,
+    assignees: assigneeIdsOf(task).map((id) => (id === userId ? t('You') : memberName(id, memberships) ?? t('Former member'))),
     offerSection: !!projectId && sections.length > 0 && !followsParent,
   }
 }

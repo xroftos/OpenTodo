@@ -196,23 +196,40 @@ func (s *Service) emitUnblocked(ctx context.Context, author string, at int64, ch
 						break
 					}
 				}
-				assignee := idValue(json.RawMessage(s.rawField(ctx, scope, "task", task, "assignee_id")))
-				if !ready || assignee == "" || assignee == author {
+				if !ready {
 					continue
 				}
 				done[task] = true
+				var assignees []string
+				if raw := s.rawField(ctx, scope, "task", task, "assignee_ids"); raw != "" {
+					assignees = idList(json.RawMessage(raw))
+				}
+				if len(assignees) == 0 {
+					continue
+				}
 				if !actorLoaded {
 					actorName = s.userName(ctx, author)
 					actorLoaded = true
 				}
-				e := notify.Unblocked{AssigneeID: assignee, ActorID: author, ActorName: actorName, TaskID: task, BlockerID: blocker, At: at}
-				e.TaskTitle = s.stringField(ctx, scope, "task", task, "title")
-				e.BlockerTitle = s.stringField(ctx, scope, "task", blocker, "title")
-				if pid, ok := strings.CutPrefix(scope, "project:"); ok {
-					e.ProjectID = pid
-					e.ProjectName = s.stringField(ctx, scope, "project", pid, "name")
+				title := s.stringField(ctx, scope, "task", task, "title")
+				blockerTitle := s.stringField(ctx, scope, "task", blocker, "title")
+				pid := ""
+				if p, ok := strings.CutPrefix(scope, "project:"); ok {
+					pid = p
 				}
-				s.sinks.Unblocked(ctx, e)
+				for _, assignee := range assignees {
+					if assignee == author {
+						continue
+					}
+					e := notify.Unblocked{AssigneeID: assignee, ActorID: author, ActorName: actorName, TaskID: task, BlockerID: blocker, At: at}
+					e.TaskTitle = title
+					e.BlockerTitle = blockerTitle
+					if pid != "" {
+						e.ProjectID = pid
+						e.ProjectName = s.stringField(ctx, scope, "project", pid, "name")
+					}
+					s.sinks.Unblocked(ctx, e)
+				}
 			}
 		}
 	}

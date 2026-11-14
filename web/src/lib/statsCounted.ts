@@ -3,20 +3,23 @@
 // assistant-project-blocks) need not load the whole statistics model. lib/stats
 // re-exports them.
 import type { Project, Task } from './types'
+import { assigneeIdsOf } from './types'
 
-export type StatTask = Pick<Task, 'id' | 'project_id' | 'created_at' | 'completed_at' | 'deleted_at' | 'due' | 'series_id' | 'assignee_id'>
+export type StatTask = Pick<Task, 'id' | 'project_id' | 'created_at' | 'completed_at' | 'deleted_at' | 'due' | 'series_id' | 'assignee_ids'>
   & Partial<Pick<Task, 'skipped' | 'completed_by' | 'sample'>>
 export type StatProject = Pick<Project, 'id' | 'name' | 'archived' | 'deleted_at'>
 
 /**
  * Whether a row counts for the user (design D1): every row outside shared
  * projects; in a shared project the account that completed it when recorded
- * (`completed_by`), otherwise the assignee, or the user when unassigned.
+ * (`completed_by`), otherwise a task counts when the user is among its
+ * assignees or nobody is (multi-assignee).
  */
 export function isMine(item: StatTask, shared: ReadonlySet<string>, me: string | null): boolean {
   if (!item.project_id || !shared.has(item.project_id)) return true
   if (item.completed_at !== null && item.completed_by) return item.completed_by === me
-  return !item.assignee_id || item.assignee_id === me
+  const who = assigneeIdsOf(item)
+  return who.length === 0 || (!!me && who.includes(me))
 }
 
 /**

@@ -71,7 +71,7 @@ describe('history', () => {
     expect(formatValue('origin', { kind: 'issue', provider: 'github', id: 'o/r#7', url: 'https://github.com/o/r/issues/7' })).toBe('o/r#7')
     expect(formatValue('origin', { kind: 'url', url: 'https://www.example.org/post' })).toBe('example.org')
     expect(formatValue('origin', { kind: 'email', id: '<a1@mail.example>' })).toBe('Email')
-    expect(formatValue('assignee_id', 'u1', (f, id) => (f === 'assignee_id' && id === 'u1' ? 'Bob Okafor' : undefined))).toBe('Bob Okafor')
+    expect(formatValue('assignee_ids', ['u1'], (f, id) => (f === 'assignee_ids' && id === 'u1' ? 'Bob Okafor' : undefined))).toBe('Bob Okafor')
     expect(formatValue('project_id', 'gone', () => undefined)).toBe('unknown')
   })
 })

@@ -112,8 +112,15 @@ func Derive(c opsync.Change) []Event {
 			}
 		}
 	}
-	if f, ok := c.Fields["assignee_id"]; ok && strOf(f.To) != "" && strOf(f.To) == c.UserID {
-		out = append(out, ev(ruleval.AssignedToMe))
+	if f, ok := c.Fields["assignee_ids"]; ok {
+		// A newly-added assignee that is the author is told by no event
+		// (assigned.to_me fires on being added, never again).
+		before, after := listOf(f.From), listOf(f.To)
+		for _, id := range after {
+			if id == c.UserID && !slices.Contains(before, id) {
+				out = append(out, ev(ruleval.AssignedToMe))
+			}
+		}
 	}
 	_, project := c.Fields["project_id"]
 	_, section := c.Fields["section_id"]

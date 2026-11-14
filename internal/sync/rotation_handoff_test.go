@@ -11,8 +11,8 @@ import (
 func TestDepartureAnnouncesTheTurn(t *testing.T) {
 	f := house(t)
 	f.apply("alice", "A",
-		f.op("task", "t1", "assignee_id", `"bob"`),
-		f.op("task", "t2", "title", `"Dishes"`), f.op("task", "t2", "assignee_id", `"bob"`),
+		f.op("task", "t1", "assignee_ids", `["bob"]`),
+		f.op("task", "t2", "title", `"Dishes"`), f.op("task", "t2", "assignee_ids", `["bob"]`),
 	)
 	rec := &recordingSink{s: f.s}
 	f.s.AddSink(rec)
@@ -31,14 +31,14 @@ func TestDepartureAnnouncesTheTurn(t *testing.T) {
 
 func TestDepartureTurnNotToTheActor(t *testing.T) {
 	f := house(t)
-	f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"carol"`))
+	f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["carol"]`))
 	rec := &recordingSink{s: f.s}
 	f.s.AddSink(rec)
 	// alice removes carol; the turn after carol is alice's own.
 	if _, err := f.s.RemoveMember(f.ctx, "alice", "p", "carol"); err != nil {
 		t.Fatal(err)
 	}
-	if got := f.field("alice", "task", "t1", "assignee_id"); got != `"alice"` {
+	if got := f.field("alice", "task", "t1", "assignee_ids"); got != `["alice"]` {
 		t.Fatalf("assignee = %s", got)
 	}
 	if len(rec.events) != 0 {
@@ -48,7 +48,7 @@ func TestDepartureTurnNotToTheActor(t *testing.T) {
 
 func TestAccountDeletionAnnouncesTheTurn(t *testing.T) {
 	f := house(t)
-	f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"bob"`))
+	f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["bob"]`))
 	rec := &recordingSink{s: f.s}
 	f.s.AddSink(rec)
 	ctx, deletion := WithAccountDeletion(f.ctx)

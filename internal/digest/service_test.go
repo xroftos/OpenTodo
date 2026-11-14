@@ -303,7 +303,7 @@ func TestDigestContent(t *testing.T) {
 	if _, err := e.sync.AddMember(context.Background(), "u1", "home", "u2", "editor"); err != nil {
 		t.Fatal(err)
 	}
-	e.apply("u1", map[string]map[string]any{"task:h1": {"title": "Bob's chore", "project_id": "home", "assignee_id": "u2", "due": map[string]string{"date": "2026-10-19"}, "created_at": ms("2026-10-01 09:00"), "completed_at": nil}})
+	e.apply("u1", map[string]map[string]any{"task:h1": {"title": "Bob's chore", "project_id": "home", "assignee_ids": []string{"u2"}, "due": map[string]string{"date": "2026-10-19"}, "created_at": ms("2026-10-01 09:00"), "completed_at": nil}})
 
 	if n := e.tick(e.service(), "2026-10-23 07:02"); n != 1 {
 		t.Fatalf("sent %d", n)

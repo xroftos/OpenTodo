@@ -731,8 +731,8 @@ export type NewTaskInput = {
   sector?: string | null
   /** A recurrence rule (any spelling the grammar accepts; stored canonical). Throws when invalid. */
   recurrence?: string | null
-  /** Assignee account id (task-assignment); only sent when set. */
-  assignee_id?: string | null
+  /** The members assigned to the task (multi-assignee); only sent when at least one. */
+  assignee_ids?: string[]
   /** Section of `project_id` (board-view); only sent when set. */
   section_id?: string | null
   /** Where the task came from (task-origin); only sent when set. */
@@ -774,7 +774,13 @@ export async function planTask(input: NewTaskInput, position?: number): Promise<
     // The form a 1.0 client reads when one means the same thing (recurrence-1-0-compatible).
     extra.recurrence = compatibleRule(parsed.canonical, due.date)
   }
-  if (input.assignee_id) extra.assignee_id = input.assignee_id
+  // multi-assignee: only members the task's scope may have assigned survive; the
+  // server would refuse the rest. Nobody left → no op (an empty list is the default).
+  if (input.assignee_ids?.length) {
+    const who = assignableIn(input.project_id ?? null, await membershipMap(), await currentUserId())
+    const kept = input.assignee_ids.filter((a) => who.has(a))
+    if (kept.length) extra.assignee_ids = kept
+  }
   // Only tasks created in a section carry the field (board-view).
   if (input.section_id) extra.section_id = input.section_id
   // Only tasks created with a deadline carry the field (deadlines).
@@ -957,7 +963,7 @@ export async function setTaskParent(id: string, parentId: string | null): Promis
  * different project, and changing a task's project clears its section (board-view).
  */
 // blocked_by stays behind: blockers live in one sharing scope (task-dependencies D5).
-const COPY_FIELDS = ['title', 'description', 'notes_doc', 'priority', 'due', 'labels', 'estimate_minutes', 'deadline', 'start', 'evening', 'span', 'day_part', 'energy', 'sector', 'recurrence', 'series_id', 'assignee_id', 'completed_at', 'completed_by', 'position', 'created_at', 'origin'] as const
+const COPY_FIELDS = ['title', 'description', 'notes_doc', 'priority', 'due', 'labels', 'estimate_minutes', 'deadline', 'start', 'evening', 'span', 'day_part', 'energy', 'sector', 'recurrence', 'series_id', 'assignee_ids', 'completed_at', 'completed_by', 'position', 'created_at', 'origin'] as const
 
 /**
  * Copy tasks into `projectId` under new ids, keeping parent links between copied
@@ -973,10 +979,10 @@ function copyTasks(
     const patch: Record<string, unknown> = {}
     for (const f of COPY_FIELDS) patch[f] = tk[f]
     Object.assign(patch, overrides[tk.id] ?? {})
-    // task-assignment: the copy keeps its assignee only when that person may be
-    // assigned in the destination; the server would refuse it otherwise.
-    // An unassigned copy needs no op (null is the default; rows synced before the
-    // field existed hold undefined, which must never be sent).
+    // multi-assignee: the copy keeps its assignees only when they may be assigned
+    // in the destination; the server would refuse them otherwise. Nobody left → no
+    // op (an empty list is the default; rows synced before the field existed hold
+    // undefined, which must never be sent).
     // A copy carries the note's document only when there is one (collaborative-rich-text).
     if (typeof patch.notes_doc !== 'string' || !patch.notes_doc) delete patch.notes_doc
     // The copy keeps its part of the day (day-parts); none needs no op.
@@ -992,8 +998,12 @@ function copyTasks(
     // The copy keeps who completed it (completed-date-filters D5); unknown stays null.
     if (patch.completed_at === null || patch.completed_at === undefined) delete patch.completed_by
     else patch.completed_by = patch.completed_by ?? null
-    if (typeof patch.assignee_id !== 'string') delete patch.assignee_id
-    else if (!assignable.has(patch.assignee_id)) patch.assignee_id = null
+    if (!Array.isArray(patch.assignee_ids)) delete patch.assignee_ids
+    else {
+      const kept = (patch.assignee_ids as string[]).filter((a) => assignable.has(a))
+      if (kept.length) patch.assignee_ids = kept
+      else delete patch.assignee_ids
+    }
     patch.project_id = projectId
     patch.parent_id = (tk.parent_id && ids.get(tk.parent_id)) ?? null
     patch.deleted_at = null

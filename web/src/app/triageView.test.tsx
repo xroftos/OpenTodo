@@ -166,7 +166,7 @@ describe('the triage mode', () => {
     await click(document.querySelector('[role="dialog"] [role="option"]')!)
     await waitFor(() => document.querySelector('[data-triage-card]') === null)
     const moved = (await db.tasks.toArray()).find((t) => t.title === 'Fix the gate' && !t.deleted_at)!
-    expect([moved.project_id, moved.assignee_id]).toEqual([home, 'ana'])
+    expect([moved.project_id, moved.assignee_ids]).toEqual([home, ['ana']])
     const ops = (await db.outbox.toArray()).slice(before)
     expect(new Set(ops.map((o) => o.ts)).size).toBe(1)
     await r.unmount()

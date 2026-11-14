@@ -9,7 +9,7 @@ interface Vector {
   offset_minutes: number
   day_start: string
   condition: RuleCondition | null
-  task: Omit<MatchTask, 'id' | 'dueDate'> & { due: { date: string } | null }
+  task: Omit<MatchTask, 'id' | 'dueDate' | 'assignee_ids'> & { due: { date: string } | null; assignee_ids?: string[]; assignee_id?: string | null }
   projects?: Record<string, string>
   open?: string[]
   tracked?: Record<string, number>
@@ -21,7 +21,9 @@ describe('rule conditions (shared vectors with internal/ruleval)', () => {
   it('has a vector per predicate', () => expect((vectors as Vector[]).length).toBeGreaterThanOrEqual(40))
   for (const v of vectors as Vector[]) {
     it(v.name, () => {
-      const task: MatchTask = { ...v.task, id: 't', dueDate: v.task.due?.date ?? null }
+      // The vectors were written for the single `assignee_id` (shared with internal/ruleval);
+      // the list read maps it to one assignee, and `assignee_ids` overrides when present.
+      const task: MatchTask = { ...v.task, id: 't', dueDate: v.task.due?.date ?? null, assignee_ids: v.task.assignee_ids ?? (v.task.assignee_id ? [v.task.assignee_id] : []) }
       const got = matchesCondition(v.condition, task, {
         userId: 'me',
         today: logicalDate(v.now, v.offset_minutes, v.day_start),

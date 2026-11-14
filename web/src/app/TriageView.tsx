@@ -246,7 +246,7 @@ function Triage({ embedded }: { embedded?: { onLeave: () => void; onLeft?: (n: n
     if (!task) return
     hold(task.id)
     // Into the project and assigned, in one operation set (a cross-scope move carries the assignee).
-    await moveTaskAcrossScopes(task.id, { project_id: d.projectId, assignee_id: d.userId })
+    await moveTaskAcrossScopes(task.id, { project_id: d.projectId, assignee_ids: [d.userId] })
     next(t('Delegated to {name}: {title}.', { name: d.label, title: task.title || t('Untitled') }))
   }, [task, next, hold])
 

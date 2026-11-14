@@ -309,10 +309,10 @@ const fullOwnExport = `{
   "tasks": [
     {"id": "t1", "title": "Water plants", "description": "", "priority": 4, "position": 1, "created_at": 5, "labels": ["l1"],
      "project_id": "p1", "section_id": "s1", "recurrence": "Every  Monday", "due": {"date": "2026-10-19", "time": "08:00", "tz": "Europe/Rome"},
-     "estimate_minutes": 15, "notes_doc": "ydoc:v1:AQID", "ical_extra": "X-FOO:bar", "assignee_id": "u1", "completed_at": null},
+     "estimate_minutes": 15, "notes_doc": "ydoc:v1:AQID", "ical_extra": "X-FOO:bar", "assignee_ids": ["u1"], "completed_at": null},
     {"id": "t1-occ", "title": "Water plants", "description": "", "priority": 4, "position": 1, "created_at": 5, "labels": [],
      "project_id": "p1", "series_id": "t1", "due": {"date": "2026-10-12"}, "completed_at": 1760300000000},
-    {"id": "t2", "title": "Shared chore", "description": "", "priority": 4, "position": 2, "created_at": 5, "labels": [], "assignee_id": "someone-else"}
+    {"id": "t2", "title": "Shared chore", "description": "", "priority": 4, "position": 2, "created_at": 5, "labels": [], "assignee_ids": ["someone-else"]}
   ],
   "reminders": [
     {"id": "r-future", "task_id": "t1", "kind": "absolute", "offset_minutes": null, "fire_at": 1893456000000, "delivered_at": null, "dismissed_at": null, "created_at": 6},
@@ -396,7 +396,7 @@ func TestOwnExportRecurrenceAssigneeReminders(t *testing.T) {
 		return e
 	}
 	t1 := get("task", "t1")
-	if str(t1, "recurrence") != "every monday" || str(t1, "section_id") != "s1" || str(t1, "assignee_id") != "u1" ||
+	if str(t1, "recurrence") != "every monday" || str(t1, "section_id") != "s1" || string(t1["assignee_ids"]) != `["u1"]` ||
 		!jsonEqual(t1["due"], json.RawMessage(`{"date":"2026-10-19","time":"08:00","tz":"Europe/Rome"}`)) || string(t1["estimate_minutes"]) != "15" ||
 		str(t1, "notes_doc") != "ydoc:v1:AQID" || str(t1, "ical_extra") != "X-FOO:bar" {
 		t.Fatalf("t1 = %v", t1)
@@ -404,8 +404,8 @@ func TestOwnExportRecurrenceAssigneeReminders(t *testing.T) {
 	if occ := get("task", "t1-occ"); str(occ, "series_id") != "t1" {
 		t.Fatalf("occurrence = %v", occ)
 	}
-	if t2 := get("task", "t2"); !opsync.IsNull(t2["assignee_id"]) {
-		t.Fatalf("t2 assignee = %s", t2["assignee_id"])
+	if t2 := get("task", "t2"); !opsync.IsNull(t2["assignee_ids"]) {
+		t.Fatalf("t2 assignee = %s", t2["assignee_ids"])
 	}
 	if s2 := get("section", "s2"); opsync.IsNull(s2["deleted_at"]) {
 		t.Fatalf("section tombstone lost: %v", s2)

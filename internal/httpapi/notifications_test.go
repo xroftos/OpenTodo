@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -17,14 +18,14 @@ func TestNotificationRoutesAuthAndOwnership(t *testing.T) {
 	se.share(se.alice, "bob@example.com", "editor")
 	task := "/api/v1/tasks/" + se.task
 	// REST assignment is validated like sync: carol is not a member.
-	resp, out := se.alice.do("PATCH", task, map[string]any{"assignee_id": se.ids["carol"]})
+	resp, out := se.alice.do("PATCH", task, map[string]any{"assignee_ids": []string{se.ids["carol"]}})
 	se.alice.mustStatus(resp, 400, out)
 	if errCode(out) != "not_a_member" {
 		t.Fatalf("non-member = %v", out)
 	}
-	resp, out = se.alice.do("PATCH", task, map[string]any{"assignee_id": se.ids["bob"]})
+	resp, out = se.alice.do("PATCH", task, map[string]any{"assignee_ids": []string{se.ids["bob"]}})
 	se.alice.mustStatus(resp, 200, out)
-	if out["assignee_id"] != se.ids["bob"] {
+	if !slices.Contains(aidList(out["assignee_ids"]), se.ids["bob"]) {
 		t.Fatalf("patched = %v", out)
 	}
 	// Bob has one unread notification naming alice, the task and the project
@@ -83,7 +84,7 @@ func TestNotificationRoutesAuthAndOwnership(t *testing.T) {
 	se.alice.mustStatus(resp, 204, out)
 	resp, out = se.alice.do("GET", task, nil)
 	se.alice.mustStatus(resp, 200, out)
-	if v, has := out["assignee_id"]; !has || v != nil {
+	if ids, has := out["assignee_ids"].([]any); !has || len(ids) != 0 {
 		t.Fatalf("after removal = %v", out)
 	}
 }

@@ -19,7 +19,7 @@ afterEach(() => { window.matchMedia = original })
 
 const project = { id: 'p1', name: 'Garden', color: '#0f0', parent_id: null, position: 0, archived: false, created_at: 0, deleted_at: null, _clock: {} } as unknown as Project
 const section = (id: string, name: string, position: number): Section => ({ id, project_id: 'p1', name, position, created_at: 0, deleted_at: null, _clock: {} } as unknown as Section)
-const task = (id: string, section_id: string): Task => ({ id, title: `Task ${id}`, description: '', project_id: 'p1', parent_id: null, section_id, priority: 4, due: null, labels: [], position: 0, created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, _clock: {} } as unknown as Task)
+const task = (id: string, section_id: string): Task => ({ id, title: `Task ${id}`, description: '', project_id: 'p1', parent_id: null, section_id, priority: 4, due: null, labels: [], position: 0, created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], _clock: {} } as unknown as Task)
 const columns: BoardColumn[] = [
   { key: 's1', section: section('s1', 'Plan', 0), cards: [task('a', 's1')] },
   { key: 's2', section: section('s2', 'Plant', 1), cards: [task('b', 's2')] },

@@ -45,7 +45,7 @@
     "date": "2026-10-05"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -60,7 +60,7 @@
     "date": "2026-10-06"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -75,7 +75,7 @@
     "date": "2026-10-06"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -90,7 +90,7 @@
     "date": "2026-10-05"
    },
    "series_id": "s1",
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -105,7 +105,7 @@
     "date": "2026-10-06"
    },
    "series_id": "s1",
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -120,7 +120,7 @@
     "date": "2026-10-07"
    },
    "series_id": "s1",
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -135,7 +135,7 @@
     "date": "2026-10-08"
    },
    "series_id": "s1",
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null,
    "skipped": true
   },
@@ -151,7 +151,7 @@
     "date": "2026-10-15"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -164,7 +164,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": "u-ana",
+   "assignee_ids": ["u-ana"],
    "completed_by": "u-me"
   },
   {
@@ -177,7 +177,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": "u-me",
+   "assignee_ids": ["u-me"],
    "completed_by": "u-ana"
   },
   {
@@ -190,7 +190,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": "u-ana",
+   "assignee_ids": ["u-ana"],
    "completed_by": null
   },
   {
@@ -203,7 +203,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -216,7 +216,7 @@
    "deleted_at": 1791367200000,
    "due": null,
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -229,7 +229,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -242,7 +242,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -257,7 +257,7 @@
     "date": "2026-10-01"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -272,7 +272,7 @@
     "date": "2026-10-09"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -287,7 +287,7 @@
     "date": "2026-10-07"
    },
    "series_id": null,
-   "assignee_id": "u-ana",
+   "assignee_ids": ["u-ana"],
    "completed_by": null
   },
   {
@@ -300,7 +300,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -315,7 +315,7 @@
     "date": "2026-10-13"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -330,7 +330,7 @@
     "date": "2026-10-14"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -343,7 +343,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -356,7 +356,7 @@
    "deleted_at": null,
    "due": null,
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null
   },
   {
@@ -371,7 +371,7 @@
     "date": "2026-10-13"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null,
    "sample": true
   },
@@ -387,7 +387,7 @@
     "date": "2026-10-06"
    },
    "series_id": null,
-   "assignee_id": null,
+   "assignee_ids": [],
    "completed_by": null,
    "sample": true
   }

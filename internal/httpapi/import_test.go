@@ -578,11 +578,26 @@ func TestImportLinearOverHTTP(t *testing.T) {
 	e.mustStatus(resp, 200, out)
 	assigned := 0
 	for _, task := range out["tasks"].([]any) {
-		if task.(map[string]any)["assignee_id"] != nil {
+		if len(aidList(task.(map[string]any)["assignee_ids"])) > 0 {
 			assigned++
 		}
 	}
 	if assigned != 3 {
 		t.Fatalf("issues assigned to the importer: %d, want 3", assigned)
 	}
+}
+
+func aidList(v any) []string {
+	switch t := v.(type) {
+	case []any:
+		var out []string
+		for _, e := range t {
+			s, _ := e.(string)
+			out = append(out, s)
+		}
+		return out
+	case string:
+		return []string{t}
+	}
+	return nil
 }

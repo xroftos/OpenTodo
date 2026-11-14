@@ -33,7 +33,7 @@ afterEach(() => {
 
 const task = (p: Partial<Task>): Task => ({
   id: p.id ?? 't', title: 'T', description: '', project_id: null, parent_id: null, section_id: null, priority: 4, due: null, labels: [], position: 0,
-  created_at: 0, updated_at: 0, completed_at: null, deleted_at: null, recurrence: null, estimate_minutes: null, assignee_id: null, _clock: {}, ...p,
+  created_at: 0, updated_at: 0, completed_at: null, deleted_at: null, recurrence: null, estimate_minutes: null, assignee_ids: [], _clock: {}, ...p,
 } as unknown as Task)
 
 describe('planSources and planSourceTasks', () => {

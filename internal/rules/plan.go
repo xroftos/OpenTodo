@@ -142,9 +142,9 @@ func Plan(a ruleval.Actions, task map[string]json.RawMessage, ctx PlanContext) P
 	}
 	if a.Assignee != nil {
 		if *a.Assignee == "me" {
-			set("assignee_id", raw(ctx.UserID))
+			set("assignee_ids", raw([]string{ctx.UserID}))
 		} else {
-			set("assignee_id", nullJSON)
+			set("assignee_ids", raw([]string{}))
 		}
 	}
 	if a.State != nil {

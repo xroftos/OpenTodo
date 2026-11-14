@@ -400,7 +400,7 @@ func agentCreateTaskCalls(body map[string]json.RawMessage) ([]agenttools.ToolCal
 			if string(v) != "null" {
 				item[k] = v
 			}
-		case (k == "completed_at" || k == "completed_by" || k == "deleted_at" || k == "assignee_id") && string(v) == "null":
+		case (k == "completed_at" || k == "completed_by" || k == "deleted_at" || k == "assignee_ids") && string(v) == "null":
 			// Defaults of a new task: nothing to set.
 		default:
 			return nil, refusedField("task", k)
@@ -413,7 +413,7 @@ func agentCreateTaskCalls(body map[string]json.RawMessage) ([]agenttools.ToolCal
 // (update_tasks), project and section (move_tasks), due (schedule_tasks, which
 // replaces the whole due as REST does), completion (complete_tasks or
 // reopen_tasks) and the Trash (trash_tasks, own creations only). Fields with no
-// tool (assignee_id, parent_id, position, restoring from the Trash) are refused.
+// tool (parent_id, position, restoring from the Trash) are refused.
 func agentPatchTaskCalls(id string, body map[string]json.RawMessage, existing opsync.Entity) ([]agenttools.ToolCall, string) {
 	update := map[string]json.RawMessage{}
 	var calls []agenttools.ToolCall

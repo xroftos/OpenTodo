@@ -58,14 +58,14 @@ func (s *Server) rotationOK(ctx context.Context, w http.ResponseWriter, body map
 	return true
 }
 
-// notAMember answers a refused assignee or rotation: an account that is not a
-// member of the task's project. A rotation is a conflict with the current
-// membership (409); the assignee keeps its original 400.
+// notAMember answers a refused assignee list or rotation: an account that is
+// not a member of the task's project. A rotation is a conflict with the
+// current membership (409); the assignees keep their original 400.
 func notAMember(w http.ResponseWriter, rej *opsync.RejectedError) {
 	if rej.Op.Field == "rotation" {
 		writeError(w, http.StatusConflict, "not_a_member", "task.rotation: everyone who takes turns must be a member of the task's project")
 		return
 	}
 	writeError(w, http.StatusBadRequest, "not_a_member",
-		"task.assignee_id: the assignee must be a member of the task's project (or yourself for a personal task)")
+		"task.assignee_ids: every assignee must be a member of the task's project (or yourself for a personal task)")
 }

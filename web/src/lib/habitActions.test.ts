@@ -74,7 +74,7 @@ describe('the Habits switch (task 1.3)', () => {
 describe('tiny (tasks 1.2, 7.1)', () => {
   it('a completion record of a habit is not tiny, whatever the series holds', () => {
     const series = { id: 's', title: 'Read', description: '', project_id: null, parent_id: null, priority: 4, due: { date: '2026-10-14' }, labels: [], position: 0,
-      created_at: 1, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: 'every day', series_id: null, assignee_id: null, section_id: null,
+      created_at: 1, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: 'every day', series_id: null, assignee_ids: [], section_id: null,
       ical_extra: null, _clock: {}, habit: true, tiny: true } as unknown as Task
     const rule = parseRule('every day')
     if (!rule.ok) throw new Error('rule')

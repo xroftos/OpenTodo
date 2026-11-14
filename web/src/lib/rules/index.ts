@@ -116,7 +116,8 @@ export function planRule(task: Task, all: Task[], rule: OnDropRule | RuleActions
   // Automation-only keys (automation-rules "Actions"): deadline and assignee. The
   // comment, notification and webhook run on the server only.
   if (r.deadline) take([{ entity: 'task', entityId: task.id, patch: { deadline: r.deadline === 'clear' ? null : addDays(ctx.today, r.deadline.in_days) } }])
-  if (r.assignee) take([{ entity: 'task', entityId: task.id, patch: { assignee_id: r.assignee === 'me' ? ctx.me : null } }])
+  // multi-assignee: 'me' assigns the rule's owner alone; 'clear' empties the list.
+  if (r.assignee) take([{ entity: 'task', entityId: task.id, patch: { assignee_ids: r.assignee === 'me' ? [ctx.me] : [] } }])
   const tree = all.map((x) => (x.id === task.id ? cur : x))
   if (r.state === 'complete' && !cur.completed_at) take(planComplete([cur], tree, ctx.now, ctx.today))
   else if (r.state === 'reopen' && cur.completed_at) take(planReopen([cur]))

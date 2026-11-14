@@ -84,13 +84,14 @@ func (s *Service) RotationAllowed(ctx context.Context, row Entity) (bool, error)
 	return len(members) >= 2, err
 }
 
-// rotateOnCompletion sets body.assignee_id to the next person of a rotating
+// rotateOnCompletion sets body.assignee_ids to the next person of a rotating
 // series that a completion continues (design D2, D3), unless the write sets
-// the assignee itself. row is the series as the completion sees it. A
+// the assignees itself. row is the series as the completion sees it. A
 // rotation is in effect only on a top-level series of a project with at
-// least two members.
+// least two members. The turn-holder is the list's first element; the next
+// person is written as a one-element list.
 func (s *Service) rotateOnCompletion(ctx context.Context, row Entity, body map[string]json.RawMessage) error {
-	if _, sets := body["assignee_id"]; sets {
+	if _, sets := body["assignee_ids"]; sets {
 		return nil
 	}
 	rotation := idList(row["rotation"])
@@ -101,10 +102,13 @@ func (s *Service) rotateOnCompletion(ctx context.Context, row Entity, body map[s
 	if err != nil || len(members) < 2 {
 		return err
 	}
-	current := idValue(row["assignee_id"])
+	current := ""
+	if list := idList(row["assignee_ids"]); len(list) > 0 {
+		current = list[0]
+	}
 	next := NextAssignee(rotation, current, func(id string) bool { return members[id] })
 	if next != current && next != "" {
-		body["assignee_id"] = JSONOf(next)
+		body["assignee_ids"] = JSONOf([]string{next})
 	}
 	return nil
 }
@@ -117,29 +121,34 @@ type departureWrite struct {
 }
 
 // departureRepairs reads, inside the membership transaction, every task of the
-// project that departed is assigned or whose rotation names them, and returns
+// project departed is assigned to or whose rotation names them, and returns
 // what to write, in task order: the rotation without departed, and for a task
-// departed held, the person after them in its rotation among those who remain
-// when it rotates (a top-level recurring task), null otherwise. remaining is
-// the membership after the departure. It returns the tasks unassigned or
-// handed on too.
+// departed is assigned to, the filtered assignee list — the person after them
+// in its rotation as a one-element list among those who remain when it rotates
+// (a top-level recurring task), the list without departed otherwise. remaining
+// is the membership after the departure. It returns the tasks departed held.
 func departureRepairs(ctx context.Context, tx *sql.Tx, scope, departed string, remaining map[string]bool) ([]departureWrite, []string, error) {
 	want, err := json.Marshal(departed)
 	if err != nil {
 		return nil, nil, err
 	}
+	// The LIKE is only a prefilter: the exact membership test happens in Go on
+	// the scanned value, so a longer id that merely contains departed's never
+	// matches.
+	prefilter := "%" + likeEscape(string(want)) + "%"
 	rows, err := tx.QueryContext(ctx, `SELECT a.entity_id, a.field, a.value, a.ts, COALESCE(r.value, '[]') FROM scope_fields a
 		LEFT JOIN scope_fields r ON r.scope_id = a.scope_id AND r.entity = 'task' AND r.entity_id = a.entity_id AND r.field = 'rotation'
 		WHERE a.scope_id = ? AND a.entity = 'task' AND (
-			(a.field = 'assignee_id' AND a.value = ?) OR
+			(a.field = 'assignee_ids' AND a.value LIKE ? ESCAPE '\') OR
 			(a.field = 'rotation' AND a.value LIKE ? ESCAPE '\'))
-		ORDER BY a.entity_id, a.field`, scope, string(want), "%"+likeEscape(string(want))+"%")
+		ORDER BY a.entity_id, a.field`, scope, prefilter, prefilter)
 	if err != nil {
 		return nil, nil, err
 	}
 	type hit struct {
 		id, field string
 		ts        int64
+		value     []string
 		rotation  []string
 	}
 	var hits []hit
@@ -150,9 +159,10 @@ func departureRepairs(ctx context.Context, tx *sql.Tx, scope, departed string, r
 			rows.Close()
 			return nil, nil, err
 		}
+		h.value = idList(json.RawMessage(value))
 		h.rotation = idList(json.RawMessage(rot))
-		if h.field == "rotation" && !slices.Contains(h.rotation, departed) {
-			continue // the LIKE matched a longer id
+		if !slices.Contains(h.value, departed) {
+			continue // the LIKE matched a longer id, or departed elsewhere
 		}
 		hits = append(hits, h)
 	}
@@ -163,13 +173,12 @@ func departureRepairs(ctx context.Context, tx *sql.Tx, scope, departed string, r
 	var out []departureWrite
 	var held []string
 	for _, h := range hits {
+		kept := slices.DeleteFunc(slices.Clone(h.value), func(u string) bool { return u == departed })
 		if h.field == "rotation" {
-			kept := slices.DeleteFunc(slices.Clone(h.rotation), func(u string) bool { return u == departed })
 			out = append(out, departureWrite{task: h.id, field: "rotation", value: JSONOf(kept), ts: h.ts})
 			continue
 		}
 		held = append(held, h.id)
-		value := json.RawMessage("null")
 		if len(h.rotation) > 0 {
 			rotates, err := taskRotates(ctx, tx, scope, h.id)
 			if err != nil {
@@ -179,10 +188,11 @@ func departureRepairs(ctx context.Context, tx *sql.Tx, scope, departed string, r
 			// remain (departed still counts for their own place in the order).
 			next := NextAssignee(h.rotation, departed, func(u string) bool { return u == departed || remaining[u] })
 			if rotates && next != departed && next != "" {
-				value = JSONOf(next)
+				out = append(out, departureWrite{task: h.id, field: "assignee_ids", value: JSONOf([]string{next}), ts: h.ts})
+				continue
 			}
 		}
-		out = append(out, departureWrite{task: h.id, field: "assignee_id", value: value, ts: h.ts})
+		out = append(out, departureWrite{task: h.id, field: "assignee_ids", value: JSONOf(kept), ts: h.ts})
 	}
 	return out, held, nil
 }

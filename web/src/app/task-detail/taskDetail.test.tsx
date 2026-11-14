@@ -223,7 +223,7 @@ describe('entity pickers (3.1–3.4)', () => {
     await click(v.valueButton('assignee'))
     await waitFor(() => v.options('assignee').length > 0, 'the assignee picker')
     await v.pick('assignee', 'u-bob')
-    await waitFor(async () => (await db.tasks.get(id))!.assignee_id === 'u-bob', 'the assignee written')
+    await waitFor(async () => (await db.tasks.get(id))!.assignee_ids?.[0] === 'u-bob', 'the assignee written')
     await v.unmount()
   })
 })

@@ -151,7 +151,8 @@ export function planActions(a: Actions, task: Row, ctx: PlanContext): Planned {
     } else if (!isNull(cur.start)) set('start', null)
   }
   if (a.deadline) set('deadline', a.deadline.word === 'clear' ? null : dateOf(a.deadline, ctx))
-  if (a.assignee !== undefined) set('assignee_id', a.assignee === 'me' ? ctx.userId : null)
+  // multi-assignee: 'me' assigns the run-as person alone; 'clear' empties the list.
+  if (a.assignee !== undefined) set('assignee_ids', a.assignee === 'me' ? [ctx.userId] : [])
   if (a.state !== undefined) {
     if (a.state === 'complete' && isNull(cur.completed_at)) {
       set('completed_at', ctx.nowMs)

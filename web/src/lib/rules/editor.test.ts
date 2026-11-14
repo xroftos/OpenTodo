@@ -23,7 +23,7 @@ function data(tasks: Task[]): PreviewData {
   return {
     tasks, projects: [{ id: 'p1', name: 'Errands' } as never], today: '2026-11-01',
     match: { userId: 'u', today: '2026-11-01', parent: () => null, open: () => true, tracked: () => 0 },
-    matchTask: (x) => ({ id: x.id, project_id: x.project_id, section_id: null, labels: x.labels, priority: x.priority, dueDate: null, deadline: null, start: null, evening: false, blocked_by: [], assignee_id: null, origin: null, habit: false, estimate_minutes: null }),
+    matchTask: (x) => ({ id: x.id, project_id: x.project_id, section_id: null, labels: x.labels, priority: x.priority, dueDate: null, deadline: null, start: null, evening: false, blocked_by: [], assignee_ids: [], origin: null, habit: false, estimate_minutes: null }),
   }
 }
 

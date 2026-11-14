@@ -483,6 +483,20 @@ class OpenTodoDB extends Dexie {
     // skipping a repeating task reads its own rows and not every task (lineageRows.ts).
     this.version(31).stores({ tasks: 'id, project_id, parent_id, completed_at, position, assignee_id, section_id, workspace_id, series_id, split_from.series' })
     this.version(32).stores({ habitTallies: 'id, series_id' }) // v32 (habit-targets): the synced `habit_tally` entity.
+    // v33 (multi-assignee): tasks carry `assignee_ids`, a list of member ids; the
+    // single `assignee_id` is gone (the server rejects it) and loses its index —
+    // "Assigned to me" and the Today filter read the list in JS (listGroups,
+    // sidebarCounts). The upgrade moves each old value into the list (`[id]`, or
+    // `[]` for the unassigned) and deletes the old field.
+    this.version(33).stores({ tasks: 'id, project_id, parent_id, completed_at, position, section_id, workspace_id, series_id, split_from.series' })
+      .upgrade(async (tx) => {
+        await tx.table('tasks').toCollection().modify((task: Record<string, unknown>) => {
+          if (!('assignee_id' in task)) return
+          const one = task.assignee_id
+          task.assignee_ids = typeof one === 'string' && one ? [one] : []
+          delete task.assignee_id
+        })
+      })
   }
 }
 

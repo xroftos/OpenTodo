@@ -139,7 +139,7 @@ describe('list actions', () => {
     const p = await createProject({ name: 'Work' })
     expect(taskDefaults({ view: 'project', id: p }, '2026-10-10')).toEqual({ project_id: p, due: null, labels: [] })
     expect(taskDefaults({ view: 'upcoming' }, '2026-10-31').due).toEqual({ date: '2026-11-01' })
-    expect(taskDefaults({ view: 'assigned' }, '2026-10-10', 'u1').assignee_id).toBe('u1')
+    expect(taskDefaults({ view: 'assigned' }, '2026-10-10', 'u1').assignee_ids).toEqual(['u1'])
   })
 })
 

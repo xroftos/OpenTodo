@@ -15,7 +15,7 @@ func TestRotationTools(t *testing.T) {
 	f := newFixture(t)
 	c := agent("u1")
 	f.put("u1", "project", "house", map[string]any{"name": "House"})
-	f.task("u1", "bins", "Bins", map[string]any{"project_id": "house", "recurrence": "every monday", "due": map[string]any{"date": "2026-10-12"}, "assignee_id": "u1"})
+	f.task("u1", "bins", "Bins", map[string]any{"project_id": "house", "recurrence": "every monday", "due": map[string]any{"date": "2026-10-12"}, "assignee_ids": []string{"u1"}})
 	f.task("u1", "lamp", "Lamp", map[string]any{"project_id": "house"})
 
 	// Not shared yet: refused.
@@ -53,7 +53,7 @@ func TestRotationTools(t *testing.T) {
 	}
 	// Completing passes the turn.
 	f.mustCall(c, "complete_tasks", map[string]any{"ids": []string{"bins"}})
-	if got := string(f.get("u1", "bins")["assignee_id"]); got != `"u2"` {
+	if got := string(f.get("u1", "bins")["assignee_ids"]); got != `["u2"]` {
 		t.Fatalf("after complete_tasks: assignee %s", got)
 	}
 	// null stops taking turns.

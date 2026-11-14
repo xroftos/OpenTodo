@@ -29,6 +29,15 @@ var updateSurface = flag.Bool("update", false, "add new entries to testdata/v1_s
 
 const surfaceFile = "testdata/v1_surface.json"
 
+// compatBreaks reports whether a snapshot entry's removal is a deliberate
+// fork rename (docs/stability.md, family fork exception): task-assignment
+// renamed the singular op/API field assignee_id to assignee_ids, and every
+// removed entry ends in the old field name — the new one, assignee_ids,
+// does not.
+func compatBreak(m string) bool {
+	return strings.HasSuffix(m, "assignee_id is gone (removed or renamed)")
+}
+
 // surfaceSep joins the parts of a flattened surface path.
 const surfaceSep = " › "
 
@@ -338,6 +347,9 @@ func TestV1SurfaceIsAdditive(t *testing.T) {
 	snapshot := readSurfaceFile(t)
 	d := compareSurface(snapshot, current)
 	for _, m := range d.missing {
+		if compatBreak(m) {
+			continue // a deliberate fork rename, see compatBreak above
+		}
 		t.Errorf("v1 surface: %s; the v1 surface only grows (docs/stability.md)", m)
 	}
 	for _, c := range d.changed {

@@ -24,7 +24,7 @@ import { SidebarFooter } from './SidebarFooter'
 import { useCurrentWorkspace, WorkspaceControl, WorkspaceMark } from './WorkspaceControl'
 import { buildProjectTree, collapseAllProjects, expandAllProjects, expandAncestorsOf, projectPath, rollUpCounts, siblingEdges, toggleCollapsedProject, visibleProjects, type ProjectNode, useCollapsedProjects } from '../lib/projects'
 import { flattenTree } from '../lib/tree'
-import type { Label, Project, Review, Task, User, View } from '../lib/types'
+import {Label, Project, Review, Task, User, View, type Membership} from '../lib/types'
 import { useTrackedTotals } from '../lib/timeEntries'
 import { evaluateViews, isDashboard } from '../lib/views'
 import { todayAssigneeFilter, type TodayAssigneeFilter } from '../lib/dayLists'
@@ -239,11 +239,11 @@ export function Sidebar({ route, user, onSearch, onShortcuts, onFeedback, onAssi
   // Worked out from the rows each write changed (incremental-list-updates D2); deferred and
   // parked tasks are not counted (someday-and-evening D2). The Inbox looks up parents among every live task.
   const live = liveTasks ?? openTasks
-  const countsOf = useRef(new Derived<SidebarCounts, [string, string, TodayAssigneeFilter | null, string]>(
-    (tasks, today, _zone, hide, userId) => sidebarCounts(tasks, today, hide, userId, lookups(tasks)),
-    (prev, changes, tasks, today, _zone, hide, userId) => patchSidebarCounts(prev, changes, tasks, today, hide, userId, lookups(tasks)),
+  const countsOf = useRef(new Derived<SidebarCounts, [string, string, TodayAssigneeFilter | null, string, Map<string, Membership>]>(
+    (tasks, today, _zone, hide, userId, memberships) => sidebarCounts(tasks, today, hide, userId, lookups(tasks), memberships),
+    (prev, changes, tasks, today, _zone, hide, userId, memberships) => patchSidebarCounts(prev, changes, tasks, today, hide, userId, lookups(tasks), memberships),
   )).current
-  const own = countsOf.get(live, today, zone, hide, user.id)
+  const own = countsOf.get(live, today, zone, hide, user.id, memberMap)
   const counts = useMemo(() => ({ inbox: own.inbox.size, today: own.today, assigned: own.assigned, byProject: rollUpCounts(own.own, tree, collapsed_) }), [own, tree, collapsed_])
 
   // Navigating to a sub-project reveals it: its ancestors leave the collapsed set.
@@ -692,8 +692,8 @@ function moreEntriesOf(o: { shared: boolean; reviewDot: ReactNode; reviewText: s
     { id: 'waiting', route: { view: 'waiting' }, label: t('Waiting', { context: 'method' }), icon: 'hourglass' },
     { id: 'anytime', route: { view: 'anytime' }, label: t('Anytime'), icon: 'layers' },
     { id: 'someday', route: { view: 'someday' }, label: t('Someday'), icon: 'archive' },
-    // Assigned to me only where tasks can be assigned: when the account shares a project.
-    ...(o.shared ? [{ id: 'assigned' as const, route: { view: 'assigned' } as Route, label: t('Assigned to me'), icon: 'user-check' as IconName }] : []),
+    // «Мои задачи» in every mode (multi-assignee): personal open work plus tasks assigned to the viewer.
+    { id: 'assigned', route: { view: 'assigned' } as Route, label: t('Assigned to me'), icon: 'user-check' as IconName },
     { id: 'completed', route: { view: 'completed' }, label: t('Completed'), icon: 'circle-check-big' },
     { id: 'review', route: { view: 'review' }, label: t('Review'), icon: 'clipboard-check', badge: o.reviewDot, note: o.reviewText, tip: o.reviewText },
     { id: 'stats', route: { view: 'stats' }, label: t('Statistics'), icon: 'chart-column' },

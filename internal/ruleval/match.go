@@ -10,17 +10,19 @@ import (
 // Task is the part of a task a condition reads: ids, scheduling fields and
 // enumerations only, all plaintext for every account (spec "Conditions").
 type Task struct {
-	ID         string
-	ProjectID  string
-	SectionID  string
-	Labels     []string
-	Priority   int
-	DueDate    string // the due's date in the user's zone ("" without a due)
-	Deadline   string
-	Start      string // "", "someday" or a date
-	Evening    bool
-	BlockedBy  []string
-	AssigneeID string
+	ID        string
+	ProjectID string
+	SectionID string
+	Labels    []string
+	Priority  int
+	DueDate   string // the due's date in the user's zone ("" without a due)
+	Deadline  string
+	Start     string // "", "someday" or a date
+	Evening   bool
+	BlockedBy []string
+	// Assignees are the account ids on the task (task-assignment): empty for
+	// none, order is not meaningful.
+	Assignees []string
 	// OriginKind is the origin's kind, "" without an origin, "?" for an
 	// encrypted origin (it matches neither a kind nor "none").
 	OriginKind string
@@ -110,7 +112,7 @@ func Matches(c *Condition, t Task, ctx Context) bool {
 		func() bool { return c.Start == "" || matchStart(c.Start, t.Start, ctx.Today) },
 		func() bool { return c.Evening == nil || *c.Evening == t.Evening },
 		func() bool { return c.Blocked == nil || *c.Blocked == isBlocked(t, ctx) },
-		func() bool { return c.Assignee == "" || matchAssignee(c.Assignee, t.AssigneeID, ctx.UserID) },
+		func() bool { return c.Assignee == "" || matchAssignee(c.Assignee, t.Assignees, ctx.UserID) },
 		func() bool { return c.Origin == nil || matchOrigin(c.Origin, t.OriginKind) },
 		func() bool { return c.Habit == nil || *c.Habit == t.Habit },
 		func() bool { return c.Estimate == nil || matchMinutes(c.Estimate, t.Estimate) },
@@ -234,14 +236,16 @@ func isBlocked(t Task, ctx Context) bool {
 	return false
 }
 
-func matchAssignee(want, assignee, me string) bool {
+// matchAssignee reads the assignee list (task-assignment): me is on it, none
+// is an empty list, anyone a non-empty one.
+func matchAssignee(want string, assignees []string, me string) bool {
 	switch want {
 	case "me":
-		return assignee != "" && assignee == me
+		return slices.Contains(assignees, me)
 	case "none":
-		return assignee == ""
+		return len(assignees) == 0
 	case "anyone":
-		return assignee != ""
+		return len(assignees) > 0
 	}
 	return false
 }

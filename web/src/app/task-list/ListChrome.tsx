@@ -296,7 +296,7 @@ const EMPTY_COPY: Record<EmptyView, EmptyCopy> = {
   upcoming: { get title() { return t('Nothing scheduled yet.') } },
   anytime: { get title() { return t('Nothing waiting for a free moment.') } },
   someday: { get title() { return t('Nothing parked for later.') } },
-  assigned: { get title() { return t('Nothing is assigned to you.') }, action: 'inbox' },
+  assigned: { get title() { return t('Nothing open of your own here, and nothing assigned to you.') }, action: 'inbox' },
   project: { get title() { return t('This project has no open tasks.') } },
   label: { get title() { return t('No open task carries this label.') } },
   place: { get title() { return t('No open task happens at this location.') } },

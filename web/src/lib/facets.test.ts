@@ -8,7 +8,7 @@ import type { Label, Task } from './types'
 const TODAY = '2026-10-14'
 const base: Task = {
   id: 't', title: 'Report', description: '', project_id: null, parent_id: null, section_id: null, priority: 4, due: null, labels: [], position: 0,
-  created_at: 0, updated_at: 0, completed_at: null, deleted_at: null, recurrence: null, estimate_minutes: null, assignee_id: null, _clock: {},
+  created_at: 0, updated_at: 0, completed_at: null, deleted_at: null, recurrence: null, estimate_minutes: null, assignee_ids: [], _clock: {},
 } as unknown as Task
 const ctx = (over: Partial<FacetContext> = {}): FacetContext => ({ local: null, projectName: 'Inbox', labels: [], reminders: 0, blockerTitles: [], blocks: 0, today: TODAY, ...over })
 const texts = (parts: { text: string }[]) => parts.map((p) => p.text)
@@ -38,10 +38,10 @@ describe('facetsOf', () => {
   })
 
   it('the full task reads as four lines', () => {
-    const task = { ...base, priority: 2, due: { date: '2026-10-15', time: '09:00' }, recurrence: 'every 3 months', deadline: '2026-10-23', start: '2026-10-12', estimate_minutes: 120, assignee_id: 'me', blocked_by: ['b'] } as Task
+    const task = { ...base, priority: 2, due: { date: '2026-10-15', time: '09:00' }, recurrence: 'every 3 months', deadline: '2026-10-23', start: '2026-10-12', estimate_minutes: 120, assignee_ids: ['me'], blocked_by: ['b'] } as Task
     const f = facetsOf(task, ctx({
       local: { date: '2026-10-15', time: '09:00' }, projectName: 'Website launch', sectionName: 'Doing', reminders: 2,
-      labels: [label('l1', 'finance'), label('l2', 'deck'), label('l3', 'deep-work')], assigneeName: 'You', blockerTitles: ['Collect the numbers'],
+      labels: [label('l1', 'finance'), label('l2', 'deck'), label('l3', 'deep-work')], assignees: ['You'], blockerTitles: ['Collect the numbers'],
     }))
     expect(texts(f.where)).toEqual(['Website launch', 'Doing'])
     expect(f.where[1].sep).toBe('chevron')

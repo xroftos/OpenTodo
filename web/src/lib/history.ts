@@ -79,11 +79,11 @@ export async function restoreValue(entity: 'task' | 'project', id: string, field
 }
 
 /** Reference fields whose ids the timeline shows by name, and their labels. */
-const REF_LABELS = translatedMap<string>({ assignee_id: msg('assignee'), project_id: msg('project'), section_id: msg('section'), parent_id: msg('parent') })
+const REF_LABELS = translatedMap<string>({ assignee_ids: msg('assignee'), project_id: msg('project'), section_id: msg('section'), parent_id: msg('parent') })
 /** Labels of fields whose name alone reads badly. */
 const FIELD_LABELS = translatedMap<string>({ blocked_by: msg('waiting for'), description: msg('notes'), notes_doc: msg('notes'), origin: msg('origin'), day_part: msg('part of the day'), sector: msg('time sector') })
 
-/** The label of a field in the timeline (`assignee_id` reads as "assignee"). */
+/** The label of a field in the timeline (`assignee_ids` reads as "assignee"). */
 export function fieldLabel(field: string): string {
   return REF_LABELS[field] ?? FIELD_LABELS[field] ?? fieldValueLabel(field) ?? field.replace(/_/g, ' ')
 }
@@ -109,6 +109,8 @@ export function formatValue(field: string, value: unknown, names?: (field: strin
   // A task's origin (task-origin D12): its id or host, "Email" for a mail.
   if (field === 'origin' && typeof value === 'object') return originText(value as Origin)
   if (field === 'estimate_minutes' && typeof value === 'number') return t('{value} min', { value })
+  // multi-assignee: the assignees as names (people, like the other reference fields).
+  if (field === 'assignee_ids' && Array.isArray(value) && names) return value.length ? value.map((id) => names(field, String(id)) ?? t('unknown')).join(', ') : '—'
   if (field === 'blocked_by' && Array.isArray(value) && names) return value.length ? value.map((id) => names('parent_id', String(id)) ?? t('unknown')).join(', ') : '—'
   if (Array.isArray(value)) return value.length ? t('{n, plural, one {# item} other {# items}}', { n: value.length }) : '—'
   if (typeof value === 'boolean') return value ? t('yes') : t('no')

@@ -26,7 +26,12 @@ const (
 // allowFunc lists functions that may stay longer than maxFuncLines, as
 // "path/from/internal.go:Recv.Name" (or ":Name") with the reason. Keep it short
 // and say why a split would not make the code easier to read.
-var allowFunc = map[string]string{}
+var allowFunc = map[string]string{
+	// task-assignment: create_tasks validates items, resolves assignees
+	// (ids or names) and plans ops in one pass; a split would scatter the
+	// item schema checks away from their error messages.
+	"agenttools/write_tasks.go:Registry.planCreateTasks": "single validation pass over created items",
+}
 
 // allowFile lists files that may stay longer than maxFileLines, with the reason.
 var allowFile = map[string]string{}

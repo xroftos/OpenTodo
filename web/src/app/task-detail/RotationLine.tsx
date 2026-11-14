@@ -5,7 +5,7 @@
 import { Fragment } from 'react'
 import { useMembershipMap } from '../../lib/localData'
 import { activeRotation, memberSet } from '../../lib/rotation'
-import type { Task } from '../../lib/types'
+import { isAssignedTo, type Task } from '../../lib/types'
 import { Icon } from '../../ui'
 import { t } from '../../lib/i18n'
 
@@ -26,7 +26,7 @@ export function RotationLine({ task, userId, as: Tag = 'p', className = '' }: { 
         {t('Takes turns:')}{' '}
         {list.map((id, i) => {
           const n = name(id)
-          const now = id === task.assignee_id
+          const now = isAssignedTo(task, id)
           return (
             <Fragment key={id}>
               {i > 0 && <Icon name="arrow-right" size={10} className="mx-1 inline align-baseline text-faint" />}

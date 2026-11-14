@@ -12,7 +12,7 @@ func TestAgentRouteAllowedMirrorsServer(t *testing.T) {
 	}{
 		{"POST", "/tasks", map[string]any{"title": "x"}, true},
 		{"PATCH", "/tasks/t", map[string]any{"fields": map[string]any{"f": 1}}, true},
-		{"PATCH", "/tasks/t", map[string]any{"assignee_id": nil}, false},
+		{"PATCH", "/tasks/t", map[string]any{"assignee_ids": []string{}}, false},
 		{"PATCH", "/projects/p", map[string]any{"description": "n", "icon": nil, "parent_id": "q"}, true},
 		{"PATCH", "/projects/p", map[string]any{"archived": true}, true},
 		{"PATCH", "/projects/p", map[string]any{"archived": true, "name": "x"}, false},

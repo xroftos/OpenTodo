@@ -417,7 +417,7 @@ export class RunState {
     return {
       id: str(t, 'id'), project_id: str(t, 'project_id') || null, section_id: str(t, 'section_id') || null, labels: list('labels'),
       priority: num(t, 'priority'), dueDate, deadline: str(t, 'deadline') || null, start: str(t, 'start') || null, evening: t.evening === true,
-      blocked_by: list('blocked_by'), assignee_id: str(t, 'assignee_id') || null, origin: t.origin ?? null, habit: t.habit === true,
+      blocked_by: list('blocked_by'), assignee_ids: list('assignee_ids'), origin: t.origin ?? null, habit: t.habit === true,
       estimate_minutes: typeof t.estimate_minutes === 'number' ? t.estimate_minutes : null,
     }
   }

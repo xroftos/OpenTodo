@@ -200,7 +200,7 @@ describe('Statistics dashboard', () => {
 
 describe('accessible charts', () => {
   it('Keyboard through the heatmap: two left arrows move two days back and the tooltip reads the day', async () => {
-    const tasks = Array.from({ length: 5 }, (_, i) => ({ id: `t${i}`, title: 't', project_id: null, completed_at: at(12), created_at: at(1), deleted_at: null, due: null, series_id: null, assignee_id: null, estimate_minutes: null, labels: [] }))
+    const tasks = Array.from({ length: 5 }, (_, i) => ({ id: `t${i}`, title: 't', project_id: null, completed_at: at(12), created_at: at(1), deleted_at: null, due: null, series_id: null, assignee_ids: [], estimate_minutes: null, labels: [] }))
     const r = await render(<StatsContent tasks={tasks as never} projects={[]} memberships={[]} me="u1" today="2026-10-14" weekStart={1} period="this-week" />)
     const grid = r.container.querySelector('[data-panel="heatmap"] [role="grid"]')!
     const active = () => grid.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')!
@@ -217,7 +217,7 @@ describe('accessible charts', () => {
   })
 
   it('Screen reader: the heatmap has a summary, and "Show as table" exposes one row per month', async () => {
-    const tasks = [12, 13].map((d, i) => ({ id: `t${i}`, title: 't', project_id: null, completed_at: at(d), created_at: at(1), deleted_at: null, due: null, series_id: null, assignee_id: null, estimate_minutes: null, labels: [] }))
+    const tasks = [12, 13].map((d, i) => ({ id: `t${i}`, title: 't', project_id: null, completed_at: at(d), created_at: at(1), deleted_at: null, due: null, series_id: null, assignee_ids: [], estimate_minutes: null, labels: [] }))
     const r = await render(<StatsContent tasks={tasks as never} projects={[]} memberships={[]} me="u1" today="2026-10-14" weekStart={1} period="this-week" />)
     const fig = r.container.querySelector('[data-panel="heatmap"]')!
     const summary = fig.querySelector('[role="grid"]')!.getAttribute('aria-label')!
@@ -238,7 +238,7 @@ describe('accessible charts', () => {
   })
 
   it('Colour not alone: completed and created differ by line style, and the legend names both', async () => {
-    const tasks = [{ id: 'a', title: 'a', project_id: null, completed_at: at(13), created_at: at(12), deleted_at: null, due: null, series_id: null, assignee_id: null, estimate_minutes: null, labels: [] }]
+    const tasks = [{ id: 'a', title: 'a', project_id: null, completed_at: at(13), created_at: at(12), deleted_at: null, due: null, series_id: null, assignee_ids: [], estimate_minutes: null, labels: [] }]
     const r = await render(<StatsContent tasks={tasks as never} projects={[]} memberships={[]} me="u1" today="2026-10-14" weekStart={1} period="this-week" />)
     const fig = r.container.querySelector('[data-panel="keeping-up"]')!
     expect(fig.querySelector('[data-series="a"]')!.getAttribute('stroke-dasharray')).toBeNull()

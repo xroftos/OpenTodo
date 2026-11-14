@@ -431,7 +431,7 @@ func (fp *foreignPlan) taskFields(row Row, projectID, parentID string, due *Due)
 		fields = append(fields, field{"origin", raw(row.Origin)})
 	}
 	if row.AssignSelf && pl.st.UserID != "" {
-		fields = append(fields, field{"assignee_id", raw(pl.st.UserID)})
+		fields = append(fields, field{"assignee_ids", raw([]string{pl.st.UserID})})
 	}
 	if row.Completed {
 		at := row.CompletedAt

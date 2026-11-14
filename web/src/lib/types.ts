@@ -128,11 +128,17 @@ export interface Task extends TaskFields {
    */
   split_from?: SplitFrom | null
   /**
-   * Account id of the assignee or null (OpenSpec `task-assignment`). The server
-   * accepts only a current member of the task's shared project, or the author for
-   * a personal task, and refuses anything else with reason `not_a_member`.
+   * The accounts assigned to the task (multi-assignee): zero, one or several member
+   * ids of the task's shared project (or the author alone for a personal task). The
+   * server accepts only current members of the task's shared project, or the author
+   * for a personal task, and refuses anything else with reason `not_a_member`; it
+   * rejects the single `assignee_id` of the old task-assignment. Ops carry the field
+   * only when at least one member is assigned (an empty list is the default), so a
+   * cleared assignment is written as the default too. Optional on rows stored before
+   * the field (and on rows migrated off `assignee_id`); read it through
+   * {@link assigneeIdsOf}, never directly.
    */
-  assignee_id: string | null
+  assignee_ids?: string[]
   /**
    * Section of the task's project or null (OpenSpec `board-view`). A reference to a
    * deleted section, a section of another project or one not received yet is shown
@@ -1846,8 +1852,28 @@ export const PROJECT_FIELDS = ['name', 'color', 'position', 'archived', 'parent_
 export const TASK_FIELDS = [
   'title', 'description', 'project_id', 'parent_id', 'priority', 'due', 'labels',
   'position', 'created_at', 'completed_at', 'deleted_at', 'estimate_minutes', 'recurrence', 'series_id',
-  'assignee_id', 'section_id', 'notes_doc', 'deadline', 'start', 'evening', 'span', 'blocked_by', 'completed_by', 'note_mentions',
+  'assignee_ids', 'section_id', 'notes_doc', 'deadline', 'start', 'evening', 'span', 'blocked_by', 'completed_by', 'note_mentions',
 ] as const
+
+/**
+ * The task's assignees as a list (multi-assignee): the stored `assignee_ids` when the
+ * row holds one, `[]` otherwise (rows stored before the field, and rows migrated off
+ * the single `assignee_id`). Every read of who is assigned goes through here.
+ */
+export function assigneeIdsOf(task?: { assignee_ids?: string[] } | null): readonly string[] {
+  const ids = task?.assignee_ids
+  return Array.isArray(ids) ? ids : []
+}
+
+/** True when `userId` (the signed-in account usually) is one of the task's assignees. */
+export function isAssignedTo(task?: { assignee_ids?: string[] } | null, userId?: string | null): boolean {
+  return !!userId && assigneeIdsOf(task).includes(userId)
+}
+
+/** True when nobody is assigned. */
+export function isUnassigned(task?: { assignee_ids?: string[] } | null): boolean {
+  return assigneeIdsOf(task).length === 0
+}
 export const SECTION_FIELDS = ['name', 'project_id', 'position', 'created_at', 'deleted_at'] as const
 export const LABEL_FIELDS = ['name', 'color', 'position', 'created_at', 'deleted_at'] as const
 

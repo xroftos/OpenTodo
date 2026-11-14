@@ -200,7 +200,7 @@ export async function forgetRejected(sent: Op[], rejected: Rejection[]): Promise
         // fall back to "unassigned", which is what every other device shows. The
         // same for blockers refused as a cycle or another scope (task-dependencies):
         // the restore op, if the server has a value, follows in the same response.
-        const reset = op.entity === 'task' && op.field === 'assignee_id' ? { assignee_id: null }
+        const reset = op.entity === 'task' && op.field === 'assignee_ids' ? { assignee_ids: [] }
           : op.entity === 'task' && op.field === 'blocked_by' ? { blocked_by: [] } : {}
         await table.put({ ...row, ...reset, _clock: clock })
       }

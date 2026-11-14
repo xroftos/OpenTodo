@@ -13,7 +13,7 @@ function task(id: string, extra: Partial<Task> = {}): Task {
   return {
     id, title: id, description: '', project_id: null, parent_id: null, priority: 4, due: { date: '2026-10-30' }, labels: [],
     position: 0, created_at: NOW - 200 * DAY, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null,
-    series_id: null, assignee_id: null, section_id: null, ical_extra: null, _clock: {}, ...extra,
+    series_id: null, assignee_ids: [], section_id: null, ical_extra: null, _clock: {}, ...extra,
   }
 }
 let n = 0

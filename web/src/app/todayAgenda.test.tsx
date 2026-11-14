@@ -161,7 +161,7 @@ describe('the option', () => {
         { userId: 'sam', name: 'Sam', email: 'sam@example.com', role: 'editor' },
       ],
     })
-    await createTask({ title: 'Sam task', due: { date: '2026-10-22' }, project_id: 'shared', assignee_id: 'sam' })
+    await createTask({ title: 'Sam task', due: { date: '2026-10-22' }, project_id: 'shared', assignee_ids: ['sam'] })
     const r = await openToday()
     await waitFor(() => r.container.textContent?.includes('Sam task') === true)
     await click(menu())

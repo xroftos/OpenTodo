@@ -194,7 +194,7 @@ func TestToolSurfaceIsClosed(t *testing.T) {
 			}
 		}
 		raw, _ := json.Marshal(d.InputSchema)
-		for _, bad := range []string{`"assignee_id"`, `"mentions"`, `"author_id"`, `"deleted_at"`, `"archived"`} {
+		for _, bad := range []string{`"assignee_ids"`, `"mentions"`, `"author_id"`, `"deleted_at"`, `"archived"`} {
 			if bytes.Contains(raw, []byte(bad)) && !(archiver && bad == `"archived"`) {
 				t.Fatalf("tool %q accepts %s", d.Name, bad)
 			}
@@ -456,7 +456,7 @@ func TestCreateTasksPlan(t *testing.T) {
 		`{"items":[{"title":"x","due":{"date":"tomorrow"}}]}`,
 		`{"items":[{"title":"x","labels":["nope"]}]}`,
 		`{"items":[{"title":"x","section_id":"s1"}]}`,
-		`{"items":[{"title":"x","assignee_id":"u2"}]}`,
+		`{"items":[{"title":"x","assignees":"u2"}]}`,
 		`{"items":[{"title":"x","recurrence":"whenever"}]}`,
 		`{"items":[]}`,
 		`{"items":[{"title":"x"}],"extra":1}`,
@@ -514,7 +514,7 @@ func TestUpdateTasksRejectsUnknownField(t *testing.T) {
 	for _, bad := range []map[string]any{
 		{"id": "t1", "due": map[string]any{"date": "2026-10-13"}},
 		{"id": "t1", "project_id": nil},
-		{"id": "t1", "assignee_id": "u2"},
+		{"id": "t1", "assignees": []string{"u2"}},
 		{"id": "t1", "deleted_at": 1},
 		{"id": "t1", "completed_at": 1},
 		{"id": "t1"},

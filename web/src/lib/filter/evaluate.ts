@@ -7,7 +7,7 @@ import { blockedMap } from '../dependencies'
 import { currentDateTime, currentDayStart, localDueOf } from '../dates'
 import { descendants } from '../tree'
 import { applicableFieldsLookup } from '../fieldTree'
-import type { FieldDef, FieldValue, Label, Project, Section, Task } from '../types'
+import {FieldDef, FieldValue, Label, Project, Section, Task, assigneeIdsOf, isAssignedTo} from '../types'
 import { availability, type FlowState } from '../flow'
 import { originMatches, originOf } from '../taskOrigin'
 import { fieldValueText, FilterSyntaxError, parse, resolveRange, shiftISO, type Cmp, type DateRange, type Node } from './parse'
@@ -243,7 +243,7 @@ function assignedTo(name: string, ctx: FilterContext, warn: (message: string) =>
   if (name.toLocaleLowerCase() === 'me') {
     const me = ctx.me
     if (!me) return NEVER
-    return (task) => task.assignee_id === me
+    return (task) => isAssignedTo(task, me)
   }
   const key = nameKey(name)
   const ids = (ctx.members ?? []).filter((m) => nameKey(m.name) === key || nameKey(m.email) === key).map((m) => m.userId)
@@ -252,7 +252,7 @@ function assignedTo(name: string, ctx: FilterContext, warn: (message: string) =>
     return NEVER
   }
   const set = new Set(ids)
-  return (task) => task.assignee_id !== null && set.has(task.assignee_id)
+  return (task) => assigneeIdsOf(task).some((id) => set.has(id))
 }
 
 export function compile(ast: Node, given: FilterContext): CompiledFilter {
@@ -459,8 +459,8 @@ export function compile(ast: Node, given: FilterContext): CompiledFilter {
           case 'no sector': return (task) => !isSector(task.sector)
           case 'carried': return (task) => isCarried(task.sector ?? '', today, weekStart)
           // A note of only whitespace is no note (notes-overview D5).
-          case 'assigned': return (task) => !!task.assignee_id
-          case 'unassigned': return (task) => !task.assignee_id
+          case 'assigned': return (task) => assigneeIdsOf(task).length > 0
+          case 'unassigned': return (task) => assigneeIdsOf(task).length === 0
           case 'notes': return (task) => (task.description ?? '').trim() !== ''
           case 'no notes': return (task) => (task.description ?? '').trim() === ''
           // At least one minute of live tracked time (time-tracking D9).

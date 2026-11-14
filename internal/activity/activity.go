@@ -218,6 +218,13 @@ func finish(g *group, commentTask map[string]string) (Event, bool) {
 	}
 	has := func(f string) bool { return g.changes[f] != nil }
 	isNull := func(f string) bool { return string(g.changes[f].To) == "null" }
+	listLen := func(f string) int {
+		var l []string
+		if c := g.changes[f]; c != nil {
+			_ = json.Unmarshal(c.To, &l)
+		}
+		return len(l)
+	}
 	switch ev.Entity {
 	case "comment":
 		ev.TaskID = commentTask[ev.EntityID]
@@ -243,8 +250,10 @@ func finish(g *group, commentTask map[string]string) (Event, bool) {
 			ev.Kind = pick(isNull("deleted_at"), KindRestored, KindDeleted)
 		case has("due"):
 			ev.Kind = KindRescheduled
-		case has("assignee_id"):
-			ev.Kind = pick(isNull("assignee_id"), KindUnassigned, KindAssigned)
+		case has("assignee_ids"):
+			// Unassigned is an emptied list; a change that adds or drops one
+			// member of a still-assigned task reads as assigned.
+			ev.Kind = pick(listLen("assignee_ids") == 0, KindUnassigned, KindAssigned)
 		case has("project_id"):
 			ev.Kind = KindMoved
 		case has("blocked_by"):

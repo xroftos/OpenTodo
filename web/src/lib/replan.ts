@@ -7,7 +7,7 @@ import { blockFor, DEFAULT_BLOCK_MINUTES, eventBlocks, formatTime, SLOT_MINUTES 
 import { addDaysISO, dueFromView } from './dates'
 import type { Change } from './ops'
 import { canEditTask } from './sharing'
-import type { CalendarEvent, Due, Membership, Project, Task } from './types'
+import { assigneeIdsOf, type CalendarEvent, type Due, type Membership, type Project, type Task } from './types'
 
 export interface ReplanTasksInput {
   /** The logical today (date-time-preferences "Logical today"). */
@@ -66,7 +66,8 @@ function todayBlocks(input: Pick<ReplanTasksInput, 'tasks' | 'projects' | 'today
 /** Whether a block may be moved by this person (design D1): editable, not someone else's, not being worked on. */
 function movable(tk: Task, input: ReplanTasksInput): boolean {
   if (!canEditTask(tk, input.memberships)) return false
-  if (tk.project_id && input.memberships.has(tk.project_id) && tk.assignee_id && tk.assignee_id !== input.me) return false
+  const who = assigneeIdsOf(tk)
+  if (tk.project_id && input.memberships.has(tk.project_id) && who.length && !(input.me && who.includes(input.me))) return false
   return tk.id !== input.runningTaskId
 }
 

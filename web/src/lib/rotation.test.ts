@@ -18,7 +18,7 @@ describe('rotation vectors (shared with internal/sync/rotation_test.go)', () => 
 
 describe('rotation in effect', () => {
   const two = new Set(['alice', 'bob'])
-  const series = { id: 's', recurrence: 'every monday', parent_id: null, rotation: ['alice', 'bob'], assignee_id: 'alice' } as unknown as Task
+  const series = { id: 's', recurrence: 'every monday', parent_id: null, rotation: ['alice', 'bob'], assignee_ids: ['alice'] } as unknown as Task
   it('needs a rule, a top-level task and two members', () => {
     expect(canRotate(series, two)).toBe(true)
     expect(canRotate({ ...series, recurrence: null }, two)).toBe(false)

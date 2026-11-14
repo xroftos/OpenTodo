@@ -91,7 +91,7 @@ func TestNotificationsNeverShowCiphertext(t *testing.T) {
 	rec := &recordingSink{s: f.s}
 	f.s.AddSink(rec)
 	f.apply("alice", "A", f.op("task", "t1", "title", quoted(envelope(40, 5))))
-	f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"bob"`))
+	f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["bob"]`))
 	if len(rec.events) != 1 {
 		t.Fatalf("events = %+v", rec.events)
 	}

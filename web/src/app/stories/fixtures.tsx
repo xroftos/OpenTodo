@@ -150,7 +150,7 @@ export const withClock: Decorator = (Story) => {
 
 export const task = (over: Partial<Task> & { id: string; title: string }): Task => ({
   description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 0,
-  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, _clock: {}, ...over,
+  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], _clock: {}, ...over,
 } as Task)
 
 export const project = (over: Partial<Project> & { id: string; name: string; color: string }): Project => ({

@@ -6,6 +6,7 @@ package digest
 
 import (
 	"encoding/json"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -28,7 +29,7 @@ type Task struct {
 	Deleted     bool
 	Due         string // the due date, YYYY-MM-DD, or ""
 	SeriesID    string
-	AssigneeID  string
+	Assignees   []string
 	CompletedBy string
 	Skipped     bool
 	// Sample marks a start guide sample task (OpenSpec change
@@ -168,8 +169,8 @@ func (in Input) dayOf(ms int64) string {
 }
 
 // mine: every row outside shared projects; in a shared project the account
-// that completed it when recorded, otherwise the assignee, or the user when
-// unassigned.
+// that completed it when recorded, otherwise the user when they are among the
+// assignees, or when the task is unassigned.
 func (in Input) mine(t Task) bool {
 	if _, shared := in.Shared[t.ProjectID]; t.ProjectID == "" || !shared {
 		return true
@@ -177,7 +178,7 @@ func (in Input) mine(t Task) bool {
 	if t.CompletedAt != nil && t.CompletedBy != "" {
 		return t.CompletedBy == in.Me
 	}
-	return t.AssigneeID == "" || t.AssigneeID == in.Me
+	return len(t.Assignees) == 0 || slices.Contains(t.Assignees, in.Me)
 }
 
 // Counted are the rows statistics see: live, not in a trashed project, not a
@@ -303,7 +304,7 @@ func (in Input) WithoutNextAction() []Project {
 		return false
 	}
 	deferred := func(t Task) bool { return t.Start != "" && t.Start != "someday" && t.Start > in.Today }
-	delegated := func(t Task) bool { return t.AssigneeID != "" && t.AssigneeID != in.Me }
+	delegated := func(t Task) bool { return len(t.Assignees) > 0 && !slices.Contains(t.Assignees, in.Me) }
 	planned := map[string]bool{} // something actionable, waiting or deferred
 	for _, t := range in.Tasks {
 		if !open(t) || t.ParentID != "" || t.ProjectID == "" {
@@ -357,7 +358,9 @@ func TaskOf(e opsync.Entity) Task {
 	}
 	t.Due = due.Date
 	t.SeriesID = str(e, "series_id")
-	t.AssigneeID = str(e, "assignee_id")
+	if v, ok := e["assignee_ids"]; ok && string(v) != "null" {
+		_ = json.Unmarshal(v, &t.Assignees)
+	}
 	t.CompletedBy = str(e, "completed_by")
 	if v, ok := e["skipped"]; ok {
 		_ = json.Unmarshal(v, &t.Skipped)

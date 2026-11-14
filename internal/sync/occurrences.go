@@ -246,11 +246,15 @@ func recordFields(row Entity, id, from, date string, now int64) map[string]json.
 		}
 	}
 	// Only sent when set, like the client: the column (board-view), the part of
-	// the day (day-parts D2), the energy (task-energy), the assignee and the place.
-	for _, f := range []string{"section_id", "day_part", "energy", "assignee_id"} {
+	// the day (day-parts D2), the energy (task-energy) and the place.
+	for _, f := range []string{"section_id", "day_part", "energy"} {
 		if v := idValue(row[f]); v != "" {
 			rec[f] = JSONOf(v)
 		}
+	}
+	// The assignees (task-assignment), only when there are any.
+	if list := idList(row["assignee_ids"]); len(list) > 0 {
+		rec["assignee_ids"] = JSONOf(list)
 	}
 	if loc := row["location"]; !IsNull(loc) && !encrypted {
 		rec["location"] = loc

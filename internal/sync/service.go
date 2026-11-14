@@ -224,7 +224,7 @@ const (
 	// ReasonScopeChange: a task's project_id would move it into another sharing
 	// scope; clients copy the task and tombstone the original instead.
 	ReasonScopeChange = "scope_change"
-	// ReasonNotAMember: a task's assignee_id names an account that may not be
+	// ReasonNotAMember: a task's assignee_ids names an account that may not be
 	// assigned in the task's scope (OpenSpec change task-assignment, design D2):
 	// not a current member of the shared project, or not the author for a task in
 	// a personal scope.

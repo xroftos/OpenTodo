@@ -53,7 +53,7 @@ function task(id: string, extra: Partial<Task> = {}): Task {
   return {
     id, title: id, description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [],
     position: 0, created_at: 1, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null,
-    series_id: null, assignee_id: null, section_id: null, ical_extra: null, _clock: {}, ...extra,
+    series_id: null, assignee_ids: [], section_id: null, ical_extra: null, _clock: {}, ...extra,
   }
 }
 const project = (id: string, name = id, extra: Partial<Project> = {}): Project =>
@@ -148,7 +148,7 @@ describe('review steps', () => {
 
   it('Waiting lists what is delegated or blocked, Someday what is parked, oldest first', () => {
     const s = steps([
-      task('tap', { project_id: 'p', assignee_id: 'ana' }), task('parts', { project_id: 'p' }), task('fit', { project_id: 'p', blocked_by: ['parts'] }),
+      task('tap', { project_id: 'p', assignee_ids: ['ana'] }), task('parts', { project_id: 'p' }), task('fit', { project_id: 'p', blocked_by: ['parts'] }),
       task('bread', { project_id: 'p', start: 'someday', created_at: 50 }), task('italian', { start: 'someday', created_at: 10 }),
     ], [project('p')])
     expect(s.waiting.map((x) => x.id)).toEqual(['tap', 'fit'])

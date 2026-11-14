@@ -15,7 +15,7 @@ function task(over: Partial<Task> = {}): Task {
   return {
     id: over.id ?? `t${n}`, title: over.title ?? `Task ${n}`, notes: '', project_id: null, section_id: null, parent_id: null, position: n,
     priority: 4, due: null, deadline: null, start: null, labels: [], completed_at: null, deleted_at: null, created_at: n, updated_at: n,
-    assignee_id: null, ...over,
+    assignee_ids: [], ...over,
   } as Task
 }
 const project = (id: string, position: number, over: Partial<Project> = {}) => ({ id, name: id.toUpperCase(), position, archived: false, deleted_at: null, ...over }) as Project
@@ -45,7 +45,7 @@ describe('tasksForView', () => {
     const older = task({ title: 'Older', completed_at: 1 })
     const newer = task({ title: 'Newer', completed_at: 2 })
     const skipped = task({ title: 'Skipped', completed_at: 3, skipped: true })
-    const mine = task({ title: 'Mine', assignee_id: 'u1' })
+    const mine = task({ title: 'Mine', assignee_ids: ['u1'] })
     expect(tasksForView({ view: 'completed' }, [older, skipped, newer], [], TODAY).map((t) => t.title)).toEqual(['Newer', 'Older'])
     expect(tasksForView({ view: 'assigned' }, [mine], [], TODAY, 'u1').map((t) => t.title)).toEqual(['Mine'])
     expect(tasksForView({ view: 'assigned' }, [mine], [], TODAY)).toEqual([])

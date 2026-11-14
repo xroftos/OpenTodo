@@ -12,7 +12,7 @@ import { getDeviceId, planCompletePlain, planProjectChange, type Change } from '
 import { planCompletion, seriesRule, skipsInstead } from './recurring'
 import { assignableIn, canEditTask, currentUserId, membershipMap, scopeOf } from './sharing'
 import { descendants } from './tree'
-import type { Membership, Priority, Task } from './types'
+import {Membership, Priority, Task, assigneeIdsOf, isAssignedTo} from './types'
 import { applyBatch } from './undo'
 import { t } from './i18n'
 import { isNoPriority, priorityName } from './priority'
@@ -134,7 +134,10 @@ export function planMove(tasks: readonly Task[], all: Task[], target: MoveTarget
 }
 
 export function planAssign(tasks: readonly Task[], userId: string | null): Change[] {
-  return tasks.filter((task) => (task.assignee_id ?? null) !== userId).map((tk) => ({ entity: 'task', entityId: tk.id, patch: { assignee_id: userId } }))
+  // multi-assignee: assigning one member replaces the list; unassigning writes the default (empty list).
+  return tasks
+    .filter((task) => (userId ? (!isAssignedTo(task, userId) || assigneeIdsOf(task).length !== 1) : assigneeIdsOf(task).length > 0))
+    .map((tk) => ({ entity: 'task', entityId: tk.id, patch: userId ? { assignee_ids: [userId] } : { assignee_ids: [] } }))
 }
 
 /**

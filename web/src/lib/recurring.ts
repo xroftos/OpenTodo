@@ -13,7 +13,7 @@ import type { Change } from './ops'
 import { bounded, lineageOf, pieceEnd } from './lineage'
 import { followingOccurrence, parseRule, type Rule } from './recurrence'
 import { turnAfterCompletion } from './rotation'
-import type { Due, Task } from './types'
+import { assigneeIdsOf, type Due, type Task } from './types'
 
 /** The parsed rule of an open, live series, or null when `task` is not one. */
 export function seriesRule(task: Task | undefined): Rule | null {
@@ -213,7 +213,8 @@ export function recordFields(series: Task, date: string, now: number, today: str
     ...(series.day_part ? { day_part: series.day_part } : {}),
     // And the energy (task-energy); only sent when set.
     ...(series.energy ? { energy: series.energy } : {}),
-    ...(series.assignee_id ? { assignee_id: series.assignee_id } : {}),
+    // The record keeps the assignees (multi-assignee); none needs no op.
+    ...(assigneeIdsOf(series).length ? { assignee_ids: [...assigneeIdsOf(series)] } : {}),
     ...(series.location ? { location: series.location } : {}),
     // Custom field values, null included, as the server's record (custom-fields);
     // mutateMany writes one `fields.<id>` op each.
@@ -288,10 +289,10 @@ export function planCompletion(
   }
 }
 
-/** The series' patch with the next assignee of its rotation, when the turn passes. */
+/** The series' patch with the next assignee of its rotation, when the turn passes (multi-assignee: the next person becomes the one assignee). */
 function withTurn(patch: Record<string, unknown>, at: Task, members: ReadonlySet<string> | undefined): Record<string, unknown> {
   const next = turnAfterCompletion(at, members)
-  return next ? { ...patch, assignee_id: next } : patch
+  return next ? { ...patch, assignee_ids: [next] } : patch
 }
 
 /** Skips never count towards `for N times` (a negative count never reaches the end). */

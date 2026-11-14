@@ -1,3 +1,4 @@
+import { assigneeIdsOf } from '../types'
 // The groups of the Next and Waiting views (OpenSpec change open-loops-method,
 // spec method-views): Next by context, Waiting by person then blockers. Pure; a
 // task can be in several Next groups, so rows are keyed by group and task.
@@ -44,9 +45,12 @@ export function waitingGroups(input: MethodInput): MethodGroup[] {
   const blocked: Task[] = []
   for (const task of waitingTasks(input)) {
     if (rules.delegated(task)) {
-      const list = people.get(task.assignee_id!) ?? []
-      list.push(task)
-      people.set(task.assignee_id!, list)
+      // A task with several assignees waits under each of them (multi-assignee).
+      for (const id of assigneeIdsOf(task)) {
+        const list = people.get(id) ?? []
+        list.push(task)
+        people.set(id, list)
+      }
     } else blocked.push(task)
   }
   const nameOf = (id: string) => memberName(id, memberships) ?? t('Someone else')

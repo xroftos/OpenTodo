@@ -115,7 +115,7 @@ func TestTaskPageLiveRead(t *testing.T) {
 		out["rights"] != "tick" || out["serverTime"] == nil || out["mode"] != "live" {
 		t.Fatalf("page = %v", out)
 	}
-	for _, leak := range []string{"labels", "project_id", "assignee_id", "notes_doc", "secret"} {
+	for _, leak := range []string{"labels", "project_id", "assignee_ids", "notes_doc", "secret"} {
 		if _, ok := out[leak]; ok {
 			t.Fatalf("page leaks %s: %v", leak, out)
 		}

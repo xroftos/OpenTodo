@@ -20,7 +20,7 @@ function task(id: string, extra: Partial<Task> = {}): Task {
   return {
     id, title: id, description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [],
     position: 0, created_at: at('2026-09-01'), completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null,
-    series_id: null, assignee_id: null, section_id: null, ical_extra: null, _clock: {}, ...extra,
+    series_id: null, assignee_ids: [], section_id: null, ical_extra: null, _clock: {}, ...extra,
   }
 }
 const project = (id: string, name = id, extra: Partial<Project> = {}) =>
@@ -165,17 +165,17 @@ describe('whose tasks count in shared projects', () => {
   const done = (id: string, extra: Partial<Task>) => task(id, { project_id: 's', completed_at: at('2026-10-13'), ...extra })
   it('who completed decides; older rows fall back to the assignee', () => {
     const s = run([
-      done('mine-by-me', { assignee_id: 'ana', completed_by: 'me' }),
-      done('by-ana', { assignee_id: 'me', completed_by: 'ana' }),
-      done('old-ana', { assignee_id: 'ana' }),
-      done('old-mine', { assignee_id: 'me' }),
+      done('mine-by-me', { assignee_ids: ['ana'], completed_by: 'me' }),
+      done('by-ana', { assignee_ids: ['me'], completed_by: 'ana' }),
+      done('old-ana', { assignee_ids: ['ana'] }),
+      done('old-mine', { assignee_ids: ['me'] }),
       done('old-unassigned', {}),
     ], shared)
     expect(s.completed).toBe(3)
   })
 
   it('open tasks of other members are not overdue for me', () => {
-    const s = run([task('o', { project_id: 's', assignee_id: 'ana', due: { date: '2026-10-01' } }), task('u', { project_id: 's', due: { date: '2026-10-01' } })], shared)
+    const s = run([task('o', { project_id: 's', assignee_ids: ['ana'], due: { date: '2026-10-01' } }), task('u', { project_id: 's', due: { date: '2026-10-01' } })], shared)
     expect(s.overdueTasks.map((t) => t.id)).toEqual(['u'])
   })
 

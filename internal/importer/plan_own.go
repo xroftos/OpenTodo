@@ -184,11 +184,37 @@ func (pl *planner) ownTask(fields []field, res *RowResult) []field {
 			if opsync.IsNull(f.value) {
 				f.value = raw("")
 			}
-		case "assignee_id":
-			var who string
-			if json.Unmarshal(f.value, &who) == nil && who != "" && who != pl.st.UserID {
+		case "assignee_ids":
+			// An import may only assign the importing account (design D2):
+			// keep their id, warn about every other assignee dropped.
+			var who []string
+			_ = json.Unmarshal(f.value, &who)
+			kept := make([]string, 0, len(who))
+			for _, id := range who {
+				if id == pl.st.UserID {
+					kept = append(kept, id)
+				}
+			}
+			if len(kept) < len(who) {
 				res.Warnings = append(res.Warnings, "assignee dropped (only your own account can be assigned by an import)")
+			}
+			if len(kept) == 0 {
 				continue
+			}
+			f.value = raw(kept)
+		case "assignee_id":
+			// A 1.0 export's single assignee: the same rule, mapped onto the list.
+			var who string
+			if json.Unmarshal(f.value, &who) == nil && who != "" {
+				if who != pl.st.UserID {
+					res.Warnings = append(res.Warnings, "assignee dropped (only your own account can be assigned by an import)")
+				}
+				f.name = "assignee_ids"
+				if who == pl.st.UserID {
+					f.value = raw([]string{who})
+				} else {
+					continue
+				}
 			}
 		}
 		out = append(out, f)

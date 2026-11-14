@@ -10,7 +10,7 @@ const hm = (s: string) => Number(s.slice(0, 2)) * 60 + Number(s.slice(3))
 function task(id: string, time: string | null, extra: Partial<Task> = {}): Task {
   return {
     id, title: id, description: '', project_id: null, parent_id: null, priority: 4, due: time ? { date: TODAY, time } : { date: TODAY }, labels: [], position: 0,
-    created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, deadline: null, assignee_id: null, _clock: {}, ...extra,
+    created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, deadline: null, assignee_ids: [], _clock: {}, ...extra,
   } as unknown as Task
 }
 
@@ -47,8 +47,8 @@ describe('missed blocks', () => {
     const tasks = [
       task('viewer', '09:00', { project_id: 'p1' }),
       task('running', '09:30'),
-      task('other', '10:00', { project_id: 'p2', assignee_id: 'ana' }),
-      task('mine', '10:30', { project_id: 'p2', assignee_id: 'me' }),
+      task('other', '10:00', { project_id: 'p2', assignee_ids: ['ana'] }),
+      task('mine', '10:30', { project_id: 'p2', assignee_ids: ['me'] }),
       task('unassigned', '11:00', { project_id: 'p2' }),
     ]
     const memberships = new Map([...shared('viewer'), ['p2', { projectId: 'p2', role: 'editor', ownerId: 'owner', members: [] } as Membership]])

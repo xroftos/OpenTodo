@@ -306,13 +306,13 @@ func TestPostCommitSurvivesCancelledContext(t *testing.T) {
 	})
 	sink := &recordingSink{s: f.s}
 	f.s.AddSink(sink)
-	if _, err := f.s.Apply(ctx, "alice", []Op{{ID: "assign-1", Entity: "task", EntityID: "t1", Field: "assignee_id", Value: []byte(`"bob"`), TS: 900_000, Device: "A"}}); err != nil {
+	if _, err := f.s.Apply(ctx, "alice", []Op{{ID: "assign-1", Entity: "task", EntityID: "t1", Field: "assignee_ids", Value: []byte(`["bob"]`), TS: 900_000, Device: "A"}}); err != nil {
 		t.Fatal(err)
 	}
 	if len(observed) != 1 || observed[0] != nil {
 		t.Fatalf("observer ctx err = %v", observed)
 	}
-	if len(sink.events) != 1 || sink.events[0].TaskTitle != "Milk" || sink.seen[0] != `"bob"` {
+	if len(sink.events) != 1 || sink.events[0].TaskTitle != "Milk" || sink.seen[0] != `["bob"]` {
 		t.Fatalf("assignment events = %+v, seen %v", sink.events, sink.seen)
 	}
 }
@@ -323,7 +323,7 @@ func TestPostCommitSurvivesCancelledContext(t *testing.T) {
 func TestAccountDeletionUnassignsInOthersProjects(t *testing.T) {
 	f := newSharing(t)
 	f.add("alice", "bob", RoleEditor)
-	f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"bob"`))
+	f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["bob"]`))
 	var observed []Change
 	f.s.SetObserver(func(_ context.Context, c []Change) { observed = append(observed, c...) })
 	_, cursor := f.pullAll("alice", "A2", 0)
@@ -348,14 +348,14 @@ func TestAccountDeletionUnassignsInOthersProjects(t *testing.T) {
 	if !slices.Contains(notify, "alice") {
 		t.Fatalf("notify = %v", notify)
 	}
-	if got := f.field("alice", "task", "t1", "assignee_id"); got != "null" {
+	if got := f.field("alice", "task", "t1", "assignee_ids"); got != "[]" {
 		t.Fatalf("assignee after deletion = %s", got)
 	}
 	ops, _ := f.pullAll("alice", "A2", cursor)
-	if len(ops) != 1 || ops[0].Field != "assignee_id" || !IsServerDevice(ops[0].Device) || ops[0].Actor != "alice" {
+	if len(ops) != 1 || ops[0].Field != "assignee_ids" || !IsServerDevice(ops[0].Device) || ops[0].Actor != "alice" {
 		t.Fatalf("pulled = %+v", ops)
 	}
-	if len(observed) != 1 || observed[0].EntityID != "t1" || string(observed[0].Fields["assignee_id"].To) != "null" {
+	if len(observed) != 1 || observed[0].EntityID != "t1" || string(observed[0].Fields["assignee_ids"].To) != "[]" {
 		t.Fatalf("observed = %+v", observed)
 	}
 }

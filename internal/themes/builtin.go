@@ -19,6 +19,7 @@ var Builtin = map[string]string{
 	"rose-pine-dawn":    "light",
 	"solarized-dark":    "dark",
 	"solarized-light":   "light",
+	"sunny-family":      "light",
 	"tokyo-night":       "dark",
 	"tokyo-night-light": "light",
 }

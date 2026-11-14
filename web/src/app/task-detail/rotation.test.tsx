@@ -18,7 +18,7 @@ async function household() {
   const p = await createProject({ name: 'House' })
   await membership(p, ME, 'u-bob', 'u-carol')
   const id = await createTask({ title: 'Bins', project_id: p, recurrence: 'every monday', due: { date: '2026-10-19' } })
-  await updateTask(id, { assignee_id: ME })
+  await updateTask(id, { assignee_ids: [ME] })
   return { p, id }
 }
 

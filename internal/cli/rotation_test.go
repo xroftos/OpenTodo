@@ -24,7 +24,7 @@ func TestRotateFlags(t *testing.T) {
 	}
 	h.put("project", "house", map[string]any{"name": "House"})
 	h.put("task", "bins", map[string]any{"title": "Bins", "project_id": "house", "recurrence": "every monday",
-		"due": map[string]any{"date": "2026-10-12"}, "assignee_id": owner})
+		"due": map[string]any{"date": "2026-10-12"}, "assignee_ids": []string{owner}})
 	for _, u := range []string{"bob", "carol"} {
 		if _, err := h.sync.AddMember(context.Background(), owner, "house", u, opsync.RoleEditor); err != nil {
 			t.Fatal(err)
@@ -39,8 +39,8 @@ func TestRotateFlags(t *testing.T) {
 	}
 	// Completing passes the turn.
 	h.mustRun("done", "bins")
-	if got := h.task("bins")["assignee_id"]; got != "carol" {
-		t.Fatalf("after done: assignee %v", got)
+	if got := fmt.Sprint(h.task("bins")["assignee_ids"]); got != fmt.Sprint([]any{"carol"}) {
+		t.Fatalf("after done: assignee %s", got)
 	}
 	h.requestLog()
 	if code, _, errb := h.run("edit", "bins", "--rotate", "dave"); code != ExitUsage || !strings.Contains(errb, "Members:") {
@@ -58,7 +58,7 @@ func TestRotateFlags(t *testing.T) {
 func TestTurnsLine(t *testing.T) {
 	bob := "bob"
 	members := []projectMember{{UserID: "alice", Name: "Alice"}, {UserID: "bob", Email: "bob@example.com"}}
-	if got := turnsLine([]string{"alice", "bob", "gone"}, &bob, members); got != "Takes turns: Alice → bob@example.com* → (left the project)" {
+	if got := turnsLine([]string{"alice", "bob", "gone"}, []string{bob}, members); got != "Takes turns: Alice → bob@example.com* → (left the project)" {
 		t.Fatalf("line = %q", got)
 	}
 }

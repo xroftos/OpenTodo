@@ -6,7 +6,7 @@ const project = (id: string, name: string, over: Partial<Project> = {}): Project
   ({ id, name, color: '#16a34a', position: 0, archived: false, parent_id: null, created_at: 0, deleted_at: null, _clock: {}, ...over })
 const task = (id: string, over: Partial<Task> = {}): Task => ({
   id, title: id.toUpperCase(), description: '', project_id: 'p', parent_id: null, priority: 4, due: null, labels: [], position: 0,
-  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null,
+  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [],
   section_id: null, ical_extra: null, notes_doc: '', _clock: {}, ...over,
 })
 const section = (id: string, name: string, position: number, over: Partial<Section> = {}): Section =>

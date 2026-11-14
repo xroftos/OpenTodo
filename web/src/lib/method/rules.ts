@@ -9,7 +9,7 @@ import { availability, projectFlowOf, type FlowState } from '../flow'
 import { byPosition } from '../ordering'
 import { effectiveSection } from '../sections'
 import { canEditTasks, roleOf } from '../sharing'
-import type { Label, Membership, Project, Section, Task } from '../types'
+import { assigneeIdsOf, type Label, type Membership, type Project, type Section, type Task } from '../types'
 import { isDeferred, isSomeday } from '../views'
 import { inMaintenance } from '../reviewCadence'
 
@@ -65,9 +65,10 @@ export class MethodRules {
     return openBlockers(t, this.byId).length > 0
   }
 
-  /** Assigned to someone other than the user. */
+  /** Assigned, and the user is not among the assignees (multi-assignee). */
   delegated(t: Task): boolean {
-    return !!t.assignee_id && t.assignee_id !== this.input.me
+    const who = assigneeIdsOf(t)
+    return who.length > 0 && !(this.input.me && who.includes(this.input.me))
   }
 
   /**

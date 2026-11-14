@@ -14,7 +14,7 @@ function task(id: string, extra: Partial<Task> = {}): Task {
   return {
     id, title: id, description: '', project_id: 'p', parent_id: null, priority: 4, due: null, labels: [],
     position: 0, created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null,
-    series_id: null, assignee_id: null, section_id: null, ical_extra: null, _clock: {}, ...extra,
+    series_id: null, assignee_ids: [], section_id: null, ical_extra: null, _clock: {}, ...extra,
   }
 }
 const done = (id: string, extra: Partial<Task> = {}) => task(id, { completed_at: NOW, ...extra })

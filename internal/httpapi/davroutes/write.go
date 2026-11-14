@@ -754,9 +754,13 @@ func (d *davRequest) deleteCalendar(v *davView) {
 						} else {
 							val = json.RawMessage("null")
 						}
-					case "assignee_id":
-						if idOf(val) != d.user.ID {
-							val = json.RawMessage("null")
+					case "assignee_ids":
+						// The copy keeps only the moving user (task-assignment
+						// D2); the destination may not have the others as members.
+						if kept, ok := assigneeOfSelf(val, d.user.ID); ok {
+							val = kept
+						} else {
+							continue
 						}
 					}
 					ops = append(ops, d.op("task", nid, field, val, ts))

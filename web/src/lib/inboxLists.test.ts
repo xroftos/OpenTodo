@@ -14,7 +14,7 @@ function task(over: Partial<Task> = {}): Task {
   return {
     id: over.id ?? `t${n}`, title: over.title ?? `Task ${n}`, notes: '', project_id: null, section_id: null, parent_id: null, position: n,
     priority: 4, due: null, deadline: null, start: null, labels: [], completed_at: null, deleted_at: null, created_at: n, updated_at: n,
-    assignee_id: null, ...over,
+    assignee_ids: [], ...over,
   } as Task
 }
 const inbox = (all: Task[]) => tasksForView({ view: 'inbox' }, all, [], TODAY).map((x) => x.title)

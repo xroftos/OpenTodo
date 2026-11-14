@@ -551,13 +551,13 @@ describe('notifications', () => {
       { id: 'w1', entity: 'task', entityId: 't1', field: 'project_id', value: 'p1', ts: 1, device: 'alice-dev' },
       { id: 'w2', entity: 'project', entityId: 'p1', field: 'name', value: 'Home', ts: 1, device: 'alice-dev' },
     ])
-    await mutate('task', 't1', { assignee_id: 'bob' })
+    await mutate('task', 't1', { assignee_ids: ['bob'] })
     syncCalls.mockImplementationOnce((async (...args: unknown[]) => ({
       applied: 0, ops: [], cursor: 5, hasMore: false, serverTime: Date.now(),
       rejected: (args[2] as { id: string }[]).map((o) => ({ id: o.id, reason: 'not_a_member' })),
     })) as never)
     await syncNow()
-    expect((await db.tasks.get('t1'))?.assignee_id).toBeNull()
+    expect((await db.tasks.get('t1'))?.assignee_ids).toEqual([])
     const notice = syncSnapshot().rejected
     expect(notice?.assignments).toBe(1)
     expect(describeRejected(notice!)).toMatch(/no longer a member of Home/)

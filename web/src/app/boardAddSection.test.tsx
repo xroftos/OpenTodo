@@ -10,7 +10,7 @@ import { BoardView, type BoardColumn } from './BoardView'
 
 const project = { id: 'p1', name: 'Home', color: '#0f0', parent_id: null, position: 0, archived: false, created_at: 0, deleted_at: null, _clock: {} } as unknown as Project
 const section = { id: 's1', project_id: 'p1', name: 'Kitchen', position: 0, created_at: 0, deleted_at: null, _clock: {} } as unknown as Section
-const task = { id: 'a', title: 'Order the worktop', description: '', project_id: 'p1', parent_id: null, section_id: 's1', priority: 4, due: null, labels: [], position: 0, created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, _clock: {} } as unknown as Task
+const task = { id: 'a', title: 'Order the worktop', description: '', project_id: 'p1', parent_id: null, section_id: 's1', priority: 4, due: null, labels: [], position: 0, created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], _clock: {} } as unknown as Task
 const columns: BoardColumn[] = [{ key: 's1', section, cards: [task] }]
 
 const board = (editable: boolean) => render(<BoardView project={project} columns={columns} editable={editable} addingTo={null} setAddingTo={() => {}} projects={[project]} labels={[]}

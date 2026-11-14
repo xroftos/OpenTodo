@@ -63,7 +63,7 @@ describe('Waiting view (method-views)', () => {
   it('Delegated: a task assigned to Ana is under her; a blocked task names its blocker; Blocker done', async () => {
     const home = await createProject({ name: 'Household' })
     const tap = await createTask({ title: 'Fix the tap', project_id: home })
-    await updateTask(tap, { assignee_id: 'ana' })
+    await updateTask(tap, { assignee_ids: ['ana'] })
     const parts = await createTask({ title: 'Order the parts', project_id: home })
     const fit = await createTask({ title: 'Fit the shelf', project_id: home })
     await updateTask(fit, { blocked_by: [parts] })

@@ -586,7 +586,7 @@ Refusals:
 | Status | Code | When |
 | --- | --- | --- |
 | 403 | `writes_disabled_by_owner`, `writes_disabled_by_user` | a switch is off (recorded as a failed `agent.write`) |
-| 403 | `insufficient_scope` | any other write route, or a field outside the list above (`assignee_id`, a task's `position`, restoring with `deleted_at: null`, deleting a section, label, project or time entry, …) |
+| 403 | `insufficient_scope` | any other write route, or a field outside the list above (`assignee_ids`, a task's `position`, restoring with `deleted_at: null`, deleting a section, label, project or time entry, …) |
 | 403 | `forbidden`, `not_permitted` | the user's role in a shared project does not allow it (a viewer tracking time or writing a project's note, an editor archiving); trashing a task or changing a time entry the token did not create |
 | 404 | `not_found` | unknown, deleted or invisible ids (another member's reminder included), and anything in a project [kept away from assistants](#keeping-a-project-away-from-assistants), its reminders and time entries too (indistinguishable) |
 | 409 | `encryption_enabled` | readable text (title, description, name, comment, location, a time entry's note) for an end-to-end encrypted account |
@@ -638,7 +638,7 @@ The owner of a project, or an admin of a shared one, can keep it and its sub-pro
 | `split_from` | object or null | on a series that continues a split one ([This and following](recurrence.md#this-and-following)): `{"series": <id>, "date": "YYYY-MM-DD"}`, the series it continues and the first date it produces occurrences on (OpenSpec `series-split`). One whole value, set when the new series is created; refused (`400 invalid_input`) on a task without a rule, with a series in another project sharing, and when it would change. Not content |
 | `habit` | boolean | the recurring task is tracked as a habit: the app shows its streak and month history, computed on each device. Settable like any field; `400 invalid_input` for anything but `true` or `false`. Completing a habit through the API records a done day like any recurring task. See [recurrence.md](recurrence.md#habits) |
 | `skipped` | boolean | set by the app on the occurrence record a skipped habit day writes (that record also has `series_id` and `completed_at`). Such records are returned in lists and the export like any task but are not completions: the app hides them from Completed and `completed` filters, and they never count towards `for N times` |
-| `assignee_id` | string or null | account id of the assignee; see [Assignment and notifications](#assignment-and-notifications). `400 not_a_member` when it is not a member of the task's shared project (or not you, for a personal task) |
+| `assignee_ids` | string[] | account ids of the assignees, `[]` for none (breaking rename of 1.0's `assignee_ids`); see [Assignment and notifications](#assignment-and-notifications). `400 not_a_member` when one is not a member of the task's shared project (or not you, for a personal task) |
 | `rotation` | array of strings | account ids of the people who [take turns](#taking-turns) on a recurring task, in order; `[]` when nobody does. `400 invalid_rotation`, `409 not_a_member` |
 | `section_id` | string or null | section of the task's project; see [Sections](#sections). `400 invalid_input` for an unknown or deleted section or one of another project. Changing `project_id` without naming a section clears it |
 | `origin` | object or null | where the task came from, null when unset: `{kind, provider?, id?, url?, title?}` with `kind` one of `url` (a page; needs `url`), `email` (needs `id`, the Message-ID), `issue` (needs `id`, e.g. `o/r#7` or `ENG-123`), `import` (needs `id`, the source id) or `obsidian` (a note in an Obsidian vault: needs `id`, the note's vault-relative path such as `Daily/2026-10-29.md`, and `url`, see below; no `provider`). `provider` is 1–32 of `a-z`, `0-9` and `-` (`github`, `gitlab`, `jira`, `linear`, `todoist`…); `url` is `http` or `https` with a host, at most 2,048 bytes, except on an `obsidian` origin, whose `url` must be exactly `obsidian://open?vault=<vault>&file=<note>` (only those two members, once each, percent-encoded with `+` refused, `vault` 1–255 and `file` 1–1,024 characters, no fragment, no `path=`) and name the note its `id` names (`id` is `file`, with `.md` added when it has no extension; for a link to a heading or block, `file=Plan%23%5Eabc123` opens `Plan.md` at block `^abc123`, `id` may instead be the part before the first `#`); `id` at most 512 and `title` at most 500 characters; no other member. Written as one value (last writer wins, never mixed), accepted on create and PATCH (`null` clears) for `full`, `admin` and `agent` tokens; anything else is `400 invalid_input` naming `origin`. The server writes what you send: it derives nothing from the URL and never requests it (`ot add --origin-url` and the MCP tools recognise issue links on their side). Returned by every read, the export and webhook payloads; an end-to-end encrypted account holds one ciphertext string here. See [Where a task came from](capture.md#where-a-task-came-from) |
@@ -1545,24 +1545,24 @@ The `link` carries the secret and is returned only here; the server keeps a hash
 
 ### Assignment and notifications
 
-A task's `assignee_id` (OpenSpec `task-assignment`) is an ordinary task field: set it with `POST /api/v1/tasks` or `PATCH /api/v1/tasks/{id}`, clear it with `null`. In a shared project the assignee must be a current member; for a task in your Inbox or an unshared project it must be you. Viewers cannot assign (`403 forbidden`, like any write). A refused assignment answers `400 not_a_member` and stores nothing; the sync endpoint refuses the same operation individually with `rejected: [{"id":"…","reason":"not_a_member"}]`.
+A task's `assignee_ids` (OpenSpec `task-assignment`; a breaking rename of 1.0's single `assignee_ids`, fresh deployments only) is an ordinary task field: set it with `POST /api/v1/tasks` or `PATCH /api/v1/tasks/{id}` to an array of account ids, clear it with `[]`. A task may hold several assignees; `me` is any id on the list, unassigned is an empty one. In a shared project every assignee must be a current member; for a task in your Inbox or an unshared project the only allowed one is you. Viewers cannot assign (`403 forbidden`, like any write). A refused list answers `400 not_a_member` (naming the first refused account in the sync detail) and stores nothing; the sync endpoint refuses the same operation individually with `rejected: [{"id":"…","reason":"not_a_member"}]`.
 
-When a member leaves or is removed, or their account is deleted, the server clears `assignee_id` on every task of that project assigned to them with operations of its own (device `server:<boot id>`), so every member's devices see the tasks unassigned after their next sync.
+When a member leaves or is removed, or their account is deleted, the server removes them from `assignee_ids` on every task of that project they are assigned to with operations of its own (device `server:<boot id>`), so every member's devices see the tasks unassigned after their next sync.
 
 #### Taking turns
 
-`rotation` (OpenSpec `chore-rotation`) lists the people who take turns on a recurring task, in order, at most 20 different account ids. Set it with `PATCH /api/v1/tasks/{id}` (or `POST /api/v1/tasks`) under the same rules as the assignee (viewers get `403 forbidden`, no credentials `401 unauthorized`); `[]` clears it. A non-empty list is refused with `400 invalid_rotation` when it holds duplicates or more than 20 ids, or when the task has no recurrence, is a subtask or is in a project with fewer than two members; one that names someone who is not a member of the task's project is refused with `409 not_a_member`. On the sync endpoint the same operation is refused individually with reason `not_a_member`; a list kept on a task that stops qualifying is stored but does nothing.
+`rotation` (OpenSpec `chore-rotation`) lists the people who take turns on a recurring task, in order, at most 20 different account ids. Set it with `PATCH /api/v1/tasks/{id}` (or `POST /api/v1/tasks`) under the same rules as the assignees (viewers get `403 forbidden`, no credentials `401 unauthorized`); `[]` clears it. A non-empty list is refused with `400 invalid_rotation` when it holds duplicates or more than 20 ids, or when the task has no recurrence, is a subtask or is in a project with fewer than two members; one that names someone who is not a member of the task's project is refused with `409 not_a_member`. On the sync endpoint the same operation is refused individually with reason `not_a_member`; a list kept on a task that stops qualifying is stored but does nothing.
 
-Completing the task (`PATCH` with `completed_at`, CalDAV, the MCP tools, automation rules, the app) records the occurrence as usual and assigns the series to the next person: the one after the current assignee among the list's current members, wrapping around, or the first of them when the current assignee is not in the list. A write that sets `assignee_id` itself keeps that value. Skipping, detaching and reopening don't rotate. The new assignee's notification has `"turn": true` in its payload. When a member leaves, the server removes them from every `rotation` in the project and, if it was their turn, assigns the next remaining person instead of clearing the assignee.
+Completing the task (`PATCH` with `completed_at`, CalDAV, the MCP tools, automation rules, the app) records the occurrence as usual and assigns the series to the next person: the one after the turn-holder — the first id on `assignee_ids` — among the list's current members, wrapping around, or the first of them when the turn-holder is not in the list; the new holder is written as a one-element `assignee_ids`. A write that sets `assignee_ids` itself keeps that value. Skipping, detaching and reopening don't rotate. The new assignee's notification has `"turn": true` in its payload. When a member leaves, the server removes them from every `rotation` in the project and, if it was their turn, assigns the next remaining person instead of clearing the assignee.
 
 ```sh
 curl -X PATCH -H "Authorization: Bearer $T" -d '{"rotation":["<alice>","<bob>","<carol>"]}' $BASE/api/v1/tasks/$BINS
 # 200 task with "rotation":["<alice>","<bob>","<carol>"]
 curl -X PATCH -H "Authorization: Bearer $T" -d '{"completed_at":1760000000000}' $BASE/api/v1/tasks/$BINS
-# 200 task due next Monday with "assignee_id":"<bob>"
+# 200 task due next Monday with "assignee_ids":["<bob>"]
 ```
 
-Assigning a task to someone other than yourself creates an in-app notification for the assignee. Notifications are server-side account data: they are not part of the op log or the export. Read notifications older than 90 days are removed when the server starts and then once a day. Both routes require a session or token (`401 unauthorized`).
+Adding someone other than yourself to `assignee_ids` creates an in-app notification for each newly-added assignee. Notifications are server-side account data: they are not part of the op log or the export. Read notifications older than 90 days are removed when the server starts and then once a day. Both routes require a session or token (`401 unauthorized`).
 
 | Method & path | Purpose |
 | --- | --- |
@@ -1570,11 +1570,11 @@ Assigning a task to someone other than yourself creates an in-app notification f
 | `POST /api/v1/notifications/{id}/read` | mark one of yours read (idempotent); `204`, or `404 not_found` for an unknown id or another account's notification |
 
 ```sh
-curl -X PATCH -H "Authorization: Bearer $T" -d '{"assignee_id":"<bob>"}' $BASE/api/v1/tasks/$TASK
-# 200 task with "assignee_id":"<bob>"
+curl -X PATCH -H "Authorization: Bearer $T" -d '{"assignee_ids":["<bob>"]}' $BASE/api/v1/tasks/$TASK
+# 200 task with "assignee_ids":["<bob>"]
 
-curl -X PATCH … -d '{"assignee_id":"<carol, not a member>"}' $BASE/api/v1/tasks/$TASK
-# 400 {"error":{"code":"not_a_member","message":"task.assignee_id: the assignee must be a member of the task's project (or yourself for a personal task)"}}
+curl -X PATCH … -d '{"assignee_ids":["<carol, not a member>"]}' $BASE/api/v1/tasks/$TASK
+# 400 {"error":{"code":"not_a_member","message":"task.assignee_ids: every assignee must be a member of the task's project (or yourself for a personal task)"}}
 
 curl -H "Authorization: Bearer $BOB" $BASE/api/v1/notifications
 # 200 {"notifications":[{"id":"…","kind":"assigned","payload":{"assigneeId":"<bob>","actorId":"<alice>",
@@ -2713,7 +2713,7 @@ Every error answers `{"error":{"code","message"}}`; some validation errors add `
 | --- | --- | --- |
 | `link_invalid` | 404 | an unknown, expired, revoked or no longer usable [public link](#public-links) |
 | `scope_change` | 400 | `PATCH` of a task's `project_id` into another sharing scope |
-| `not_a_member` | 400 | a task's `assignee_id` that is not a member of its project (or not you, for a personal task) |
+| `not_a_member` | 400 | a task's `assignee_ids` naming an account that is not a member of its project (or not you, for a personal task) |
 | `invalid_energy` | 400 | a task's `energy` that is not `deep`, `medium`, `low`, `null` or `""` |
 | `invalid_rotation` | 400 | a task's `rotation` with duplicates or more than 20 people, or a non-empty one on a task without a recurrence, a subtask or a project with fewer than two members |
 | `not_a_member` | 409 | a task's `rotation` that names someone who is not a member of its project |

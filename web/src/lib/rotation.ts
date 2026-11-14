@@ -1,7 +1,7 @@
 // Rotating assignees on recurring tasks (OpenSpec change chore-rotation). The
 // server computes the same thing in internal/sync/rotation.go; both are pinned by
 // rotation.vectors.json.
-import type { Membership, Task } from './types'
+import { assigneeIdsOf, type Membership, type Task } from './types'
 
 /** At most this many people take turns on one task (design D1). */
 export const MAX_ROTATION = 20
@@ -73,11 +73,14 @@ export function addToRotation(list: readonly string[], add: readonly string[]): 
 /**
  * The assignee a completion that continues `series` passes the turn to, or
  * undefined when nothing changes (no rotation in effect, or the same person).
+ * The turn's current holder is the series' sole assignee; a series with none or
+ * with several assigned starts the rotation at its first live person.
  */
 export function turnAfterCompletion(series: Task, members: ReadonlySet<string> | undefined): string | undefined {
   const list = activeRotation(series, members)
   if (list.length === 0 || !members) return undefined
-  const current = series.assignee_id ?? ''
+  const who = assigneeIdsOf(series)
+  const current = who.length === 1 ? who[0] : ''
   const next = nextAssignee(list, current, (id) => members.has(id))
   return next && next !== current ? next : undefined
 }

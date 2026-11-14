@@ -165,7 +165,7 @@ func TestVectors(t *testing.T) {
 		}
 		task := Task{ID: "t", ProjectID: deref(v.Task.ProjectID), SectionID: deref(v.Task.SectionID), Labels: v.Task.Labels,
 			Priority: v.Task.Priority, Deadline: deref(v.Task.Deadline), Start: deref(v.Task.Start), Evening: v.Task.Evening,
-			BlockedBy: v.Task.BlockedBy, AssigneeID: deref(v.Task.AssigneeID), Habit: v.Task.Habit, Estimate: v.Task.Estimate,
+			BlockedBy: v.Task.BlockedBy, Assignees: assigneesOf(v.Task.AssigneeID), Habit: v.Task.Habit, Estimate: v.Task.Estimate,
 			OriginKind: OriginKindOf(v.Task.Origin)}
 		if v.Task.Due != nil {
 			task.DueDate = v.Task.Due.Date
@@ -193,4 +193,11 @@ func TestLogicalDate(t *testing.T) {
 	if d := LogicalDate(1792623600000, 120, "00:00"); d != "2026-10-22" {
 		t.Fatalf("got %s", d)
 	}
+}
+
+func assigneesOf(s *string) []string {
+	if s == nil || *s == "" {
+		return nil
+	}
+	return []string{*s}
 }

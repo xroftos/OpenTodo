@@ -2434,6 +2434,7 @@
       },
       "tasks": {
         "assignee_id": "nullable_string",
+        "assignee_ids": "id_list",
         "blocked_by": "id_list",
         "completed_at": "nullable_number",
         "completed_by": "nullable_string",
@@ -2755,6 +2756,7 @@
       "arguments": {
         "client_request_id": "string?",
         "items": "array",
+        "items[].assignees": "array|null?",
         "items[].blocked_by": "array?",
         "items[].day_part": "string|null?",
         "items[].deadline": "string|null?",
@@ -3329,6 +3331,7 @@
     "update_tasks": {
       "arguments": {
         "updates": "array",
+        "updates[].assignees": "array|null?",
         "updates[].blocked_by": "array?",
         "updates[].day_part": "string|null?",
         "updates[].deadline": "string|null?",
@@ -3575,6 +3578,7 @@
     },
     "task": {
       "assignee_id": "nullable_string",
+      "assignee_ids": "id_list",
       "blocked_by": "id_list",
       "completed_at": "nullable_number",
       "completed_by": "nullable_string",
@@ -6593,6 +6597,7 @@
         "tasks": "array",
         "tasks[].appends": "array",
         "tasks[].assignee_id": "nullable_string",
+        "tasks[].assignee_ids": "id_list",
         "tasks[].blocked_by": "id_list",
         "tasks[].body_version": "string",
         "tasks[].completed_at": "nullable_number",
@@ -6650,6 +6655,7 @@
       "response": {
         "appends": "array",
         "assignee_id": "nullable_string",
+        "assignee_ids": "id_list",
         "blocked_by": "id_list",
         "body_version": "string",
         "completed_at": "nullable_number",
@@ -7756,6 +7762,7 @@
       "policy": "signed-in",
       "request": {
         "assignee_id": "nullable_string?",
+        "assignee_ids": "id_list?",
         "blocked_by": "id_list?",
         "completed_at": "nullable_number?",
         "completed_by": "nullable_string?",
@@ -7807,6 +7814,7 @@
       "response": {
         "appends": "array",
         "assignee_id": "nullable_string",
+        "assignee_ids": "id_list",
         "blocked_by": "id_list",
         "body_version": "string",
         "completed_at": "nullable_number",
@@ -10709,6 +10717,7 @@
       "policy": "signed-in",
       "request": {
         "assignee_id": "nullable_string?",
+        "assignee_ids": "id_list?",
         "blocked_by": "id_list?",
         "completed_at": "nullable_number?",
         "completed_by": "nullable_string?",
@@ -10760,6 +10769,7 @@
       "response": {
         "appends": "array",
         "assignee_id": "nullable_string",
+        "assignee_ids": "id_list",
         "blocked_by": "id_list",
         "body_version": "string",
         "completed_at": "nullable_number",

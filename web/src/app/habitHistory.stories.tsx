@@ -15,7 +15,7 @@ function task(over: Partial<Task>): Task {
   return {
     id: 'x', title: 'Stretch', description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 0,
     created_at: 1, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null,
-    assignee_id: null, section_id: null, ical_extra: null, _clock: {}, ...over,
+    assignee_ids: [], section_id: null, ical_extra: null, _clock: {}, ...over,
   }
 }
 

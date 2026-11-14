@@ -23,7 +23,7 @@ func house(t *testing.T) *sharingFixture {
 	res := f.apply("alice", "A",
 		f.op("task", "t1", "recurrence", `"every monday"`),
 		f.op("task", "t1", "due", `{"date":"2026-11-09"}`),
-		f.op("task", "t1", "assignee_id", `"alice"`),
+		f.op("task", "t1", "assignee_ids", `["alice"]`),
 		f.op("task", "t1", "rotation", `["alice","bob","carol"]`),
 	)
 	if len(res.Rejected) != 0 {
@@ -94,24 +94,24 @@ func complete(t *testing.T, f *sharingFixture, user, today string) (map[string]j
 func TestServerCompletionPassesTheTurn(t *testing.T) {
 	f := house(t)
 	body, record := complete(t, f, "alice", "2026-11-09")
-	if string(body["assignee_id"]) != `"bob"` || string(record["assignee_id"]) != `"alice"` {
-		t.Fatalf("series assignee %s, record assignee %s", body["assignee_id"], record["assignee_id"])
+	if string(body["assignee_ids"]) != `["bob"]` || string(record["assignee_ids"]) != `["alice"]` {
+		t.Fatalf("series assignee %s, record assignee %s", body["assignee_ids"], record["assignee_ids"])
 	}
 	// Carol's turn wraps around to alice.
-	f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"carol"`))
-	if body, _ := complete(t, f, "carol", "2026-11-09"); string(body["assignee_id"]) != `"alice"` {
-		t.Fatalf("wrap = %s", body["assignee_id"])
+	f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["carol"]`))
+	if body, _ := complete(t, f, "carol", "2026-11-09"); string(body["assignee_ids"]) != `["alice"]` {
+		t.Fatalf("wrap = %s", body["assignee_ids"])
 	}
 	// A write that sets the assignee itself keeps it.
 	existing, _ := f.s.Get(f.ctx, "alice", "task", "t1")
-	body = map[string]json.RawMessage{"completed_at": json.RawMessage("5000"), "assignee_id": json.RawMessage(`"carol"`)}
-	if _, _, ok, _ := f.s.RecurringCompletion(f.ctx, "alice", "t1", body, existing, "2026-11-09"); !ok || string(body["assignee_id"]) != `"carol"` {
-		t.Fatalf("explicit assignee = %s", body["assignee_id"])
+	body = map[string]json.RawMessage{"completed_at": json.RawMessage("5000"), "assignee_ids": json.RawMessage(`["carol"]`)}
+	if _, _, ok, _ := f.s.RecurringCompletion(f.ctx, "alice", "t1", body, existing, "2026-11-09"); !ok || string(body["assignee_ids"]) != `["carol"]` {
+		t.Fatalf("explicit assignee = %s", body["assignee_ids"])
 	}
 	// A subtask's rotation and a series in a project with one member are inert.
 	f.apply("alice", "A", f.op("task", "t1", "parent_id", `"t2"`))
-	if body, _ := complete(t, f, "alice", "2026-11-09"); body["assignee_id"] != nil {
-		t.Fatalf("subtask rotated to %s", body["assignee_id"])
+	if body, _ := complete(t, f, "alice", "2026-11-09"); body["assignee_ids"] != nil {
+		t.Fatalf("subtask rotated to %s", body["assignee_ids"])
 	}
 	f.apply("alice", "A", f.op("task", "t1", "parent_id", `null`))
 	if _, err := f.s.RemoveMember(f.ctx, "alice", "p", "bob"); err != nil {
@@ -120,8 +120,8 @@ func TestServerCompletionPassesTheTurn(t *testing.T) {
 	if _, err := f.s.RemoveMember(f.ctx, "alice", "p", "carol"); err != nil {
 		t.Fatal(err)
 	}
-	if body, _ := complete(t, f, "alice", "2026-11-09"); body["assignee_id"] != nil {
-		t.Fatalf("single-member project rotated to %s", body["assignee_id"])
+	if body, _ := complete(t, f, "alice", "2026-11-09"); body["assignee_ids"] != nil {
+		t.Fatalf("single-member project rotated to %s", body["assignee_ids"])
 	}
 }
 
@@ -131,8 +131,8 @@ func TestServerCompletionKeepsAssigneeWhenTheSeriesEnds(t *testing.T) {
 	existing, _ := f.s.Get(f.ctx, "alice", "task", "t1")
 	body := map[string]json.RawMessage{"completed_at": json.RawMessage("5000")}
 	_, _, ok, err := f.s.RecurringCompletion(f.ctx, "alice", "t1", body, existing, "2026-11-09")
-	if err != nil || ok || body["assignee_id"] != nil {
-		t.Fatalf("ending series ok=%v assignee=%s err=%v", ok, body["assignee_id"], err)
+	if err != nil || ok || body["assignee_ids"] != nil {
+		t.Fatalf("ending series ok=%v assignee=%s err=%v", ok, body["assignee_ids"], err)
 	}
 }
 
@@ -143,9 +143,9 @@ func completionBatch(f *sharingFixture, next string) []Op {
 	return []Op{
 		f.op("task", rec, "title", `"Milk"`), f.op("task", rec, "project_id", `"p"`),
 		f.op("task", rec, "series_id", `"t1"`), f.op("task", rec, "occurrence_date", `"2026-11-09"`),
-		f.op("task", rec, "assignee_id", `"alice"`), f.op("task", rec, "completed_at", `5000`),
+		f.op("task", rec, "assignee_ids", `["alice"]`), f.op("task", rec, "completed_at", `5000`),
 		f.op("task", "t1", "due", `{"date":"2026-11-16"}`),
-		f.op("task", "t1", "assignee_id", string(JSONOf(next))),
+		f.op("task", "t1", "assignee_ids", string(JSONOf([]string{next}))),
 	}
 }
 
@@ -158,7 +158,7 @@ func TestTurnNotification(t *testing.T) {
 		t.Fatalf("events = %+v", rec.events)
 	}
 	// A plain reassignment is not a turn.
-	f.apply("bob", "B", f.op("task", "t1", "assignee_id", `"carol"`))
+	f.apply("bob", "B", f.op("task", "t1", "assignee_ids", `["carol"]`))
 	if len(rec.events) != 2 || rec.events[1].Turn {
 		t.Fatalf("events = %+v", rec.events)
 	}
@@ -179,7 +179,7 @@ func TestStaleRotationAfterDeparture(t *testing.T) {
 	if !slices.Equal(rejectedIDs(res), []string{last.ID + ":" + ReasonNotAMember}) || res.Applied != len(batch)-1 {
 		t.Fatalf("rejected = %v applied %d", rejectedIDs(res), res.Applied)
 	}
-	if got := f.field("carol", "task", "t1", "assignee_id"); got != `"alice"` {
+	if got := f.field("carol", "task", "t1", "assignee_ids"); got != `["alice"]` {
 		t.Fatalf("assignee = %s", got)
 	}
 	if got := f.field("carol", "task", "t1", "due"); got != `{"date":"2026-11-16"}` {
@@ -190,9 +190,9 @@ func TestStaleRotationAfterDeparture(t *testing.T) {
 func TestDepartureHandsOnTheTurn(t *testing.T) {
 	f := house(t)
 	f.apply("alice", "A",
-		f.op("task", "t1", "assignee_id", `"bob"`),
+		f.op("task", "t1", "assignee_ids", `["bob"]`),
 		// t2 rotates but has no rule: bob is unassigned, not handed on.
-		f.op("task", "t2", "rotation", `["bob","carol"]`), f.op("task", "t2", "assignee_id", `"bob"`),
+		f.op("task", "t2", "rotation", `["bob","carol"]`), f.op("task", "t2", "assignee_ids", `["bob"]`),
 	)
 	_, cursor := f.pullAll("carol", "C", 0)
 	ch, err := f.s.RemoveMember(f.ctx, "alice", "p", "bob")
@@ -202,12 +202,12 @@ func TestDepartureHandsOnTheTurn(t *testing.T) {
 	if !slices.Equal(ch.Unassigned, []string{"t1", "t2"}) {
 		t.Fatalf("held = %v", ch.Unassigned)
 	}
-	for field, want := range map[string]string{"assignee_id": `"carol"`, "rotation": `["alice","carol"]`} {
+	for field, want := range map[string]string{"assignee_ids": `["carol"]`, "rotation": `["alice","carol"]`} {
 		if got := f.field("carol", "task", "t1", field); got != want {
 			t.Fatalf("t1 %s = %s, want %s", field, got, want)
 		}
 	}
-	if got := f.field("carol", "task", "t2", "assignee_id"); got != "null" {
+	if got := f.field("carol", "task", "t2", "assignee_ids"); got != "[]" {
 		t.Fatalf("t2 assignee = %s", got)
 	}
 	if got := f.field("carol", "task", "t2", "rotation"); got != `["carol"]` {
@@ -223,11 +223,11 @@ func TestDepartureHandsOnTheTurn(t *testing.T) {
 		}
 	}
 	// The last other member leaves: the turn goes back to alice.
-	f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"carol"`))
+	f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["carol"]`))
 	if _, err := f.s.RemoveMember(f.ctx, "carol", "p", "carol"); err != nil {
 		t.Fatal(err)
 	}
-	if got := f.field("alice", "task", "t1", "assignee_id"); got != `"alice"` {
+	if got := f.field("alice", "task", "t1", "assignee_ids"); got != `["alice"]` {
 		t.Fatalf("last leaver: assignee = %s", got)
 	}
 	if got := f.field("alice", "task", "t1", "rotation"); got != `["alice"]` {
@@ -237,7 +237,7 @@ func TestDepartureHandsOnTheTurn(t *testing.T) {
 
 func TestAccountDeletionHandsOnTheTurn(t *testing.T) {
 	f := house(t)
-	f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"bob"`))
+	f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["bob"]`))
 	ctx, deletion := WithAccountDeletion(f.ctx)
 	tx, err := f.s.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -250,7 +250,7 @@ func TestAccountDeletionHandsOnTheTurn(t *testing.T) {
 		t.Fatal(err)
 	}
 	f.s.ObserveAccountDeletion(context.Background(), deletion)
-	if got := f.field("alice", "task", "t1", "assignee_id"); got != `"carol"` {
+	if got := f.field("alice", "task", "t1", "assignee_ids"); got != `["carol"]` {
 		t.Fatalf("assignee = %s", got)
 	}
 	if got := f.field("alice", "task", "t1", "rotation"); got != `["alice","carol"]` {

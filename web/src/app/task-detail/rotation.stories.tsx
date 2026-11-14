@@ -27,7 +27,7 @@ async function seedHousehold(rotation: string[]) {
   ] })
   await db.groups.put({ id: 'g-adults', workspaceId: 'w-home', name: 'Adults', members: ['u-ben', 'u-cleo'] })
   seeded.bins = await createTask({ title: 'Take out the bins', project_id: house, recurrence: 'every monday', due: { date: '2026-10-19' } })
-  await updateTask(seeded.bins, { assignee_id: 'u-ben', rotation })
+  await updateTask(seeded.bins, { assignee_ids: ['u-ben'], rotation })
 }
 
 function PopoverBody({ children }: { children: ReactNode }) {

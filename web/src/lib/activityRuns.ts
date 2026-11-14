@@ -58,7 +58,7 @@ export function groupRuns(events: readonly ActivityEvent[], opts: { windowMs?: n
 type Part = { order: number; verb?: string; noun?: string }
 
 const FIELD_NOUNS: Record<string, [number, string]> = {
-  due: [3, msg('due date')], project_id: [4, msg('project')], priority: [5, msg('priority')], assignee_id: [6, msg('assignee')], labels: [7, msg('labels')],
+  due: [3, msg('due date')], project_id: [4, msg('project')], priority: [5, msg('priority')], assignee_ids: [6, msg('assignee')], labels: [7, msg('labels')],
   description: [8, msg('notes')], notes_doc: [8, msg('notes')], estimate_minutes: [8, msg('estimate')], recurrence: [8, msg('repeat rule')],
   parent_id: [8, msg('parent task')], section_id: [8, msg('section')], position: [9, msg('order')],
 }

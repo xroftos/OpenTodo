@@ -9,7 +9,7 @@ import { memberName } from '../../lib/sharing'
 import type { Progress } from '../../lib/subtasks'
 import type { HabitStats } from '../../lib/habits'
 import type { RowLayout } from '../../lib/rowLayout'
-import type { FieldDef, Label, Membership, Project, Task } from '../../lib/types'
+import {FieldDef, Label, Membership, Project, Task, assigneeIdsOf} from '../../lib/types'
 import { Button, ListGroupHeader, type HueName } from '../../ui'
 import { projectHue } from '../projectHue'
 
@@ -33,6 +33,13 @@ import { keysBetween } from '../../lib/taskDelta'
 
 /** The "Add task below" line (add-below): loaded when it first opens. */
 const SiblingInput = lazy(() => import('./SiblingInput'))
+
+/** The row's assignee tags, a name resolved per member id (multi-assignee); null outside shared projects. */
+function rowAssignees(task: Task, c: { memberMap: Map<string, Membership>; userId?: string }): { id: string; name: string; me?: boolean }[] | null {
+  const who = assigneeIdsOf(task)
+  if (!who.length || !task.project_id || !c.memberMap.has(task.project_id)) return null
+  return who.map((id) => ({ id, name: id === c.userId ? t('You') : memberName(id, c.memberMap) ?? t('Former member'), me: id === c.userId }))
+}
 
 export interface RowContext {
   /** Touch rows follow a swipe (phone-v2 D3): coarse pointer, nothing ticked, not select mode. */
@@ -161,9 +168,7 @@ export function rowRenderer(c: RowContext): (r: Row) => ReactNode {
           collapsed={r.collapsed}
           project={r.task.project_id ? c.projectMap.get(r.task.project_id) : undefined}
           labelMap={c.labelMap}
-          assignee={r.task.assignee_id && r.task.project_id && c.memberMap.has(r.task.project_id)
-            ? (r.task.assignee_id === c.userId ? t('You') : memberName(r.task.assignee_id, c.memberMap) ?? t('Former member')) : null}
-          assignedToMe={!!c.userId && r.task.assignee_id === c.userId}
+          assignees={rowAssignees(r.task, c)}
           showProject={c.view !== 'project' && c.view !== 'label' && c.view !== 'inbox' && !r.implied?.project}
           source={c.view === 'inbox' && r.depth === 0 && !c.board}
           logbook={c.view === 'completed'}
@@ -276,7 +281,7 @@ function sameForRow(a: RowContext, b: RowContext, r: Row): boolean {
   if (a.isReadOnly !== b.isReadOnly && a.isReadOnly(task) !== b.isReadOnly(task)) return false
   const pid = task.project_id
   if (pid && a.projectMap !== b.projectMap && a.projectMap.get(pid) !== b.projectMap.get(pid)) return false
-  if (pid && task.assignee_id && a.memberMap !== b.memberMap && a.memberMap.get(pid) !== b.memberMap.get(pid)) return false
+  if (pid && assigneeIdsOf(task).length && a.memberMap !== b.memberMap && a.memberMap.get(pid) !== b.memberMap.get(pid)) return false
   return !(is(b.inlineId) && a.renderInline !== b.renderInline)
 }
 

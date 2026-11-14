@@ -27,7 +27,7 @@ beforeEach(async () => {
 
 const task = (over: Partial<Task>): Task => ({
   id: 't', title: 'Task', description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 0,
-  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, _clock: {}, ...over,
+  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], _clock: {}, ...over,
 } as Task)
 const row = (over: Partial<Task>, extra: Partial<TaskRowProps> = {}) =>
   render(<ul><TaskRow task={task(over)} selected={false} showProject={false} onToggle={() => {}} onOpen={() => {}} {...extra} /></ul>)
@@ -72,7 +72,7 @@ describe('the slots (D2)', () => {
     expect(unusedSlots(rows, { hidden: ['date'] })).toBe('estimate date assignee')
     // A heading that names the day leaves the date slot empty (Upcoming).
     expect(unusedSlots(rows, { dateShown: () => false })).toBe('estimate date assignee')
-    expect(unusedSlots([task({ estimate_minutes: 30, assignee_id: 'u', project_id: 'p', labels: ['y'], evening: true })])).toBe('')
+    expect(unusedSlots([task({ estimate_minutes: 30, assignee_ids: ['u'], project_id: 'p', labels: ['y'], evening: true })])).toBe('')
     // A list that does not follow tracked time keeps its estimate slot.
     expect(listSlotsOff(rows)).toBe('assignee')
     for (const slot of ['project', 'labels', 'estimate', 'date', 'assignee']) expect(wide).toContain(`[data-row-props][data-slots-off~="${slot}"] { --slot-${slot}: 0rem; }`)

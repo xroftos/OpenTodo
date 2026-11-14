@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"slices"
 	"strings"
 )
 
@@ -118,7 +119,7 @@ func (a *App) rotationIDs(ctx context.Context, c *client, t *task, refs string) 
 func (a *App) printTurns(ctx context.Context, c *client, w io.Writer, raw json.RawMessage) {
 	var t struct {
 		ProjectID  *string  `json:"project_id"`
-		AssigneeID *string  `json:"assignee_id"`
+		Assignees  []string `json:"assignee_ids"`
 		Recurrence *string  `json:"recurrence"`
 		Rotation   []string `json:"rotation"`
 	}
@@ -129,12 +130,13 @@ func (a *App) printTurns(ctx context.Context, c *client, w io.Writer, raw json.R
 	if err != nil {
 		return
 	}
-	fmt.Fprintln(w, turnsLine(t.Rotation, t.AssigneeID, members))
+	fmt.Fprintln(w, turnsLine(t.Rotation, t.Assignees, members))
 }
 
-// turnsLine names the rotation in order, the current assignee marked with
-// an asterisk and a departed person as "(left the project)".
-func turnsLine(rotation []string, assignee *string, members []projectMember) string {
+// turnsLine names the rotation in order, the turn-holder (the rotation member
+// on the task's assignee list) marked with an asterisk and a departed person
+// as "(left the project)".
+func turnsLine(rotation, assignees []string, members []projectMember) string {
 	byID := map[string]projectMember{}
 	for _, m := range members {
 		byID[m.UserID] = m
@@ -145,7 +147,7 @@ func turnsLine(rotation []string, assignee *string, members []projectMember) str
 		if m, ok := byID[id]; ok {
 			name = m.label()
 		}
-		if assignee != nil && *assignee == id {
+		if slices.Contains(assignees, id) {
 			name += "*"
 		}
 		parts = append(parts, name)

@@ -11,7 +11,7 @@ function task(over: Partial<Task> = {}): Task {
   return {
     id: over.id ?? `t${n}`, title: over.title ?? `Task ${n}`, notes: '', project_id: null, section_id: null, parent_id: null, position: n,
     priority: 4, due: null, deadline: null, start: null, labels: [], completed_at: null, deleted_at: null, created_at: n, updated_at: n,
-    assignee_id: null, ...over,
+    assignee_ids: [], ...over,
   } as Task
 }
 const at = (iso: string, h = 12) => {
@@ -86,12 +86,12 @@ describe('day lists', () => {
   })
 
   it('hides a shared task assigned to someone else only when the account asked, and Upcoming keeps it', () => {
-    const shared = task({ title: 'Theirs', due: { date: TODAY }, project_id: 'p', assignee_id: 'other' })
-    const mine = task({ title: 'Mine', due: { date: TODAY }, project_id: 'p', assignee_id: 'me' })
+    const shared = task({ title: 'Theirs', due: { date: TODAY }, project_id: 'p', assignee_ids: ['other'] })
+    const mine = task({ title: 'Mine', due: { date: TODAY }, project_id: 'p', assignee_ids: ['me'] })
     const open = task({ title: 'Open', due: { date: TODAY }, project_id: 'p' })
-    const personal = task({ title: 'Personal', due: { date: TODAY }, project_id: 'home', assignee_id: 'other' })
-    const tomorrow = task({ title: 'Tomorrow', due: { date: '2026-10-15' }, project_id: 'p', assignee_id: 'other' })
-    const stale = task({ title: 'Stale', due: { date: TODAY }, project_id: 'gone', assignee_id: 'other' })
+    const personal = task({ title: 'Personal', due: { date: TODAY }, project_id: 'home', assignee_ids: ['other'] })
+    const tomorrow = task({ title: 'Tomorrow', due: { date: '2026-10-15' }, project_id: 'p', assignee_ids: ['other'] })
+    const stale = task({ title: 'Stale', due: { date: TODAY }, project_id: 'gone', assignee_ids: ['other'] })
     const tasks = [shared, mine, open, personal, tomorrow, stale]
     expect(todayAssigneeFilter({ today_assignees: '' }, [{ projectId: 'p' }], 'me')).toBeNull()
     expect(todayAssigneeFilter({ today_assignees: 'compact' }, [{ projectId: 'p' }], 'me')).toBeNull()

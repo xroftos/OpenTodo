@@ -8,7 +8,7 @@ import { useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from
 import { useMembershipMap, useWorkspaceGroups } from '../../lib/localData'
 import { updateTask } from '../../lib/ops'
 import { addToRotation, MAX_ROTATION, moveInRotation } from '../../lib/rotation'
-import type { Task } from '../../lib/types'
+import { isAssignedTo, type Task } from '../../lib/types'
 import { Button, ComboboxPanel, IconButton, MoveHandle } from '../../ui'
 import { PersonAvatar } from '../PersonAvatar'
 import { act } from '../actionError'
@@ -104,7 +104,7 @@ export default function RotationEditor({ task, userId, onBack }: { task: Task; u
           {list.map((id, i) => {
             const name = nameOf(id)
             const gone = !people.some((p) => p.id === id)
-            const now = id === task.assignee_id
+            const now = isAssignedTo(task, id)
             return (
               <li key={id} ref={(el) => { rows.current[i] = el }} data-rotation-row={id}
                 className={`flex min-h-11 items-center gap-2 px-1.5 py-1 ${dragging === id ? 'bg-sunken dark:bg-raised' : ''}`}>

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { assigneeIdsOf } from '../lib/types'
 import { useTask, useMembershipMap } from '../lib/localData'
 import { updateTask } from '../lib/ops'
 import { assigneeOptions, memberName } from '../lib/sharing'
@@ -55,8 +56,11 @@ export function AssigneePicker({ taskId, userId, onClose, inline = false }: {
   ], [task?.project_id, memberships, userId, lang])
 
   if (!task) return null
-  const current = task.assignee_id ?? null
-  const currentName = current ? (current === userId ? t('You') : memberName(current, memberships) ?? t('Former member')) : t('Unassigned')
+  // multi-assignee: the picker toggles members; every pick writes the whole list.
+  const current = [...assigneeIdsOf(task)]
+  const currentName = current.length
+    ? current.map((id) => (id === userId ? t('You') : memberName(id, memberships) ?? t('Former member'))).join(', ')
+    : t('Unassigned')
 
   const props = {
     label: t('Assignee'),
@@ -65,13 +69,18 @@ export function AssigneePicker({ taskId, userId, onClose, inline = false }: {
     getLabel: (p: Person) => p.name,
     getSecondary: (p: Person) => p.email || undefined,
     pinned: [NONE, userId],
-    selected: [current ?? NONE],
+    selected: current.length ? current : [NONE],
     rankContext: `assignee:${task.project_id ?? 'personal'}`,
     emptyText: t('No member matches.'),
     renderLeading: (p: Person) => (p.id === NONE ? <span className="flex h-6 w-6 items-center justify-center text-faint"><Icon name="circle" /></span> : <PersonAvatar id={p.id} name={p.name} size="sm" />),
+    multiple: true,
     onPick: async (p: Person) => {
-      const id = p.id === NONE ? null : p.id
-      if (id !== current) await updateTask(task.id, { assignee_id: id })
+      if (p.id === NONE) {
+        if (current.length) await updateTask(task.id, { assignee_ids: [] })
+        return
+      }
+      const next = current.includes(p.id) ? current.filter((x) => x !== p.id) : [...current, p.id]
+      await updateTask(task.id, { assignee_ids: next })
     },
     onClose,
   }

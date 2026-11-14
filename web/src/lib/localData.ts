@@ -552,7 +552,7 @@ export function useMetaRead<T>(key: string, fallback: T): T | undefined {
 export function useReferenceNames(parents: readonly string[]): Map<string, string> {
   return useLiveQuery(async () => {
     const m = new Map<string, string>()
-    for (const ms of await db.memberships.toArray()) for (const u of ms.members) m.set(`assignee_id:${u.userId}`, u.name || u.email)
+    for (const ms of await db.memberships.toArray()) for (const u of ms.members) m.set(`assignee_ids:${u.userId}`, u.name || u.email)
     for (const p of await db.projects.toArray()) m.set(`project_id:${p.id}`, p.name)
     for (const x of await db.sections.toArray()) m.set(`section_id:${x.id}`, x.name)
     for (const task of await db.tasks.bulkGet(parents as string[])) if (task) m.set(`parent_id:${task.id}`, task.title || t('Untitled'))

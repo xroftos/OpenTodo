@@ -2,6 +2,7 @@ package httpapi
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -16,7 +17,7 @@ func rotatingHouse(t *testing.T) *shareEnv {
 	se.share(se.alice, "bob@example.com", "editor")
 	se.share(se.alice, "carol@example.com", "viewer")
 	resp, out := se.alice.do("PATCH", "/api/v1/tasks/"+se.task, map[string]any{
-		"recurrence": "every monday", "due": map[string]any{"date": "2026-11-09"}, "assignee_id": se.ids["alice"]})
+		"recurrence": "every monday", "due": map[string]any{"date": "2026-11-09"}, "assignee_ids": []string{se.ids["alice"]}})
 	se.alice.mustStatus(resp, 200, out)
 	return se
 }
@@ -64,14 +65,14 @@ func TestRotationThroughTheAPI(t *testing.T) {
 	// Completing through the API passes the turn.
 	resp, out = se.alice.do("PATCH", task, map[string]any{"completed_at": 1})
 	se.alice.mustStatus(resp, 200, out)
-	if out["assignee_id"] != se.ids["bob"] || out["completed_at"] != nil {
+	if !slices.Contains(aidList(out["assignee_ids"]), se.ids["bob"]) || out["completed_at"] != nil {
 		t.Fatalf("after completion: %v", out)
 	}
 	// The assignee's own write keeps its choice.
-	resp, out = se.bob.do("PATCH", task, map[string]any{"completed_at": 2, "assignee_id": se.ids["bob"]})
+	resp, out = se.bob.do("PATCH", task, map[string]any{"completed_at": 2, "assignee_ids": []string{se.ids["bob"]}})
 	se.bob.mustStatus(resp, 200, out)
-	if out["assignee_id"] != se.ids["bob"] {
-		t.Fatalf("explicit assignee: %v", out["assignee_id"])
+	if !slices.Contains(aidList(out["assignee_ids"]), se.ids["bob"]) {
+		t.Fatalf("explicit assignee: %v", out["assignee_ids"])
 	}
 	// Clearing is always allowed.
 	resp, out = se.alice.do("PATCH", task, map[string]any{"rotation": []string{}})
@@ -124,7 +125,7 @@ func TestCaldavCompletionRotates(t *testing.T) {
 	done := strings.Replace(ics, "STATUS:NEEDS-ACTION", "STATUS:COMPLETED\r\nCOMPLETED:20261109T090000Z", 1)
 	c.must("PUT", c.cal(se.project)+se.task+".ics", done, 204)
 	task := se.alice.task(se.task)
-	if task["assignee_id"] != se.ids["bob"] || task["completed_at"] != nil {
+	if !slices.Contains(aidList(task["assignee_ids"]), se.ids["bob"]) || task["completed_at"] != nil {
 		t.Fatalf("after CalDAV completion: %v", task)
 	}
 }

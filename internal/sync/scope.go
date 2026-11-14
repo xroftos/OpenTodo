@@ -415,13 +415,15 @@ func (r *resolver) resolve(op Op) (scope, reason string, err error) {
 			return "", reason, err
 		}
 	}
-	if op.Entity == "task" && op.Field == "assignee_id" {
-		if assignee := idValue(op.Value); assignee != "" {
-			ok, err := r.canBeAssigned(scope, assignee)
+	if op.Entity == "task" && op.Field == "assignee_ids" {
+		// Every assignee must be assignable (task-assignment design D2).
+		for _, id := range idList(op.Value) {
+			ok, err := r.canBeAssigned(scope, id)
 			if err != nil {
 				return "", "", err
 			}
 			if !ok {
+				r.detail = id
 				return "", ReasonNotAMember, nil
 			}
 		}

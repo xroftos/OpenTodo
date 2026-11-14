@@ -100,7 +100,7 @@ export function useFacetParts(props: PropertiesProps, m: PropertiesModel, reveal
     reminders: m.reminders,
     blockerTitles: m.blockers.map((b) => b.title),
     blocks: m.blocks.length,
-    assigneeName: task.assignee_id ? m.assigneeName : null,
+    assignees: m.assignees,
     revealed,
     dateTime: dt.resolved,
   })
@@ -302,7 +302,7 @@ function AddMenu({ task, userId, m }: { task: Task; userId?: string; m: Properti
       { id: 'labels', label: t('Labels'), icon: 'tag', shortcut: keysOf('list.labels') },
     ] },
     { title: t('Who'), offers: [
-      { id: 'assignee', label: solo ? t('Show in Assigned to me') : t('Assignee'), icon: 'user-check', shortcut: solo ? undefined : keysOf('list.assign'), when: !!userId, run: solo && userId ? () => act(updateTask(task.id, { assignee_id: userId })) : undefined },
+      { id: 'assignee', label: solo ? t('Show in Assigned to me') : t('Assignee'), icon: 'user-check', shortcut: solo ? undefined : keysOf('list.assign'), when: !!userId, run: solo && userId ? () => act(updateTask(task.id, { assignee_ids: [userId] })) : undefined },
       { id: 'blocked-by', label: t('Blocked by'), icon: 'lock', shortcut: keysOf('list.blocked-by') },
     ] },
   ]

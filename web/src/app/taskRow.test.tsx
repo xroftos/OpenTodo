@@ -26,7 +26,7 @@ beforeEach(async () => {
 
 const task = (over: Partial<Task>): Task => ({
   id: 't', title: 'Task', description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 0,
-  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, _clock: {}, ...over,
+  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], _clock: {}, ...over,
 } as Task)
 
 /** The children of a row before its checkbox: the leading slot, and the tick box when the list offers one. */
@@ -361,8 +361,8 @@ describe('one row language (rows-v2)', () => {
   }))
 
   it('the card property row (precision-boards-timeline D3): date, estimate and progress lead with icons (the progress with its ring, task-progress D2), the assignee ends it', () => atNoon(async () => {
-    const r = await row({ due: { date: '2026-10-16' }, estimate_minutes: 45, assignee_id: 'u2' },
-      { shape: 'card', progress: { done: 2, total: 5 }, assignee: 'Mia' })
+    const r = await row({ due: { date: '2026-10-16' }, estimate_minutes: 45, assignee_ids: ['u2'] },
+      { shape: 'card', progress: { done: 2, total: 5 }, assignees: [{ id: 'u2', name: 'Mia' }] })
     const meta = r.container.querySelector('[data-row-meta="card"]')!
     const items = [...meta.children]
     expect(items[0].hasAttribute('data-date')).toBe(true)

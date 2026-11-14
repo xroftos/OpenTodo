@@ -410,9 +410,8 @@ export interface TaskRowProps {
   project?: Project
   /** Already resolved: unknown and deleted label ids are not in this list. */
   labels?: Label[]
-  /** Display name of the assignee, given only for tasks in shared projects (task-assignment). */
-  assignee?: string | null
-  assignedToMe?: boolean
+  /** The task's assignees with a display name each, given only for tasks in shared projects (multi-assignee). */
+  assignees?: readonly AssigneeTag[] | null
   selected: boolean
   showProject: boolean
   depth?: number
@@ -747,7 +746,23 @@ export const TaskRow = memo(function TaskRow(props: TaskRowProps | CompactRowPro
   return props.shape === 'compact' ? <CompactRow {...props} /> : <FullRow {...props} />
 })
 
-function FullRow({ task, project, labels = [], assignee, assignedToMe = false, selected, showProject, depth = 0, progress, blockedBy = 0, waitsFor = null, habit = null, breadcrumb, hasChildren = false, collapsed = false, readOnly = false, onToggle, onOpen, onOpenPage, onToggleCollapse, shape = 'row', timeColumn = false, slotsOff, actions = true, onMore, forceActions = false, onPointerDown, onContextMenu, onRowMenu, onGripDown, onGripClick, dropKey, dropIndicator = null, dropDepth, dropNote, dragging = false, ticked = false, showCheckbox = false, selectMode = false, onTick, hideFieldBadges = false, treeItem = false, implied, omitLabel, tracked: trackedProp, inline, motion, swipe = false, forceSwipe, hidden = NO_HIDDEN, source = false, logbook = false, expanded = false, onExpand, layout, edge, notes = false, score }: TaskRowProps) {
+/** One row assignee with its resolved display name (multi-assignee). */
+export interface AssigneeTag { id: string; name: string; me?: boolean }
+
+/** The row's assignee chips (multi-assignee): the first three, then one "+N" for the rest. */
+function AssigneeTags({ task, tags }: { task: Task; tags: readonly AssigneeTag[] }) {
+  const turns = rowTakesTurns(task)
+  const shown = tags.slice(0, 3)
+  const rest = tags.length - shown.length
+  return (
+    <span className="inline-flex items-center gap-2">
+      {shown.map((a) => <AssigneeChip key={a.id} id={a.id} name={a.name} me={a.me} turns={turns} />)}
+      {rest > 0 && <span data-assignee-more="" className="text-meta text-muted">+{rest}</span>}
+    </span>
+  )
+}
+
+function FullRow({ task, project, labels = [], assignees, selected, showProject, depth = 0, progress, blockedBy = 0, waitsFor = null, habit = null, breadcrumb, hasChildren = false, collapsed = false, readOnly = false, onToggle, onOpen, onOpenPage, onToggleCollapse, shape = 'row', timeColumn = false, slotsOff, actions = true, onMore, forceActions = false, onPointerDown, onContextMenu, onRowMenu, onGripDown, onGripClick, dropKey, dropIndicator = null, dropDepth, dropNote, dragging = false, ticked = false, showCheckbox = false, selectMode = false, onTick, hideFieldBadges = false, treeItem = false, implied, omitLabel, tracked: trackedProp, inline, motion, swipe = false, forceSwipe, hidden = NO_HIDDEN, source = false, logbook = false, expanded = false, onExpand, layout, edge, notes = false, score }: TaskRowProps) {
   const card = shape === 'card'
   // The row's layout (row-layouts D1): the list's own choice, else the account's; a card keeps its shape.
   const accountLayout = useAccountRowLayout()
@@ -816,7 +831,7 @@ function FullRow({ task, project, labels = [], assignee, assignedToMe = false, s
     startText, someday: start === 'someday',
     estimate, energy: hides('energy') ? null : energyOf(task), blockedBy: done ? 0 : blockedBy, waitsFor: done ? null : waitsFor, streak: habit && !done ? habit : null,
     badges: hideFieldBadges ? [] : fieldBadges(task, fieldDefs, dt.resolved, fieldsOf),
-    assignee: assignee && task.assignee_id && !hides('assignee') ? <AssigneeChip id={task.assignee_id} name={assignee} me={assignedToMe} turns={rowTakesTurns(task)} /> : null,
+    assignee: assignees && assignees.length && !hides('assignee') ? <AssigneeTags task={task} tags={assignees} /> : null,
     origin: null,
     labels: <LabelChips labels={labels} omit={omitLabel} />,
     counts: null,

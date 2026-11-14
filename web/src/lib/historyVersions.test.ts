@@ -52,8 +52,8 @@ describe('summarizeVersion', () => {
   it('uses an Oxford comma beyond two verbs and names other fields', () => {
     expect(summarizeVersion(v(['project_id'], ['title'], ['due']))).toBe('Renamed, rescheduled, and moved')
     expect(summarizeVersion(v(['labels']))).toBe('Edited the labels')
-    expect(summarizeVersion(v(['assignee_id', 'u2'], ['title']))).toBe('Renamed and reassigned')
-    expect(summarizeVersion(v(['assignee_id', null]))).toBe('Unassigned')
+    expect(summarizeVersion(v(['assignee_ids', ['u2']], ['title']))).toBe('Renamed and reassigned')
+    expect(summarizeVersion(v(['assignee_ids', []]))).toBe('Unassigned')
     expect(summarizeVersion(v(['description'], ['notes_doc']))).toBe('Edited the notes')
     expect(summarizeVersion(v(['origin', null]))).toBe('Edited the origin')
   })

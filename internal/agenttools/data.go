@@ -423,7 +423,7 @@ type taskText struct {
 	Project     string   `json:"project"`
 	Section     string   `json:"section,omitempty"`
 	Labels      []string `json:"labels"`
-	Assignee    string   `json:"assignee,omitempty"`
+	Assignees   []string `json:"assignees,omitempty"`
 	// Rotation names the people who take turns, in order (chore-rotation).
 	Rotation []string `json:"rotation,omitempty"`
 	// Fields holds the string custom field values (text, link, date, choice)
@@ -467,16 +467,16 @@ type originOut struct {
 }
 
 type taskOut struct {
-	ID         string   `json:"id"`
-	Untrusted  taskText `json:"untrusted_text"`
-	ProjectID  *string  `json:"project_id"`
-	SectionID  *string  `json:"section_id,omitempty"`
-	ParentID   *string  `json:"parent_id,omitempty"`
-	Priority   int      `json:"priority"`
-	Due        *dueOut  `json:"due"`
-	Overdue    bool     `json:"overdue,omitempty"`
-	LabelIDs   []string `json:"label_ids"`
-	AssigneeID *string  `json:"assignee_id,omitempty"`
+	ID          string   `json:"id"`
+	Untrusted   taskText `json:"untrusted_text"`
+	ProjectID   *string  `json:"project_id"`
+	SectionID   *string  `json:"section_id,omitempty"`
+	ParentID    *string  `json:"parent_id,omitempty"`
+	Priority    int      `json:"priority"`
+	Due         *dueOut  `json:"due"`
+	Overdue     bool     `json:"overdue,omitempty"`
+	LabelIDs    []string `json:"label_ids"`
+	AssigneeIDs []string `json:"assignee_ids,omitempty"`
 	// Rotation is the account ids of the people who take turns on a recurring
 	// task, in order; completing it assigns the next (chore-rotation).
 	Rotation   []string `json:"rotation,omitempty"`
@@ -603,9 +603,15 @@ func (snap *snapshot) render(t opsync.Entity, loc *time.Location, today string, 
 			out.LabelIDs = append(out.LabelIDs, lid)
 		}
 	}
-	if aid := str(t, "assignee_id"); aid != "" {
-		out.AssigneeID = &aid
-		out.Untrusted.Assignee = snap.people[aid]
+	if aids := stringList(t, "assignee_ids"); len(aids) > 0 {
+		out.AssigneeIDs = aids
+		for _, aid := range aids {
+			name, ok := snap.people[aid]
+			if !ok {
+				name = "(left the project)"
+			}
+			out.Untrusted.Assignees = append(out.Untrusted.Assignees, name)
+		}
 	}
 	snap.rotationView(t, &out)
 	if m := int(num(t, "estimate_minutes")); m > 0 {

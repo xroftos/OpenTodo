@@ -45,7 +45,7 @@ function fieldValue(field: string, v: unknown, n: ProposalNames): string {
 const FIELD: Record<string, () => string> = {
   title: () => t('Title'), description: () => t('Description'), priority: () => t('Priority'), due: () => t('Due date'), deadline: () => t('Deadline'),
   start: () => t('Start'), energy: () => t('Energy'), labels: () => t('Labels'), section_id: () => t('Section'), project_id: () => t('Project'),
-  completed_at: () => t('Completed'), deleted_at: () => t('Trash'), assignee_id: () => t('Assignee'),
+  completed_at: () => t('Completed'), deleted_at: () => t('Trash'), assignee_ids: () => t('Assignee'),
 }
 
 /** Fields that only follow another change (positions, timestamps) are not listed. */

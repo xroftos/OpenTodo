@@ -169,7 +169,7 @@ func TestAgentTokenRefusedOnRestWrites(t *testing.T) {
 	}{
 		// The agent content routes (agent-ready-cli) are covered by
 		// TestAgentRestAllowList; refused fields on them stay refused.
-		{"PATCH", "/api/v1/tasks/" + taskID, map[string]any{"assignee_id": nil}},
+		{"PATCH", "/api/v1/tasks/" + taskID, map[string]any{"assignee_ids": []string{}}},
 		{"PATCH", "/api/v1/projects/" + projectID, map[string]any{"deleted_at": 1}},
 		{"DELETE", "/api/v1/projects/" + projectID, nil},
 		{"POST", "/api/v1/sync", map[string]any{"device": "d", "cursor": 0, "ops": []any{}}},

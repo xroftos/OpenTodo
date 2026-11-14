@@ -15,7 +15,9 @@ import { byPosition, compareByPosition, compareDueThenPriority } from './orderin
 import { effectiveSection, groupBySection } from './sections'
 import { breadcrumbOf, buildTaskTree } from './subtasks'
 import { effectiveParents, flattenTree, type Tree, type TreeNode } from './tree'
-import { fieldSortId, type FieldDef, type Label, type Project, type Section, type Task } from './types'
+import { fieldSortId, isAssignedTo, type FieldDef, type Label, type Project, type Section, type Task } from './types'
+import { isSoloScope } from './sharing'
+import type { Membership } from './types'
 import { compareTasks, groupTasks, inAnytime, inLater, inToday, inUpcoming, isSomeday } from './views'
 import { compareManual } from './viewOrder'
 import type { ListDisplay } from './listDisplay'
@@ -165,8 +167,11 @@ export function flatRow(task: Task, breadcrumb: string | null = null): ListRow {
 /**
  * The tasks a list view holds, in its order (archived projects stay out of cross-project views).
  * `upcomingToday`: Upcoming starts with Today's tasks (upcoming-start-with-today D2).
+ * `memberships` (the shared projects the viewer is in) widens «Мои задачи» beyond the
+ * tasks assigned to the viewer (see {@link assignedToMeView}); without it the view keeps
+ * the assigned-only reading.
  */
-export function tasksForView(scope: ListScope, allTasks: readonly Task[], projects: readonly Project[], today: string, userId?: string, upcomingToday = false, hide?: TodayAssigneeFilter | null): Task[] {
+export function tasksForView(scope: ListScope, allTasks: readonly Task[], projects: readonly Project[], today: string, userId?: string, upcomingToday = false, hide?: TodayAssigneeFilter | null, memberships?: MembershipMap): Task[] {
   // Tasks of archived projects stay out of the cross-project views (lib/dayLists, shared with the display).
   const all = withoutArchived(allTasks as Task[], projects as Project[], scope.view === 'project' ? scope.id : undefined)
   switch (scope.view) {
@@ -194,8 +199,23 @@ export function tasksForView(scope: ListScope, allTasks: readonly Task[], projec
     case 'place':
       return all.filter((task) => !task.completed_at && linkedPlaceId(task) === scope.id).sort(byPosition)
     case 'assigned':
-      return all.filter((task) => !task.completed_at && !!userId && task.assignee_id === userId).sort(compareDueThenPriority)
+      return all.filter((task) => !task.completed_at && (memberships ? assignedToMeView(task, memberships, userId) : !!userId && isAssignedTo(task, userId))).sort(compareDueThenPriority)
   }
+}
+
+/** The membership cache keyed by project id (sharing.ts), as the «Мои задачи» view reads it. */
+type MembershipMap = Map<string, Membership>
+
+/**
+ * «Мои задачи» (multi-assignee, the unified Assigned to me list): every active (open)
+ * task of a personal scope — the Inbox, an unshared project, a shared project whose
+ * only member is the viewer (lib/sharing isSoloScope) — plus every active task of any
+ * project that names the viewer among its assignees. One task appears once even when
+ * both readings hold it.
+ */
+export function assignedToMeView(task: Pick<Task, 'project_id' | 'completed_at' | 'assignee_ids'>, memberships: MembershipMap, userId?: string | null): boolean {
+  if (task.completed_at) return false
+  return isSoloScope(task.project_id, memberships, userId ?? null) || isAssignedTo(task, userId)
 }
 
 /** What patchViewTasks needs of the whole snapshot: its parents (the Inbox walks them) and which tasks have children. */
@@ -213,7 +233,7 @@ export interface ViewPatchContext {
  * placement or parent changed while it has subtasks): worked out in full.
  */
 export function patchViewTasks(prev: Task[], changes: readonly TaskChange[], scope: ListScope, projects: readonly Project[], today: string, ctx: ViewPatchContext,
-  userId?: string, upcomingToday = false, hide?: TodayAssigneeFilter | null): Task[] | null {
+  userId?: string, upcomingToday = false, hide?: TodayAssigneeFilter | null, memberships?: MembershipMap): Task[] | null {
   const hidden = new Set(projects.filter((p) => p.archived).map((p) => p.id))
   const keepProject = scope.view === 'project' ? scope.id : undefined
   // withoutArchived's rule, a task at a time. inbox-rule-ok: tasks of archived projects, not the Inbox.
@@ -246,7 +266,7 @@ export function patchViewTasks(prev: Task[], changes: readonly TaskChange[], sco
     case 'place':
       return patchOrdered(prev, changes, (task) => shown(task) && !task.completed_at && linkedPlaceId(task) === scope.id, byPosition)
     case 'assigned':
-      return patchOrdered(prev, changes, (task) => shown(task) && !task.completed_at && !!userId && task.assignee_id === userId, compareDueThenPriority)
+      return patchOrdered(prev, changes, (task) => shown(task) && !task.completed_at && (memberships ? assignedToMeView(task, memberships, userId) : !!userId && isAssignedTo(task, userId)), compareDueThenPriority)
   }
 }
 

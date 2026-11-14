@@ -17,7 +17,7 @@ function series(over: Partial<Task>): Task {
   return {
     id: 's', title: 'Study', description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 1,
     created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null,
-    assignee_id: null, section_id: null, ical_extra: null, _clock: {}, ...over,
+    assignee_ids: [], section_id: null, ical_extra: null, _clock: {}, ...over,
   } as Task
 }
 

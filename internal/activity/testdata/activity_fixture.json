@@ -10,7 +10,46 @@
         {"id":"p4","seq":4,"actor":"alice","entity":"task","entityId":"piece","field":"created_at","value":1000,"ts":1000,"device":"da"}
       ],
       "events": [
-        {"id":"p1","kind":"created","actor":"alice","entity":"task","entityId":"piece","taskId":"piece","ts":1000,"opIds":["p1","p2","p3","p4"],"changes":[{"field":"created_at","from":null,"to":1000},{"field":"recurrence","from":null,"to":"every weekday"},{"field":"split_from","from":null,"to":{"series":"s1","date":"2026-10-14"}},{"field":"title","from":null,"to":"Study"}]}
+        {
+          "id": "p1",
+          "kind": "created",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "piece",
+          "taskId": "piece",
+          "ts": 1000,
+          "opIds": [
+            "p1",
+            "p2",
+            "p3",
+            "p4"
+          ],
+          "changes": [
+            {
+              "field": "created_at",
+              "from": null,
+              "to": 1000
+            },
+            {
+              "field": "recurrence",
+              "from": null,
+              "to": "every weekday"
+            },
+            {
+              "field": "split_from",
+              "from": null,
+              "to": {
+                "series": "s1",
+                "date": "2026-10-14"
+              }
+            },
+            {
+              "field": "title",
+              "from": null,
+              "to": "Study"
+            }
+          ]
+        }
       ]
     },
     {
@@ -23,7 +62,52 @@
         {"id":"r5","seq":5,"actor":"alice","entity":"task","entityId":"rec","field":"created_at","value":1000,"ts":1000,"device":"da"}
       ],
       "events": [
-        {"id":"r1","kind":"created","actor":"alice","entity":"task","entityId":"rec","taskId":"rec","ts":1000,"opIds":["r1","r2","r3","r4","r5"],"changes":[{"field":"created_at","from":null,"to":1000},{"field":"due","from":null,"to":{"date":"2026-10-14","time":"19:00"}},{"field":"occurrence_date","from":null,"to":"2026-10-14"},{"field":"series_id","from":null,"to":"s1"},{"field":"title","from":null,"to":"Study"}]}
+        {
+          "id": "r1",
+          "kind": "created",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "rec",
+          "taskId": "rec",
+          "ts": 1000,
+          "opIds": [
+            "r1",
+            "r2",
+            "r3",
+            "r4",
+            "r5"
+          ],
+          "changes": [
+            {
+              "field": "created_at",
+              "from": null,
+              "to": 1000
+            },
+            {
+              "field": "due",
+              "from": null,
+              "to": {
+                "date": "2026-10-14",
+                "time": "19:00"
+              }
+            },
+            {
+              "field": "occurrence_date",
+              "from": null,
+              "to": "2026-10-14"
+            },
+            {
+              "field": "series_id",
+              "from": null,
+              "to": "s1"
+            },
+            {
+              "field": "title",
+              "from": null,
+              "to": "Study"
+            }
+          ]
+        }
       ]
     },
     {
@@ -95,10 +179,10 @@
         {"id":"a2","seq":2,"actor":"alice","entity":"task","entityId":"t1","field":"created_at","value":1000,"ts":1000,"device":"da"},
         {"id":"b1","seq":3,"actor":"bob","entity":"task","entityId":"t1","field":"completed_at","value":11000,"ts":11000,"device":"db"},
         {"id":"c1","seq":4,"actor":"carol","entity":"task","entityId":"t1","field":"due","value":{"date":"2026-10-12"},"ts":21000,"device":"dc"},
-        {"id":"a3","seq":5,"actor":"alice","entity":"task","entityId":"t1","field":"assignee_id","value":"bob","ts":31000,"device":"da"},
+        {"id":"a3","seq":5,"actor":"alice","entity":"task","entityId":"t1","field":"assignee_ids","value":["bob"],"ts":31000,"device":"da"},
         {"id":"a4","seq":6,"actor":"alice","entity":"task","entityId":"t1","field":"project_id","value":"p2","ts":41000,"device":"da"},
         {"id":"b2","seq":7,"actor":"bob","entity":"task","entityId":"t1","field":"completed_at","value":null,"ts":51000,"device":"db"},
-        {"id":"b3","seq":8,"actor":"bob","entity":"task","entityId":"t1","field":"assignee_id","value":null,"ts":61000,"device":"db"},
+        {"id":"b3","seq":8,"actor":"bob","entity":"task","entityId":"t1","field":"assignee_ids","value":[],"ts":61000,"device":"db"},
         {"id":"b4","seq":9,"actor":"bob","entity":"task","entityId":"t1","field":"deleted_at","value":71000,"ts":71000,"device":"db"},
         {"id":"a5","seq":10,"actor":"alice","entity":"task","entityId":"t1","field":"deleted_at","value":null,"ts":81000,"device":"da"}
       ],
@@ -181,9 +265,11 @@
           ],
           "changes": [
             {
-              "field": "assignee_id",
+              "field": "assignee_ids",
               "from": null,
-              "to": "bob"
+              "to": [
+                "bob"
+              ]
             }
           ]
         },
@@ -238,9 +324,11 @@
           ],
           "changes": [
             {
-              "field": "assignee_id",
-              "from": "bob",
-              "to": null
+              "field": "assignee_ids",
+              "from": [
+                "bob"
+              ],
+              "to": []
             }
           ]
         },
@@ -647,7 +735,24 @@
         {"id":"pn2","seq":2,"actor":"alice","entity":"project","entityId":"p1","field":"notes_doc","value":"ydoc:v1:AAEC","ts":500000,"device":"da"}
       ],
       "events": [
-        {"id":"pn1","kind":"edited","actor":"alice","entity":"project","entityId":"p1","ts":500000,"opIds":["pn1"],"changes":[{"field":"description","from":null,"to":"# Trip plan"}]}
+        {
+          "id": "pn1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "project",
+          "entityId": "p1",
+          "ts": 500000,
+          "opIds": [
+            "pn1"
+          ],
+          "changes": [
+            {
+              "field": "description",
+              "from": null,
+              "to": "# Trip plan"
+            }
+          ]
+        }
       ]
     },
     {
@@ -657,8 +762,45 @@
         {"id":"pl2","seq":2,"actor":"alice","entity":"task","entityId":"t1","field":"completed_at","value":401000,"ts":401000,"device":"public:link1"}
       ],
       "events": [
-        {"id":"pl1","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":400000,"opIds":["pl1"],"changes":[{"field":"title","from":null,"to":"Milk (2 l)"}]},
-        {"id":"pl2","kind":"completed","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":401000,"opIds":["pl2"],"changes":[{"field":"completed_at","from":null,"to":401000}],"device":"public:link1"}
+        {
+          "id": "pl1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 400000,
+          "opIds": [
+            "pl1"
+          ],
+          "changes": [
+            {
+              "field": "title",
+              "from": null,
+              "to": "Milk (2 l)"
+            }
+          ]
+        },
+        {
+          "id": "pl2",
+          "kind": "completed",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 401000,
+          "opIds": [
+            "pl2"
+          ],
+          "changes": [
+            {
+              "field": "completed_at",
+              "from": null,
+              "to": 401000
+            }
+          ],
+          "device": "public:link1"
+        }
       ]
     },
     {
@@ -669,9 +811,65 @@
         {"id":"tp3","seq":3,"actor":"alice","entity":"task","entityId":"t1","field":"completed_at","value":402000,"ts":402000,"device":"page:page1"}
       ],
       "events": [
-        {"id":"tp1","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":400000,"opIds":["tp1"],"changes":[{"field":"title","from":null,"to":"Paint the fence"}]},
-        {"id":"tp2","kind":"completed","actor":"alice","entity":"task","entityId":"st1","taskId":"st1","ts":401000,"opIds":["tp2"],"changes":[{"field":"completed_at","from":null,"to":401000}],"device":"page:page1"},
-        {"id":"tp3","kind":"completed","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":402000,"opIds":["tp3"],"changes":[{"field":"completed_at","from":null,"to":402000}],"device":"page:page1"}
+        {
+          "id": "tp1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 400000,
+          "opIds": [
+            "tp1"
+          ],
+          "changes": [
+            {
+              "field": "title",
+              "from": null,
+              "to": "Paint the fence"
+            }
+          ]
+        },
+        {
+          "id": "tp2",
+          "kind": "completed",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "st1",
+          "taskId": "st1",
+          "ts": 401000,
+          "opIds": [
+            "tp2"
+          ],
+          "changes": [
+            {
+              "field": "completed_at",
+              "from": null,
+              "to": 401000
+            }
+          ],
+          "device": "page:page1"
+        },
+        {
+          "id": "tp3",
+          "kind": "completed",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 402000,
+          "opIds": [
+            "tp3"
+          ],
+          "changes": [
+            {
+              "field": "completed_at",
+              "from": null,
+              "to": 402000
+            }
+          ],
+          "device": "page:page1"
+        }
       ]
     },
     {
@@ -680,7 +878,25 @@
         {"id":"dl1","seq":1,"actor":"alice","entity":"task","entityId":"t1","field":"deadline","value":"2026-11-20","ts":200000,"device":"da"}
       ],
       "events": [
-        {"id":"dl1","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":200000,"opIds":["dl1"],"changes":[{"field":"deadline","from":null,"to":"2026-11-20"}]}
+        {
+          "id": "dl1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 200000,
+          "opIds": [
+            "dl1"
+          ],
+          "changes": [
+            {
+              "field": "deadline",
+              "from": null,
+              "to": "2026-11-20"
+            }
+          ]
+        }
       ]
     },
     {
@@ -690,8 +906,44 @@
         {"id":"se2","seq":2,"actor":"bob","entity":"task","entityId":"t2","field":"evening","value":true,"ts":300000,"device":"db"}
       ],
       "events": [
-        {"id":"se1","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":300000,"opIds":["se1"],"changes":[{"field":"start","from":null,"to":"someday"}]},
-        {"id":"se2","kind":"edited","actor":"bob","entity":"task","entityId":"t2","taskId":"t2","ts":300000,"opIds":["se2"],"changes":[{"field":"evening","from":null,"to":true}]}
+        {
+          "id": "se1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 300000,
+          "opIds": [
+            "se1"
+          ],
+          "changes": [
+            {
+              "field": "start",
+              "from": null,
+              "to": "someday"
+            }
+          ]
+        },
+        {
+          "id": "se2",
+          "kind": "edited",
+          "actor": "bob",
+          "entity": "task",
+          "entityId": "t2",
+          "taskId": "t2",
+          "ts": 300000,
+          "opIds": [
+            "se2"
+          ],
+          "changes": [
+            {
+              "field": "evening",
+              "from": null,
+              "to": true
+            }
+          ]
+        }
       ]
     },
     {
@@ -700,7 +952,25 @@
         {"id":"ts1","seq":1,"actor":"alice","entity":"task","entityId":"t1","field":"sector","value":"2026-W45","ts":320000,"device":"da"}
       ],
       "events": [
-        {"id":"ts1","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":320000,"opIds":["ts1"],"changes":[{"field":"sector","from":null,"to":"2026-W45"}]}
+        {
+          "id": "ts1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 320000,
+          "opIds": [
+            "ts1"
+          ],
+          "changes": [
+            {
+              "field": "sector",
+              "from": null,
+              "to": "2026-W45"
+            }
+          ]
+        }
       ]
     },
     {
@@ -710,7 +980,31 @@
         {"id":"dp2","seq":2,"actor":"alice","entity":"task","entityId":"t1","field":"evening","value":false,"ts":350000,"device":"da"}
       ],
       "events": [
-        {"id":"dp1","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":350000,"opIds":["dp1","dp2"],"changes":[{"field":"day_part","from":null,"to":"morning"},{"field":"evening","from":null,"to":false}]}
+        {
+          "id": "dp1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 350000,
+          "opIds": [
+            "dp1",
+            "dp2"
+          ],
+          "changes": [
+            {
+              "field": "day_part",
+              "from": null,
+              "to": "morning"
+            },
+            {
+              "field": "evening",
+              "from": null,
+              "to": false
+            }
+          ]
+        }
       ]
     },
     {
@@ -729,8 +1023,33 @@
         {"id":"bb2","seq":2,"actor":"alice","entity":"task","entityId":"t1","field":"title","value":"Book flights","ts":300000,"device":"da"}
       ],
       "events": [
-        {"id":"bb1","kind":"dependencies","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":300000,"opIds":["bb1","bb2"],
-         "changes":[{"field":"blocked_by","from":null,"to":["t2"]},{"field":"title","from":null,"to":"Book flights"}]}
+        {
+          "id": "bb1",
+          "kind": "dependencies",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 300000,
+          "opIds": [
+            "bb1",
+            "bb2"
+          ],
+          "changes": [
+            {
+              "field": "blocked_by",
+              "from": null,
+              "to": [
+                "t2"
+              ]
+            },
+            {
+              "field": "title",
+              "from": null,
+              "to": "Book flights"
+            }
+          ]
+        }
       ]
     },
     {
@@ -740,8 +1059,44 @@
         {"id":"hb2","seq":2,"actor":"bob","entity":"task","entityId":"t2","field":"skipped","value":true,"ts":300000,"device":"db"}
       ],
       "events": [
-        {"id":"hb1","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":300000,"opIds":["hb1"],"changes":[{"field":"habit","from":null,"to":true}]},
-        {"id":"hb2","kind":"edited","actor":"bob","entity":"task","entityId":"t2","taskId":"t2","ts":300000,"opIds":["hb2"],"changes":[{"field":"skipped","from":null,"to":true}]}
+        {
+          "id": "hb1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 300000,
+          "opIds": [
+            "hb1"
+          ],
+          "changes": [
+            {
+              "field": "habit",
+              "from": null,
+              "to": true
+            }
+          ]
+        },
+        {
+          "id": "hb2",
+          "kind": "edited",
+          "actor": "bob",
+          "entity": "task",
+          "entityId": "t2",
+          "taskId": "t2",
+          "ts": 300000,
+          "opIds": [
+            "hb2"
+          ],
+          "changes": [
+            {
+              "field": "skipped",
+              "from": null,
+              "to": true
+            }
+          ]
+        }
       ]
     },
     {
@@ -754,8 +1109,45 @@
         {"id":"cf5","seq":5,"actor":"bob","entity":"task","entityId":"occ1","field":"fields.f1","value":40,"ts":500000,"device":"db"}
       ],
       "events": [
-        {"id":"cf3","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":400000,"opIds":["cf3","cf4"],"changes":[{"field":"fields.f1","from":null,"to":150}]},
-        {"id":"cf5","kind":"edited","actor":"bob","entity":"task","entityId":"occ1","taskId":"occ1","ts":500000,"opIds":["cf5"],"changes":[{"field":"fields.f1","from":null,"to":40}]}
+        {
+          "id": "cf3",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 400000,
+          "opIds": [
+            "cf3",
+            "cf4"
+          ],
+          "changes": [
+            {
+              "field": "fields.f1",
+              "from": null,
+              "to": 150
+            }
+          ]
+        },
+        {
+          "id": "cf5",
+          "kind": "edited",
+          "actor": "bob",
+          "entity": "task",
+          "entityId": "occ1",
+          "taskId": "occ1",
+          "ts": 500000,
+          "opIds": [
+            "cf5"
+          ],
+          "changes": [
+            {
+              "field": "fields.f1",
+              "from": null,
+              "to": 40
+            }
+          ]
+        }
       ]
     },
     {
@@ -765,8 +1157,45 @@
         {"id":"ru2","seq":2,"actor":"alice","entity":"task","entityId":"t1","field":"priority","value":1,"ts":501000,"device":"rule:r1"}
       ],
       "events": [
-        {"id":"ru1","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":500000,"opIds":["ru1"],"changes":[{"field":"title","from":null,"to":"Call Ana"}]},
-        {"id":"ru2","kind":"edited","actor":"alice","entity":"task","entityId":"t1","taskId":"t1","ts":501000,"opIds":["ru2"],"changes":[{"field":"priority","from":null,"to":1}],"device":"rule:r1"}
+        {
+          "id": "ru1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 500000,
+          "opIds": [
+            "ru1"
+          ],
+          "changes": [
+            {
+              "field": "title",
+              "from": null,
+              "to": "Call Ana"
+            }
+          ]
+        },
+        {
+          "id": "ru2",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t1",
+          "taskId": "t1",
+          "ts": 501000,
+          "opIds": [
+            "ru2"
+          ],
+          "changes": [
+            {
+              "field": "priority",
+              "from": null,
+              "to": 1
+            }
+          ],
+          "device": "rule:r1"
+        }
       ]
     },
     {
@@ -785,7 +1214,25 @@
         {"id":"y3","seq":3,"actor":"alice","entity":"task","entityId":"t9","field":"note_mentions","value":["bob"],"ts":1000,"device":"da"}
       ],
       "events": [
-        {"id":"y1","kind":"edited","actor":"alice","entity":"task","entityId":"t9","taskId":"t9","ts":1000,"opIds":["y1"],"changes":[{"field":"description","from":null,"to":"Ask @bob about the tiles"}]}
+        {
+          "id": "y1",
+          "kind": "edited",
+          "actor": "alice",
+          "entity": "task",
+          "entityId": "t9",
+          "taskId": "t9",
+          "ts": 1000,
+          "opIds": [
+            "y1"
+          ],
+          "changes": [
+            {
+              "field": "description",
+              "from": null,
+              "to": "Ask @bob about the tiles"
+            }
+          ]
+        }
       ]
     }
   ]

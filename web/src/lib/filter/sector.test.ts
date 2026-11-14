@@ -6,7 +6,7 @@ import { FilterSyntaxError, parse, printQuery } from './parse'
 
 const task = (id: string, over: Partial<Task>): Task => ({
   id, title: id, description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [], position: 0,
-  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_id: null, _clock: {}, ...over,
+  created_at: 0, completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null, series_id: null, assignee_ids: [], _clock: {}, ...over,
 } as Task)
 
 const tasks = [task('w44', { sector: '2026-W44' }), task('w45', { sector: '2026-W45' }), task('none', {})]

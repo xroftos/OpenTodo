@@ -30,7 +30,7 @@ import { priorityShort } from '../../lib/priority'
 import { messageOf } from '../../lib/errorText'
 
 const PRIORITY_HUE: Record<number, HueName> = { 1: 'red', 2: 'orange', 3: 'blue', 4: 'slate' }
-const EMPTY_REF = translatedMap<string>({ project_id: msg('Inbox'), parent_id: msg('No parent'), section_id: msg('No section'), assignee_id: msg('Unassigned') })
+const EMPTY_REF = translatedMap<string>({ project_id: msg('Inbox'), parent_id: msg('No parent'), section_id: msg('No section'), assignee_ids: msg('Unassigned') })
 
 /** "due date" → "Due date": field names as row labels. */
 export function changeLabel(field: string): string {
@@ -62,6 +62,7 @@ function Value({ change, value, refName, labels }: { change: VersionChange; valu
   const dt = useDateTimeFormat()
   const [showText, setShowText] = useState(false)
   const f = change.field
+  if (f === 'assignee_ids' && Array.isArray(value)) return value.length ? value.map((id) => refName(f, String(id)) ?? 'unknown').join(', ') : EMPTY_REF[f]
   if (f in EMPTY_REF) return value == null || value === '' ? EMPTY_REF[f] : typeof value === 'string' ? refName(f, value) ?? 'unknown' : String(value)
   if (f === 'due') {
     if (!value || typeof value !== 'object') return t('No date')
@@ -96,6 +97,7 @@ function Value({ change, value, refName, labels }: { change: VersionChange; valu
 
 /** Plain text of a value, for the restore button's accessible name. */
 function valueText(field: string, value: unknown, refName: HistoryViewProps['refName']): string {
+  if (field === 'assignee_ids' && Array.isArray(value)) return value.length ? value.map((id) => refName(field, String(id)) ?? 'unknown').join(', ') : EMPTY_REF[field]
   if (field in EMPTY_REF) return value == null || value === '' ? EMPTY_REF[field] : refName(field, String(value)) ?? 'unknown'
   return formatValue(field, value)
 }

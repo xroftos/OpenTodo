@@ -179,7 +179,7 @@ function finish(g: Group, commentTask: Map<string, string>): ActivityEvent | nul
     else if (has('completed_at')) kind = isNull('completed_at') ? 'reopened' : 'completed'
     else if (has('deleted_at')) kind = isNull('deleted_at') ? 'restored' : 'deleted'
     else if (has('due')) kind = 'rescheduled'
-    else if (has('assignee_id')) kind = isNull('assignee_id') ? 'unassigned' : 'assigned'
+    else if (has('assignee_ids')) kind = (g.changes.get('assignee_ids')?.to as unknown[] | undefined)?.length ? 'assigned' : 'unassigned'
     else if (has('project_id')) kind = 'moved'
     else if (has('blocked_by')) kind = 'dependencies'
     else if (has('archived')) kind = g.changes.get('archived')?.to === true ? 'archived' : 'unarchived'
@@ -469,7 +469,10 @@ export function describeEvent(ev: ActivityEvent, name: (id: string) => string, p
     case 'deleted': return isProject ? t('deleted the project') : merged?.(ev.entityId) ? t('merged a duplicate') : t('deleted the task')
     case 'restored': return isProject ? t('restored the project') : t('restored the task')
     case 'rescheduled': return to('due') ? t('moved the due date to {date}', { date: dueText(to('due')) }) : t('removed the due date')
-    case 'assigned': return t('assigned to {name}', { name: name(String(to('assignee_id'))) })
+    case 'assigned': {
+      const ids = (to('assignee_ids') as string[] | null) ?? []
+      return t('assigned to {name}', { name: ids.map((id) => name(id)).join(', ') })
+    }
     case 'unassigned': return t('removed the assignee')
     case 'moved': return t('moved to {project}', { project: project((to('project_id') as string | null) ?? null) })
     case 'dependencies': {

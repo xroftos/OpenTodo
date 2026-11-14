@@ -326,7 +326,7 @@ func TestRemoveWorkspaceMemberDropsGrants(t *testing.T) {
 	if _, err := f.s.AddMember(f.ctx, "alice", "p", "bob", RoleEditor); err != nil {
 		t.Fatal(err)
 	}
-	f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"carol"`))
+	f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["carol"]`))
 	ch, err := f.s.RemoveWorkspaceMember(f.ctx, "alice", f.ws, "carol")
 	if err != nil {
 		t.Fatal(err)
@@ -455,11 +455,11 @@ func TestAssigneeOutsideTheDirectory(t *testing.T) {
 	if _, err := f.s.AddMember(f.ctx, "alice", "p", "bob", RoleEditor); err != nil {
 		t.Fatal(err)
 	}
-	bad := f.op("task", "t1", "assignee_id", `"eve"`)
+	bad := f.op("task", "t1", "assignee_ids", `["eve"]`)
 	if res := f.apply("alice", "A", bad); !slices.Equal(rejectedIDs(res), []string{bad.ID + ":not_a_member"}) {
 		t.Fatalf("assign outsider = %v", rejectedIDs(res))
 	}
-	if res := f.apply("alice", "A", f.op("task", "t1", "assignee_id", `"bob"`)); res.Applied != 1 {
+	if res := f.apply("alice", "A", f.op("task", "t1", "assignee_ids", `["bob"]`)); res.Applied != 1 {
 		t.Fatalf("assign member = %+v", res)
 	}
 }

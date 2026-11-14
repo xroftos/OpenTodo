@@ -63,6 +63,8 @@ Its row in the [API reference](api.md#endpoints) is marked **deprecated** and na
 
 Op fields are never removed: the operation log is append-only and old operations must replay. A deprecated op field is still accepted and served for as long as the server speaks version 1 of the sync protocol.
 
+Family fork exception: the task-assignment change renamed the op field `assignee_id` to `assignee_ids` outright. The family deployment starts from a fresh server with no existing operation log or API clients, so no compat shim is carried; the removals are recorded with their reason in `internal/httpapi/surface_test.go` (`compatBreaks`).
+
 ## Upgrades
 
 - Any release from **0.1.0** on upgrades **directly** to any 1.x release, and any 1.x to any later 1.x: no intermediate version is needed. Migrations run when the server starts ([updating](self-hosting/docker.md#updating)).

@@ -14,7 +14,7 @@ function task(id: string, extra: Partial<Task> = {}): Task {
   return {
     id, title: id, description: '', project_id: null, parent_id: null, priority: 4, due: null, labels: [],
     position: 0, created_at: at('2025-01-01'), completed_at: null, deleted_at: null, estimate_minutes: null, recurrence: null,
-    series_id: null, assignee_id: null, section_id: null, ical_extra: null, _clock: {}, ...extra,
+    series_id: null, assignee_ids: [], section_id: null, ical_extra: null, _clock: {}, ...extra,
   }
 }
 const project = (id: string, name = id, extra: Partial<Project> = {}) => ({ id, name, archived: false, deleted_at: null, ...extra })
@@ -171,7 +171,7 @@ describe('estimates', () => {
 describe('excluded rows and shared projects (task 2.4)', () => {
   it('a task completed by another member and a trashed task count in no measure', () => {
     const tasks = [
-      task('by-ana', { project_id: 's', completed_by: 'ana', assignee_id: 'me', due: { date: TODAY }, estimate_minutes: 30, completed_at: at('2026-10-13') }),
+      task('by-ana', { project_id: 's', completed_by: 'ana', assignee_ids: ['me'], due: { date: TODAY }, estimate_minutes: 30, completed_at: at('2026-10-13') }),
       task('trashed', { deleted_at: at('2026-10-13'), due: { date: TODAY }, estimate_minutes: 30, completed_at: at('2026-10-13') }),
       task('in-gone', { project_id: 'gone', due: { date: TODAY }, completed_at: at('2026-10-13') }),
     ]
