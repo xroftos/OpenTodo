@@ -7036,6 +7036,7 @@
   ],
   "Former member": [
     "web/src/app/AssigneePicker.tsx",
+    "web/src/app/display/DisplayScreen.tsx",
     "web/src/app/task-detail/TimeTab.tsx",
     "web/src/app/task-detail/usePropertiesModel.ts",
     "web/src/app/task-list/ListGroups.tsx"
@@ -11758,9 +11759,6 @@
   "Nothing from this share was kept: the browser did not say where it came from. Update the browser, then share again.": [
     "web/src/app/ShareCapture.tsx"
   ],
-  "Nothing is assigned to you.": [
-    "web/src/app/task-list/ListChrome.tsx"
-  ],
   "Nothing is due in the next seven days.": [
     "web/src/app/review/ReviewView.tsx"
   ],
@@ -11835,6 +11833,9 @@
   ],
   "Nothing open": [
     "web/src/app/ProjectsTable.tsx"
+  ],
+  "Nothing open of your own here, and nothing assigned to you.": [
+    "web/src/app/task-list/ListChrome.tsx"
   ],
   "Nothing parked for later.": [
     "web/src/app/task-list/ListChrome.tsx"

@@ -1,9 +1,9 @@
 // Русский (ru) quick-add vocabulary, filled from the stub of
-// scripts/i18n/new-language.mjs. Not bundled yet: to ship it, add it to
-// VOCABULARIES in vocab/index.ts, run `npm run nlp:vocab` in web/ and add the
-// code to quickadd.Bundled (see "Writing a quick-add vocabulary" in
-// docs/translating.md). Words are lower case and may carry ё, which matches the
-// е spellings too where both are listed.
+// scripts/i18n/new-language.mjs. Bundled: listed in VOCABULARIES
+// (vocab/index.ts), in quickadd.Bundled and in internal/quickadd/vocab.json —
+// regenerate that file with `npm run nlp:vocab` in web/ (see "Writing a
+// quick-add vocabulary" in docs/translating.md). Words are lower case and may
+// carry ё, which matches the е spellings too where both are listed.
 import type { Vocabulary } from './types'
 
 export const ru: Vocabulary = {
@@ -50,7 +50,7 @@ export const ru: Vocabulary = {
   morningWords: ['сегодня утром', 'утром'],
   afternoonWords: ['сегодня днём', 'сегодня днем', 'днём', 'днем'],
   partWords: { morning: ['утром'], afternoon: ['днём', 'днем'], evening: ['вечером'] },
-  nextBefore: ['следующий', 'следующего', 'следующая', 'следующей', 'следующее', 'следующую', 'следующие', 'следующих'],
+  nextBefore: ['след.', 'след', 'следующий', 'следующего', 'следующая', 'следующей', 'следующее', 'следующую', 'следующие', 'следующих'],
   nextAfter: [],
   thisBefore: ['этот', 'этого', 'эта', 'этой', 'это', 'эту', 'эти', 'этих'],
   inWords: ['через'],
