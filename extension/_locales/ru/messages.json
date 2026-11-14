@@ -1,0 +1,276 @@
+{
+  "extName": {
+    "message": "OpenTodo Capture",
+    "description": "TODO translate. The extension name in the browser’s extension list."
+  },
+  "extDescription": {
+    "message": "Add the page, a link, an image, a mail or selected text to your own OpenTodo server. It talks only to the server you enter.",
+    "description": "TODO translate. The description in the browser’s extension list."
+  },
+  "actionTitle": {
+    "message": "Add to OpenTodo",
+    "description": "TODO translate. Toolbar button tooltip and the page context-menu entry."
+  },
+  "commandDescription": {
+    "message": "Add the current page to OpenTodo",
+    "description": "TODO translate. Keyboard shortcut description in the browser’s shortcut settings."
+  },
+  "menuScreenshot": {
+    "message": "Add screenshot to OpenTodo",
+    "description": "TODO translate. Context-menu entry that captures a screenshot."
+  },
+  "optionsTitle": {
+    "message": "OpenTodo Capture settings",
+    "description": "TODO translate. Options page title."
+  },
+  "optionsIntro": {
+    "message": "Enter the address of your OpenTodo server. The extension stores only this address and, in Quick save mode, the token you paste below; it talks to no other address.",
+    "description": "TODO translate. Options page introduction."
+  },
+  "pendingNote": {
+    "message": "Set your server to continue adding \"$TITLE$\".",
+    "description": "TODO translate. Shown on first run; $TITLE$ is the page being captured.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Example page"
+      }
+    }
+  },
+  "thisPage": {
+    "message": "this page",
+    "description": "TODO translate. Fallback for a page without title or address."
+  },
+  "serverLabel": {
+    "message": "Server URL",
+    "description": "TODO translate. Label of the server address field."
+  },
+  "save": {
+    "message": "Save",
+    "description": "TODO translate. Save button."
+  },
+  "screenshotsHeading": {
+    "message": "Screenshots",
+    "description": "TODO translate. Heading of the screenshots part."
+  },
+  "screenshotsIntro": {
+    "message": "\"Add screenshot to OpenTodo\" captures the visible part of a page and hands the image to your server's capture popup, where nothing is saved until you press Save. Handing it over needs access to your server's address, and only that address; the browser asks when you save it.",
+    "description": "TODO translate. Explains screenshot capture."
+  },
+  "screenshotsAllowed": {
+    "message": "Screenshots: allowed for $ORIGIN$.",
+    "description": "TODO translate. $ORIGIN$ is the server address.",
+    "placeholders": {
+      "origin": {
+        "content": "$1",
+        "example": "https://todo.example.com"
+      }
+    }
+  },
+  "screenshotsNotAllowed": {
+    "message": "Screenshots: not allowed yet. The extension needs access to your server only to hand a screenshot to the capture popup.",
+    "description": "TODO translate. Screenshot access not granted yet."
+  },
+  "allowScreenshots": {
+    "message": "Allow screenshots",
+    "description": "TODO translate. Button that asks for access to the server address."
+  },
+  "invalidAddress": {
+    "message": "Enter an http:// or https:// address, for example https://todo.example.com",
+    "description": "TODO translate. Error for an address that is not http(s)."
+  },
+  "saved": {
+    "message": "Saved. Captures go to $ORIGIN$.",
+    "description": "TODO translate. $ORIGIN$ is the server address.",
+    "placeholders": {
+      "origin": {
+        "content": "$1",
+        "example": "https://todo.example.com"
+      }
+    }
+  },
+  "popupLine": {
+    "message": "Task",
+    "description": "TODO translate. Label of the quick-add line in the popup."
+  },
+  "popupProject": {
+    "message": "Project",
+    "description": "TODO translate. Label of the project picker."
+  },
+  "popupInbox": {
+    "message": "Inbox",
+    "description": "TODO translate. The project picker’s choice for no project."
+  },
+  "popupLabels": {
+    "message": "Labels",
+    "description": "TODO translate. Label of the label picker."
+  },
+  "popupAddLabel": {
+    "message": "Add a label",
+    "description": "TODO translate. First entry of the label picker."
+  },
+  "popupRemoveLabel": {
+    "message": "Remove label $NAME$",
+    "description": "TODO translate. Accessible name of the button that removes a label; $NAME$ is the label.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "call"
+      }
+    }
+  },
+  "popupOrigin": {
+    "message": "From",
+    "description": "TODO translate. Label of the task’s origin (the page it comes from)."
+  },
+  "popupRemoveOrigin": {
+    "message": "Remove the link",
+    "description": "TODO translate. Accessible name of the button that removes the page link."
+  },
+  "popupOptions": {
+    "message": "Settings",
+    "description": "TODO translate. Link from the popup to the options page."
+  },
+  "popupOpenCapture": {
+    "message": "Open capture screen",
+    "description": "TODO translate. Button that opens the server’s capture screen instead."
+  },
+  "popupSaving": {
+    "message": "Saving…",
+    "description": "TODO translate. Status while the task is being saved."
+  },
+  "popupSaved": {
+    "message": "Saved",
+    "description": "TODO translate. Status once the task was saved."
+  },
+  "popupOpenTask": {
+    "message": "Open the task",
+    "description": "TODO translate. Link to the saved task."
+  },
+  "popupUnreachable": {
+    "message": "The server could not be reached. Your text is still here.",
+    "description": "TODO translate. The server did not answer a save."
+  },
+  "popupTokenRefused": {
+    "message": "The token no longer works. Check it in the settings.",
+    "description": "TODO translate. The token was refused by the server."
+  },
+  "popupEncrypted": {
+    "message": "This account is end-to-end encrypted: save from the capture screen, which encrypts on your device.",
+    "description": "TODO translate. Quick save on an end-to-end encrypted account."
+  },
+  "popupRateLimited": {
+    "message": "Too many requests. Try again in a minute.",
+    "description": "TODO translate. Too many requests."
+  },
+  "popupFailed": {
+    "message": "The task could not be saved: $MESSAGE$",
+    "description": "TODO translate. A save failed; $MESSAGE$ is the server’s reason.",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "title: required"
+      }
+    }
+  },
+  "popupNoServer": {
+    "message": "Set your server address in the settings first; Save takes you there.",
+    "description": "TODO translate. The popup before a server address is set."
+  },
+  "modeHeading": {
+    "message": "How Save works",
+    "description": "TODO translate. Options page heading of the save modes."
+  },
+  "modeCapture": {
+    "message": "Capture screen",
+    "description": "TODO translate. The Capture screen mode."
+  },
+  "modeCaptureHelp": {
+    "message": "Save opens your server’s capture screen, where you check the task and save it. The extension holds no token and sends nothing itself.",
+    "description": "TODO translate. What the Capture screen mode does."
+  },
+  "modeQuick": {
+    "message": "Quick save",
+    "description": "TODO translate. The Quick save mode."
+  },
+  "modeQuickHelp": {
+    "message": "Save creates the task at once through your server’s API, with the token below. The extension sends the line, the selected text and the page address to your server, and to no one else.",
+    "description": "TODO translate. What the Quick save mode does."
+  },
+  "modeNeedsToken": {
+    "message": "Quick save needs a full-access token: until then Save opens the capture screen.",
+    "description": "TODO translate. Quick save chosen without a token that can save."
+  },
+  "tokenLabel": {
+    "message": "API token",
+    "description": "TODO translate. Label of the token field."
+  },
+  "tokenHelp": {
+    "message": "Create a full-access token in OpenTodo under Settings, Integrations, API tokens, and name it after this browser so you can revoke it on its own. It stays on this device: browsers never synchronise it.",
+    "description": "TODO translate. Help under the token field."
+  },
+  "tokenSave": {
+    "message": "Check and save token",
+    "description": "TODO translate. Button that checks and saves the token."
+  },
+  "tokenForget": {
+    "message": "Forget token",
+    "description": "TODO translate. Button that removes the token."
+  },
+  "tokenForgotten": {
+    "message": "The token was removed from this browser.",
+    "description": "TODO translate. Status after the token was removed."
+  },
+  "tokenChecking": {
+    "message": "Checking the token…",
+    "description": "TODO translate. Status while the token is checked."
+  },
+  "tokenOk": {
+    "message": "Token of $NAME$ ($SCOPE$): Quick save is ready.",
+    "description": "TODO translate. The token works; $NAME$ is the account, $SCOPE$ its scope.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Alex"
+      },
+      "scope": {
+        "content": "$2",
+        "example": "full"
+      }
+    }
+  },
+  "tokenRead": {
+    "message": "This read-only token can preview a line but not save: Save keeps opening the capture screen.",
+    "description": "TODO translate. A read token was given."
+  },
+  "tokenAgent": {
+    "message": "This token is for AI assistants and cannot save here; create a full-access token instead.",
+    "description": "TODO translate. An AI assistant token was given."
+  },
+  "tokenRejected": {
+    "message": "The server refused the token: $MESSAGE$",
+    "description": "TODO translate. The server refused the token; $MESSAGE$ is its reason.",
+    "placeholders": {
+      "message": {
+        "content": "$1",
+        "example": "authentication required"
+      }
+    }
+  },
+  "tokenUnreachable": {
+    "message": "The server could not be reached.",
+    "description": "TODO translate. The server did not answer the token check."
+  },
+  "tokenNoServer": {
+    "message": "Save the server address first.",
+    "description": "TODO translate. A token was given before a server address."
+  },
+  "tokenHttp": {
+    "message": "Tokens travel only over https. Use an https address (or localhost); the capture screen keeps working.",
+    "description": "TODO translate. A token for a plain http address."
+  },
+  "tokenAccess": {
+    "message": "Quick save needs access to your server’s address; the browser did not grant it.",
+    "description": "TODO translate. The browser did not grant access to the server address."
+  }
+}
