@@ -1,0 +1,1 @@
+- **The app is available in Russian (Русский).** Pick it in Settings → Language and region → Language; the interface, dates and notifications follow the choice across web, mobile and server email (russian-translation).

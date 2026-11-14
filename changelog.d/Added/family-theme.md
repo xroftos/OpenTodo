@@ -1,0 +1,1 @@
+- **A theme for the youngest.** Sunny Family is a bright, cheerful, high-contrast light theme with a sunny warm yellow accent, a coral/orange secondary, teal info and a soft cream canvas, drawn for children of 7-10; pick it in Settings → Appearance (family-theme).
