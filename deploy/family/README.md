@@ -4,9 +4,13 @@
 
 ## Быстрый старт
 
+Набор живёт в ветке `family-pack` вашего форка (база — upstream v1.5.0):
+
 ```bash
-git clone https://github.com/OpenTodoApp/OpenTodo.git
-cd OpenTodo/deploy/family
+git clone https://github.com/<ваш-логин>/opentodo.git opentodo
+cd opentodo
+git switch family-pack
+cd deploy/family
 docker compose up -d --build
 ```
 
@@ -58,8 +62,9 @@ docker compose logs opentodo
 ## Обновление
 
 ```bash
-cd OpenTodo
-git pull
+cd opentodo
+git switch family-pack
+git pull                        # из вашего форка
 cd deploy/family
 docker compose up -d --build
 ```
